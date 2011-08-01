@@ -1,336 +1,458 @@
 <?php
 
+namespace Slashed;
+
+
+/**
+ * Class for manipulation of images
+ *
+ * @author Grégoire Passault <g.passault@alienor.net>
+ */
 class Image
 {
-  public static $cacheDir = "cache/images";
-  public $gd;
-  private $hash;
-  private $file;
-  private $operations;
+    /**
+     * Direcory to use for file caching
+     */
+    private $cacheDir = 'cache/images';
 
-  public function __construct($file="") {
-    $this->gd = null;
-    $this->hash = "";
-    $this->operations = array();
-    $this->file=$file;
-  }
+    /**
+     * GD Ressource
+     */
+    private $gd = null;
 
-  public static function file($file) {
-    $directory = Image::$cacheDir;
-    if (!file_exists($directory))
-      mkdir($directory); 
-    for ($i=0; $i<5; $i++) {
-      $c = $file[$i];
-      $directory.="/$c";
-      if (!file_exists($directory)) {
-    mkdir($directory);
-      }
+    /**
+     * Transformations hash
+     */
+    private $hash = '';
+
+    /**
+     * File
+     */
+    private $file = '';
+
+    /**
+     * Supported types
+     */
+    public static $types = array(
+        'jpg'   => 'jpg',
+        'jpeg'  => 'jpg',
+        'png'   => 'png',
+        'gif'   => 'gif'
+    );
+
+    /**
+     * Operations array
+     */
+    private $operations = array();
+
+    public function __construct($originalFile = '')
+    {
+        $this->file = $originalFile;
     }
-    $file = $directory."/".substr($file,5);
-    return $file;
-  }
 
-  public function fromFile($file) {
-    $this->file = $file;
-    return $this;
-  }
+    /**
+     * Create and returns the absolute directory for a file
+     *
+     * @param string $file the file name
+     *
+     * @return string the full file name
+     */
+    public function file($file) {
+        $directory = $this->cacheDir;
 
-  public function openFile() {
-    $file = $this->file;
-    if (!$this->fromJpeg($file))
-      if (!$this->fromGif($file))
-    $this->fromPng($file);
-    return $this;
-  }
+        if (!file_exists($directory))
+            mkdir($directory); 
 
-  public function fromJpeg($file) {
-    $this->file = $file;
-    $this->gd = @imagecreatefromjpeg($file);
-    return ($this->gd !== false);
-  }
+        for ($i=0; $i<5; $i++) {
+            $c = $file[$i];
+            $directory.='/'.$c;
+            if (!file_exists($directory)) {
+                mkdir($directory);
+            }
+        }
 
-  public function fromGif($file) {
-    $this->file = $file;
-    $this->gd = @imagecreatefromgif($file);
-    return ($this->gd !== false);
-  }
-
-  public function fromPng($file) {
-    $this->file = $file;
-    $this->gd = @imagecreatefrompng($file);
-    return ($this->gd !== false);
-  }
-
-  public function resize($w, $h, $bg=0xFFFFFF) {
-    $this->operations[] = array("resize",$w,$h,$bg);
-    return $this;
-  }
-
-  public function forceResize($w, $h, $bg=0xFFFFFF) {
-    $this->operations[] = array("forceResize",$w,$h,$bg);
-    return $this;
-  }
-
-  public function scaleResize($w, $h, $bg=0xFFFFFF) {
-    $this->operations[] = array("scaleResize",$w,$h,$bg);
-    return $this;
-  }
-
-  public function cropResize($w, $h, $bg=0xFFFFFF) {
-    $this->operations[] = array("cropResize",$w,$h,$bg);
-    return $this;
-  }
-
-  public function crop($x, $y, $w, $h) {
-    $this->operations[] = array("crop",$x,$y,$w,$h);
-    return $this;
-  }
-
-  public function stamp() {
-    $this->operations[] = array("stamp");
-    return $this;
-  }
-
-  public function negate() {
-    $this->operations[] = array("negate");
-    return $this;
-  }
-
-  public function brightness($b) {
-    $this->operations[] = array("brightness", $b);
-    return $this;
-  }
-
-  public function smooth($p) {
-    $this->operations[] = array("smooth", $p);
-    return $this;
-  }
-
-  public function sharp($p) {
-    $this->operations[] = array("sharp");
-    return $this;
-  }
-
-  public function contrast($c) {
-    $this->operations[] = array("contrast", $c);
-    return $this;
-  }
-
-  public function grey() {
-    $this->operations[] = array("grey");
-    return $this;
-  }
-
-  public function emboss() {
-    $this->operations[] = array("emboss");
-    return $this;
-  }
-
-  public function edge() {
-    $this->operations[] = array("edge");
-    return $this;
-  }
-
-  public function colorize($r, $g, $b) {
-    $this->operations[] = array("colorize", $r, $g, $b);
-    return $this;  
-  }
-
-  public function sepia() {
-    $this->operations[] = array("sepia");
-    return $this;
-  }
-
-  public function _resize($w=null,$h=null,$bg,$force=false,$rescale=false,$crop=false) {
-    $width = imagesx($this->gd);
-    $height = imagesy($this->gd);
-    $scale = 1.0;
-    if (!$force || $crop) {
-      if ($w!=null && $width>$w) {
-    $scale = $width/$w;
-      }
-      if ($h!=null && $height>$h) {
-    if ($height/$h > $scale)
-      $scale = $height/$h;
-      }
-    } else {
-      if ($w!=null) {
-    $scale = $width/$w;
-    $new_width = $w;
-      }
-      if ($h!=null) {
-    if ($w!=null && $rescale)
-      $scale = max($scale,$height/$h);
-    else
-      $scale = $height/$h;
-    $new_height = $h;
-      }
+        $file = $directory.'/'.substr($file,5);
+        return $file;
     }
-    if (!$force || $w==null || $rescale)
-      $new_width = (int)($width/$scale);
-    if (!$force || $h==null || $rescale)
-      $new_height = (int)($height/$scale);
 
-    if ($w == null || $crop)
-      $w = $new_width;
-    if ($h == null || $crop)
-      $h = $new_height;
-
-    $n = imagecreatetruecolor($w, $h);
-
-    if ($bg!="transparent") {
-      imagefill($n, 0, 0, $bg);
-    } else {
-      imagealphablending($n,false);
-      $color = imagecolorallocatealpha($n, 0, 0, 0, 127);
-      imagefill($n,0,0,$color);
-      imagesavealpha($n,true);
+    /**
+     * Defines the file only after instantiation
+     *
+     * @param string $originalFile the file path
+     */
+    public function fromFile($originalFile)
+    {
+        $this->file = $file;
+        return $this;
     }
-    imagecopyresampled($n, $this->gd, ($w-$new_width)/2, ($h-$new_height)/2, 0, 0, $new_width, $new_height, $width, $height);
-    imagedestroy($this->gd);
-    $this->gd = $n;
-  }
 
-  public function _crop($x, $y, $w, $h) {
-    $dst = imagecreatetruecolor($w, $h);
-    imagecopy($dst, $this->gd, 0, 0, $x, $y, imagesx($this->gd), imagesy($this->gd));
-    imagedestroy($this->gd);
-    $this->gd = $dst;
-  }
+    /**
+     * Guess the file type
+     */
+    private function guessType()
+    {
+        $parts = explode('.', $this->file);
+        $ext = strtolower($parts[count($parts)-1]);
 
-  public function _negate() {
-    imagefilter($this->gd, IMG_FILTER_NEGATE);
-  }
+        if (isset(Image::$types[$ext]))
+            return Image::$types[$ext];
 
-  public function _brightness($b) {
-    imagefilter($this->gd, IMG_FILTER_BRIGHTNESS, $b);
-  }
-
-  public function _contrast($c) {
-    imagefilter($this->gd, IMG_FILTER_CONTRAST, $c);
-  }
-
-  public function _grey() {
-    imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
-  }
-
-  public function _emboss() {
-    imagefilter($this->gd, IMG_FILTER_EMBOSS);
-  }
-
-  public function _smooth($p) {
-    imagefilter($this->gd, IMG_FILTER_SMOOTH, $p);
-  }
-
-  public function _sharp($p) {
-    imagefilter($this->gd, IMG_FILTER_MEAN_REMOVAL);
-  }
-
-  public function _edge() {
-    imagefilter($this->gd, IMG_FILTER_EDGEDETECT);
-  }
-
-  public function _colorize($r, $g, $b) {
-    imagefilter($this->gd, IMG_FILTER_COLORIZE, $r, $g, $b);
-  }
-
-  public function _stamp() {
-    seezat_stamp($this->gd);
-  }
-
-  public function _sepia() {
-    imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
-    imagefilter($this->gd, IMG_FILTER_COLORIZE, 100, 50, 0);
-  }
-
-  public function cacheFile($type = "jpg", $quality = 80) {
-    $hash=      $this->file." ";
-    $hash.=     filectime($this->file)." ";
-    $hash.= serialize($this->operations)." ".$type." ".$quality;
-    $this->hash = sha1($hash);
-    $file = Image::file($this->hash.".".$type);
-    if (!file_exists($file)) {
-      $this->save($file, $type, $quality);
+        return 'jpeg';
     }
-    return $file;
-  }
 
-  public function save($file, $type="jpg", $quality = 80) {
-    $this->openFile();
+    /**
+     * Try to open the file
+     */
+    public function openFile()
+    {
+        $type = $this->guessType();
 
-    foreach ($this->operations as $o) {
-      switch ($o[0]) {
-      case "resize":
-    $this->_resize($o[1],$o[2],$o[3]);
-    break;
-      case "forceResize":
-    $this->_resize($o[1],$o[2],$o[3], true);
-    break;
-      case "scaleResize":
-    $this->_resize($o[1],$o[2],$o[3], true, true);
-    break;
-      case "cropResize":
-    $this->_resize($o[1],$o[2],$o[3], true, true, true);
-    break;
-      case "crop":
-    $this->_crop($o[1],$o[2],$o[3],$o[4]);
-    break;
-      case "stamp":
-    $this->_stamp();
-    break;
-      case "negate":
-    $this->_negate();
-    break;
-      case "brightness":
-    $this->_brightness($o[1]);
-    break;
-      case "contrast":
-    $this->_contrast($o[1]);
-    break;
-      case "grey":
-    $this->_grey();
-    break;
-      case "emboss":
-    $this->_emboss();
-    break;
-      case "sharp":
-    $this->_sharp();
-    break;
-      case "smooth":
-    $this->_smooth($o[1]);
-    break;
-      case "edge":
-    $this->_edge();
-    break;
-      case "colorize":
-    $this->_colorize($o[1], $o[2], $o[3]);
-    break;
-      case "sepia":
-    $this->_sepia();
-    break;
-      }
+        if ($type == 'jpeg')
+            $this->openJpeg();
+
+        if ($type == 'gif')
+            $this->openGif();
+
+        if ($type == 'png')
+            $this->openPng();
+
+        return $this;
     }
-    if ($type=="jpg") 
-      $success=imagejpeg($this->gd, $file, $quality);
-    if ($type=="gif")
-      $success=imagegif($this->gd, $file);
-    if ($type=="png")
-      $success=imagepng($this->gd, $file);
-    if (!$success)
-      return FALSE;
-    return $file;
-  }
 
-  public function jpeg($quality = 80) {
-    return $this->cacheFile("jpg", $quality);
-  }
+    /**
+     * Try to open the file using jpeg
+     *
+     */
+    public function openJpeg()
+    {
+        $this->gd = imagecreatefromjpeg($this->file);
+    }
 
-  public function gif() {
-    return $this->cacheFile("gif");
-  }
+    /**
+     * Try to open the file using gif
+     */
+    public function openGif()
+    {
+        $this->gd = imagecreatefromgif($this->file);
+    }
 
-  public function png() {
-    return $this->cacheFile("png");
-  }
+    /**
+     * Try to open the file using PNG
+     */
+    public function openPng()
+    {
+        $this->gd = imagecreatefrompng($this->file);
+    }
+
+    /**
+     * Generic function
+     */
+    public function __call($func, $args)
+    {
+        $reflection = new \ReflectionClass(get_class($this));
+        $methodName = '_'.$func;
+
+        if ($reflection->hasMethod($methodName)) {
+            $method = $reflection->getMethod($methodName);
+
+            if ($method->getNumberOfRequiredParameters() > count($args))
+                throw new \InvalidArgumentException('Not enough arguments given for '.$func);
+
+            $this->operations[] = array($methodName, $args);
+
+            return $this;
+        }
+
+        throw new \Exception('Invalid method: '.$func);
+    }
+
+    /**
+     * Resizes the image. It will never be enlarged.
+     *
+     * @param int $w the width 
+     * @param int $h the height
+     * @param int $bg the background
+     */
+    private function _resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false)
+    {
+        $width = imagesx($this->gd);
+        $height = imagesy($this->gd);
+        $scale = 1.0;
+        if (!$force || $crop) {
+            if ($w!=null && $width>$w) {
+                $scale = $width/$w;
+            }
+            if ($h!=null && $height>$h) {
+                if ($height/$h > $scale)
+                    $scale = $height/$h;
+            }
+        } else {
+            if ($w!=null) {
+                $scale = $width/$w;
+                $new_width = $w;
+            }
+            if ($h!=null) {
+                if ($w!=null && $rescale)
+                    $scale = max($scale,$height/$h);
+                else
+                    $scale = $height/$h;
+                $new_height = $h;
+            }
+        }
+        if (!$force || $w==null || $rescale)
+            $new_width = (int)($width/$scale);
+        if (!$force || $h==null || $rescale)
+            $new_height = (int)($height/$scale);
+
+        if ($w == null || $crop)
+            $w = $new_width;
+        if ($h == null || $crop)
+            $h = $new_height;
+
+        $n = imagecreatetruecolor($w, $h);
+
+        if ($bg!='transparent') {
+            imagefill($n, 0, 0, $bg);
+        } else {
+            imagealphablending($n,false);
+            $color = imagecolorallocatealpha($n, 0, 0, 0, 127);
+            imagefill($n, 0, 0, $color);
+            imagesavealpha($n,true);
+        }
+        imagecopyresampled($n, $this->gd, ($w-$new_width)/2, ($h-$new_height)/2, 0, 0, $new_width, $new_height, $width, $height);
+        imagedestroy($this->gd);
+        $this->gd = $n;
+    }
+
+    /**
+     * Resizes the image forcing the destination to have exactly the
+     * given width and the height
+     *
+     * @param int $w the width
+     * @param int $h the height
+     * @param int $bg the background
+     */
+    private function _forceResize($w=null,$h=null,$bg=0xffffff)
+    {
+        $this->_resize($w, $h, $bg, true);
+    }
+
+    /**
+     * Resizes the image preserving scale. Can enlarge it.
+     *
+     * @param int $w the width
+     * @param int $h the height
+     * @param int $bg the background
+     */  
+    private function _scaleResize($width, $height, $background=0xffffff)
+    {
+        $this->_resize($w, $h, $bg, false, true);
+    }
+
+    /**
+     * Works as resize() excepts that the layout will be cropped
+     *
+     * @param int $w the width
+     * @param int $h the height
+     * @param int $bg the background
+     */
+    private function _cropResize($width, $height, $background=0xffffff)
+    {
+        $this->_resize($w, $h, $bg, false, false, true);
+    }
+
+    /**
+     * Crops the image 
+     *
+     * @param int $x the top-left x position of the crop box
+     * @param int $y the top-left y position of the crop box
+     * @param int $w the width of the crop box
+     * @param int $h the height of the crop box
+     */
+    public function _crop($x, $y, $w, $h) {
+        $dst = imagecreatetruecolor($w, $h);
+        imagecopy($dst, $this->gd, 0, 0, $x, $y, imagesx($this->gd), imagesy($this->gd));
+        imagedestroy($this->gd);
+        $this->gd = $dst;
+    }
+
+    /**
+     * Negates the image
+     */
+    public function _negate()
+    {
+        imagefilter($this->gd, IMG_FILTER_NEGATE);
+    }
+
+    /**
+     * Changes the brightness of the image
+     *
+     * @param int $brightness the brightness
+     */
+    private function _brightness($b)
+    {
+        imagefilter($this->gd, IMG_FILTER_BRIGHTNESS, $b);
+    }
+
+    /**
+     * Contrasts the image
+     *
+     * @param int $c the contrast
+     */
+    private function _contrast($c)
+    {
+        imagefilter($this->gd, IMG_FILTER_CONTRAST, $c);
+    }
+
+    /**
+     * Apply a grey level effect on the image
+     */
+    private function _grey()
+    {
+        imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
+    }
+
+    /**
+     * Emboss the image
+     */
+    public function _emboss()
+    {
+        imagefilter($this->gd, IMG_FILTER_EMBOSS);
+    }
+
+    /**
+     * Smooth the image
+     */
+    public function _smooth($p)
+    {
+        imagefilter($this->gd, IMG_FILTER_SMOOTH, $p);
+    }
+
+    /**
+     * Sharps the image
+     */
+    public function _sharp()
+    {
+        imagefilter($this->gd, IMG_FILTER_MEAN_REMOVAL);
+    }
+
+    /**
+     * Edges the image
+     */
+    public function _edge()
+    {
+        imagefilter($this->gd, IMG_FILTER_EDGEDETECT);
+    }
+
+    /**
+     * Colorize the image
+     */
+    public function _colorize($red, $green, $blue)
+    {
+        imagefilter($this->gd, IMG_FILTER_COLORIZE, $red, $green, $blue);
+    }
+
+    /**
+     * Sepias the image
+     */
+    public function _sepia()
+    {
+        imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
+        imagefilter($this->gd, IMG_FILTER_COLORIZE, 100, 50, 0);
+    }
+
+    /**
+     * Gets the cache file name and generate it if it does not exists.
+     * Note that if it exists, all the image computation process will
+     * not be done.
+     */
+    public function cacheFile($type = 'jpg', $quality = 80)
+    {
+        $datas = array(
+            $this->file,
+            filectime($this->file),
+            serialize($this->operations),
+            $type,
+            $quality
+        );
+
+        // Computes the hash
+        $this->hash = sha1(implode(' ', $datas));
+
+        // Generates the cache file
+        $file = $this->file($this->hash.'.'.$type);
+
+        // If the files does not exists, save it
+        if (!file_exists($file)) {
+            $this->save($file, $type, $quality);
+        }
+
+        return $file;
+    }
+
+    /**
+     * Generates and output a jpeg cached file
+     */
+    public function jpeg($quality = 80)
+    {
+        return $this->cacheFile("jpg", $quality);
+    }
+
+    /**
+     * Generates and output a gif cached file
+     */
+    public function gif()
+    {
+        return $this->cacheFile("gif");
+    }
+
+    /**
+     * Generates and output a png cached file
+     */
+    public function png()
+    {
+        return $this->cacheFile('png');
+    }
+
+    /**
+     * Save the file to a given output
+     */
+    public function save($file, $type = 'jpg', $quality = 80)
+    {
+        if (!in_array($type, Image::$types))
+            throw new \InvalidArgumentException('Given type ('.$type.') is not valid');
+
+        $type = Image::$types[$type];
+
+        $this->openFile();
+
+        // Renders the effects
+        foreach ($this->operations as $operation) {
+            call_user_func_array(array($this, $operation[0]), $operation[1]);
+        }
+        $success = false;
+
+        if ($type == 'jpg') 
+            $success = imagejpeg($this->gd, $file, $quality);
+
+        if ($type == 'gif')
+            $success = imagegif($this->gd, $file);
+
+        if ($type == 'png')
+            $success = imagepng($this->gd, $file);
+
+        if (!$success)
+            return false;
+
+        return $file;
+    }
+
+    /**
+     * Create an instance, usefull for one-line chaining
+     */
+    public static function create($file = '')
+    {
+        return new Image($file);
+    }
 }
 
