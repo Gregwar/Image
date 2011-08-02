@@ -22,12 +22,7 @@ class Image
     /**
      * Transformations hash
      */
-    protected $hash = '';
-
-    /**
-     * Callables functions to call when hashing
-     */
-    protected $hashCalls = array();
+    protected $hash = null;
 
     /**
      * File
@@ -159,14 +154,6 @@ class Image
     public function openPng()
     {
         $this->gd = imagecreatefrompng($this->file);
-    }
-
-    /**
-     * Adds a function to be called when generating hash
-     */
-    public function addHashCall($func)
-    {
-        $this->hashCalls[] = $func;
     }
 
     /**
@@ -413,45 +400,46 @@ class Image
     }
 
     /**
-     * Merge with another image
-     *
-     * Note: the hash will change if the other Image is changed too
+     * Serialization of operations
      */
-    public function merge(Image $other)
+    public function serializeOperations()
     {
-        $this->addOperation('_merge', func_get_args());
+        $datas = array();
 
-        $this->addHashCall(function (&$datas) use ($other) {
-            $datas[] = $other->getHash();
-        });
+        foreach ($this->operations as $operation) {
+            $method = $operation[0];
+            $args = $operation[1];
+            foreach ($args as &$arg) {
+                if ($arg instanceof Image) {
+                    $arg = $arg->getHash();
+                }
+            }
+            $datas[] = array($method, $args);
+        }
 
-        return $this;
+        return serialize($datas);
     }
 
     /**
      * Generates the hash
      */
-    public function generateHash() 
+    public function generateHash($type = 'jpeg', $quality = 80) 
     {
         $datas = array(
             $this->file,
             filectime($this->file),
-            serialize($this->operations),
+            $this->serializeOperations(),
             $type,
             $quality
         );
 
-        foreach ($this->hashCalls as $func) {
-            $func($data);
-        }
-
-        $this->hash = implode('|', $datas);
+        $this->hash = sha1(serialize($datas));
     }
 
     /**
      * Gets the hash
      */
-    public function getHash()
+    public function getHash($type = 'jpeg', $quality = 80)
     {
         if (null === $this->hash)
             $this->generateHash();
@@ -470,7 +458,7 @@ class Image
             return $this->file;
 
         // Computes the hash
-        $this->hash = $this->getHash();
+        $this->hash = $this->getHash($type, $quality);
 
         // Generates the cache file
         $file = $this->file($this->hash.'.'.$type);
