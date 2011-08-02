@@ -25,6 +25,11 @@ class Image
     protected $hash = '';
 
     /**
+     * Callables functions to call when hashing
+     */
+    protected $hashCalls = array();
+
+    /**
      * File
      */
     protected $file = '';
@@ -112,16 +117,18 @@ class Image
      */
     public function openFile()
     {
-        $type = $this->guessType();
+        if (null === $this->gd) {
+            $type = $this->guessType();
 
-        if ($type == 'jpeg')
-            $this->openJpeg();
+            if ($type == 'jpeg')
+                $this->openJpeg();
 
-        if ($type == 'gif')
-            $this->openGif();
+            if ($type == 'gif')
+                $this->openGif();
 
-        if ($type == 'png')
-            $this->openPng();
+            if ($type == 'png')
+                $this->openPng();
+        }
 
         return $this;
     }
@@ -152,6 +159,22 @@ class Image
     }
 
     /**
+     * Adds a function to be called when generating hash
+     */
+    public function addHashCall(\Callable $func)
+    {
+        $this->hashCalls[] = $func;
+    }
+
+    /**
+     * Adds an operation
+     */
+    protected function addOperation($method, $args)
+    {
+        $this->operations[] = array($method, $args);
+    }
+
+    /**
      * Generic function
      */
     public function __call($func, $args)
@@ -165,7 +188,7 @@ class Image
             if ($method->getNumberOfRequiredParameters() > count($args))
                 throw new \InvalidArgumentException('Not enough arguments given for '.$func);
 
-            $this->operations[] = array($methodName, $args);
+            $this->addOperation($methodName, $args);
 
             return $this;
         }
@@ -322,7 +345,7 @@ class Image
     /**
      * Emboss the image
      */
-    public function _emboss()
+    protected function _emboss()
     {
         imagefilter($this->gd, IMG_FILTER_EMBOSS);
     }
@@ -330,7 +353,7 @@ class Image
     /**
      * Smooth the image
      */
-    public function _smooth($p)
+    protected function _smooth($p)
     {
         imagefilter($this->gd, IMG_FILTER_SMOOTH, $p);
     }
@@ -338,7 +361,7 @@ class Image
     /**
      * Sharps the image
      */
-    public function _sharp()
+    protected function _sharp()
     {
         imagefilter($this->gd, IMG_FILTER_MEAN_REMOVAL);
     }
@@ -346,7 +369,7 @@ class Image
     /**
      * Edges the image
      */
-    public function _edge()
+    protected function _edge()
     {
         imagefilter($this->gd, IMG_FILTER_EDGEDETECT);
     }
@@ -354,7 +377,7 @@ class Image
     /**
      * Colorize the image
      */
-    public function _colorize($red, $green, $blue)
+    protected function _colorize($red, $green, $blue)
     {
         imagefilter($this->gd, IMG_FILTER_COLORIZE, $red, $green, $blue);
     }
@@ -362,10 +385,68 @@ class Image
     /**
      * Sepias the image
      */
-    public function _sepia()
+    protected function _sepia()
     {
         imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
         imagefilter($this->gd, IMG_FILTER_COLORIZE, 100, 50, 0);
+    }
+
+    /**
+     * Merge with another image
+     */
+    protected function _merge(Image $other, $x = 0, $y = 0, $w = null, $h = null)
+    {
+        $other->openFile();
+
+        if (null == $w)
+            $w = $other->width();
+
+        if (null == $y)
+            $h = $other->height();
+
+        imagecopyresized($this->gd, $other->gd, $x, $y, 0, 0, $w, $h, $this->width(), $this->height());
+    }
+
+    /**
+     * Merge with another image
+     */
+    public function merge(Image $other)
+    {
+        $this->addOperation('_merge', func_get_args());
+        $this->addHashCall(function (&$datas) use ($other) {
+            $datas[] = $other->getHash();
+        });
+    }
+
+    /**
+     * Generates the hash
+     */
+    public function generateHash() 
+    {
+        $datas = array(
+            $this->file,
+            filectime($this->file),
+            serialize($this->operations),
+            $type,
+            $quality
+        );
+
+        foreach ($this->hashCalls as $func) {
+            $func($data);
+        }
+
+        $this->hash = implode('|', $datas);
+    }
+
+    /**
+     * Gets the hash
+     */
+    public function getHash()
+    {
+        if (null === $this->hash)
+            $this->generateHash();
+
+        return $this->hash;
     }
 
     /**
@@ -378,16 +459,8 @@ class Image
         if (!count($this->operations) && $type == $this->guessType())
             return $this->file;
 
-        $datas = array(
-            $this->file,
-            filectime($this->file),
-            serialize($this->operations),
-            $type,
-            $quality
-        );
-
         // Computes the hash
-        $this->hash = sha1(implode(' ', $datas));
+        $this->hash = $this->getHash();
 
         // Generates the cache file
         $file = $this->file($this->hash.'.'.$type);
@@ -455,6 +528,26 @@ class Image
             return false;
 
         return $file;
+    }
+
+    /* Image API */
+
+    /**
+     * Gets the width
+     */
+    public function width()
+    {
+        $this->openFile();
+        return imagesx($this->gd);
+    }
+
+    /**
+     * Gets the height
+     */
+    public function height()
+    {
+        $this->openFile();
+        return imagesy($this->gd);
     }
 
     /**

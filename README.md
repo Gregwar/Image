@@ -56,6 +56,8 @@ The methods available are:
 
 * `sepia()`: applies a sepia effect
 
+* `merge($image, $x, $y, $width, $height)`: merges two images
+
 Saving the image
 ----------------
 
