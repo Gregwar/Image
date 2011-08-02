@@ -428,6 +428,14 @@ class Image
     }
 
     /**
+     * Rotate the image 
+     */
+    protected function _rotate($angle, $background = 0xffffff)
+    {
+        imagerotate($this->gd, $angle, $background);
+    }
+
+    /**
      * Serialization of operations
      */
     public function serializeOperations()
