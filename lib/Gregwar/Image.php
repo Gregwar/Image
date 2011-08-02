@@ -108,6 +108,24 @@ class Image
     }
 
     /**
+     * Converts the image to true color
+     */
+    protected function convertToTrueColor()
+    {
+        if (!imageistruecolor($this->gd))
+        {
+            $w = imagesx($this->gd);
+            $h = imagesy($this->gd);
+
+            $img = imagecreatetruecolor($w, $h);
+            imagecopy($img, $this->gd, 0, 0, 0, 0, $w, $h);
+
+            $this->gd = $img;
+        }
+    }
+
+
+    /**
      * Try to open the file
      */
     public function openFile()
@@ -125,8 +143,11 @@ class Image
                 $this->openPng();
         }
 
-        if (null === $this->gd)
+        if (null === $this->gd) {
             throw new \Exception('Unable to open file ('.$this->file.')');
+        } else {
+            $this->convertToTrueColor();
+        }
 
         return $this;
     }
