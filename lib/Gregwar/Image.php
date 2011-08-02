@@ -101,8 +101,8 @@ class Image
         $parts = explode('.', $this->file);
         $ext = strtolower($parts[count($parts)-1]);
 
-        if (isset(Image::$types[$ext]))
-            return Image::$types[$ext];
+        if (isset(self::$types[$ext]))
+            return self::$types[$ext];
 
         return 'jpeg';
     }
@@ -555,10 +555,10 @@ class Image
      */
     public function save($file, $type = 'jpeg', $quality = 80)
     {
-        if (!isset(Image::$types[$type]))
+        if (!isset(self::$types[$type]))
             throw new \InvalidArgumentException('Given type ('.$type.') is not valid');
 
-        $type = Image::$types[$type];
+        $type = self::$types[$type];
 
         $this->openFile();
 
