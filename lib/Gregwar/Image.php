@@ -1,12 +1,11 @@
 <?php
 
-namespace Slashed;
-
+namespace Gregwar;
 
 /**
- * Class for manipulation of images
+ * Images manipulation class
  *
- * @author Grégoire Passault <g.passault@alienor.net>
+ * @author Gregwar <g.passault@gmail.com>
  */
 class Image
 {
@@ -39,6 +38,14 @@ class Image
         'png'   => 'png',
         'gif'   => 'gif'
     );
+
+    /**
+     * Change the caching directory
+     */
+    public function setCacheDir($cacheDir)
+    {
+        $this->cacheDir = $cacheDir;
+    }
 
     /**
      * Operations array
@@ -368,6 +375,9 @@ class Image
      */
     public function cacheFile($type = 'jpg', $quality = 80)
     {
+        if (!count($this->operations))
+            return $this->file;
+
         $datas = array(
             $this->file,
             filectime($this->file),
@@ -424,6 +434,9 @@ class Image
 
         $type = Image::$types[$type];
 
+        if (!count($this->operations) && $this->guessType() == $type)
+            return $this->file;
+
         $this->openFile();
 
         // Renders the effects
@@ -450,7 +463,7 @@ class Image
     /**
      * Create an instance, usefull for one-line chaining
      */
-    public static function create($file = '')
+    public static function open($file = '')
     {
         return new Image($file);
     }
