@@ -468,7 +468,7 @@ class Image
             $this->save($file, $type, $quality);
         }
 
-        return $this->getFilename($this->file);
+        return $this->getFilename($file);
     }
 
     /**
