@@ -12,22 +12,22 @@ class Image
     /**
      * Direcory to use for file caching
      */
-    private $cacheDir = 'cache/images';
+    protected $cacheDir = 'cache/images';
 
     /**
      * GD Ressource
      */
-    private $gd = null;
+    protected $gd = null;
 
     /**
      * Transformations hash
      */
-    private $hash = '';
+    protected $hash = '';
 
     /**
      * File
      */
-    private $file = '';
+    protected $file = '';
 
     /**
      * Supported types
@@ -50,7 +50,7 @@ class Image
     /**
      * Operations array
      */
-    private $operations = array();
+    protected $operations = array();
 
     public function __construct($originalFile = '')
     {
@@ -96,7 +96,7 @@ class Image
     /**
      * Guess the file type
      */
-    private function guessType()
+    protected function guessType()
     {
         $parts = explode('.', $this->file);
         $ext = strtolower($parts[count($parts)-1]);
@@ -180,7 +180,7 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */
-    private function _resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false)
+    protected function _resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false)
     {
         $width = imagesx($this->gd);
         $height = imagesy($this->gd);
@@ -239,7 +239,7 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */
-    private function _forceResize($w=null,$h=null,$bg=0xffffff)
+    protected function _forceResize($w=null,$h=null,$bg=0xffffff)
     {
         $this->_resize($w, $h, $bg, true);
     }
@@ -251,7 +251,7 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */  
-    private function _scaleResize($width, $height, $background=0xffffff)
+    protected function _scaleResize($width, $height, $background=0xffffff)
     {
         $this->_resize($w, $h, $bg, false, true);
     }
@@ -263,7 +263,7 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */
-    private function _cropResize($width, $height, $background=0xffffff)
+    protected function _cropResize($width, $height, $background=0xffffff)
     {
         $this->_resize($w, $h, $bg, false, false, true);
     }
@@ -296,7 +296,7 @@ class Image
      *
      * @param int $brightness the brightness
      */
-    private function _brightness($b)
+    protected function _brightness($b)
     {
         imagefilter($this->gd, IMG_FILTER_BRIGHTNESS, $b);
     }
@@ -306,7 +306,7 @@ class Image
      *
      * @param int $c the contrast
      */
-    private function _contrast($c)
+    protected function _contrast($c)
     {
         imagefilter($this->gd, IMG_FILTER_CONTRAST, $c);
     }
@@ -314,7 +314,7 @@ class Image
     /**
      * Apply a grey level effect on the image
      */
-    private function _grey()
+    protected function _grey()
     {
         imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
     }
