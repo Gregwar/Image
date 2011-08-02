@@ -325,9 +325,9 @@ class Image
     }
 
     /**
-     * Apply a grey level effect on the image
+     * Apply a grayscale level effect on the image
      */
-    protected function _grey()
+    protected function _grayscale()
     {
         imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
     }

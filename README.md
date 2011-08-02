@@ -42,7 +42,7 @@ The methods available are:
 
 * `contrast($c)`: applies a contrast effect to the image (from -100 to +100)
 
-* `grey()`: converts the image to grayscale
+* `grayscale()`: converts the image to grayscale
 
 * `emboss()`: emboss the image
 
