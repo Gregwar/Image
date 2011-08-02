@@ -107,3 +107,29 @@ You can use this directly in an HTML document:
 This is powerful since if you change the original image or any of your code the cached hash
 will change and the file will be regenerated. 
 
+License
+=======
+
+`Gregwar\Image` is under MIT License
+
+Development
+===========
+
+`Gregwar\Image` is using PHP metaprogramming paradigms so it make it easy to enhance.
+
+Each function begining with a single underscore `_` can be added to the operations array and 
+will be automatically called when compiling down the image.
+
+You could for instance add your own method:
+
+    private function _myFilter()
+    {
+        $this->_negate();
+        $this->_sepia();
+    }
+
+Which could be usable on the Images
+
+    $image->myFilter();
+
+Do not hesitate to fork this repository and customize it !
