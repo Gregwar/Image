@@ -432,7 +432,7 @@ class Image
      */
     protected function _rotate($angle, $background = 0xffffff)
     {
-        imagerotate($this->gd, $angle, $background);
+        $this->gd = imagerotate($this->gd, $angle, $background);
     }
 
     /**
