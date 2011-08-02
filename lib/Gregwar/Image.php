@@ -455,7 +455,7 @@ class Image
     public function cacheFile($type = 'jpg', $quality = 80)
     {
         if (!count($this->operations) && $type == $this->guessType())
-            return $this->file;
+            return $this->getFilename($this->file);
 
         // Computes the hash
         $this->hash = $this->getHash($type, $quality);
@@ -468,7 +468,15 @@ class Image
             $this->save($file, $type, $quality);
         }
 
-        return $file;
+        return $this->getFilename($this->file);
+    }
+
+    /**
+     * Hook to helps to extends and enhance this c lass
+     */
+    protected function getFilename($filename)
+    {
+        return $filename;
     }
 
     /**
