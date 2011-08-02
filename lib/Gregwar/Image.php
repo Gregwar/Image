@@ -3,7 +3,7 @@
 namespace Gregwar;
 
 /**
- * Images manipulation class
+ * Images handling class
  *
  * @author Gregwar <g.passault@gmail.com>
  */

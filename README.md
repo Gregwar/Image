@@ -1,13 +1,13 @@
 Gregwar's Image class
 =====================
 
-The `Gregwar\Image` class purpose is to provide a simple object-oriented Image manipulation and caching API.
+The `Gregwar\Image` class purpose is to provide a simple object-oriented images handling and caching API.
 
 Usage
 =====
 
-Basic manipulation
-------------------
+Basic handling
+--------------
 
 Using methods chaining, you can open, transform and save a file in a single line:
 
