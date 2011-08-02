@@ -551,6 +551,14 @@ class Image
     }
 
     /**
+     * Tostring defaults to jpeg
+     */
+    public function __toString()
+    {
+        return $this->jpeg();
+    }
+
+    /**
      * Create an instance, usefull for one-line chaining
      */
     public static function open($file = '')
