@@ -219,6 +219,12 @@ class Image
         $width = imagesx($this->gd);
         $height = imagesy($this->gd);
         $scale = 1.0;
+
+        if ($h === null && preg_match('#^(.+)%$#mUsi', $w, $matches)) {
+            $w = (int)($width * ((float)$matches[1]/100.0));
+            $h = (int)($height * ((float)$matches[1]/100.0));
+        }
+
         if (!$force || $crop) {
             if ($w!=null && $width>$w) {
                 $scale = $width/$w;
@@ -240,6 +246,7 @@ class Image
                 $new_height = $h;
             }
         }
+
         if (!$force || $w==null || $rescale)
             $new_width = (int)($width/$scale);
         if (!$force || $h==null || $rescale)
