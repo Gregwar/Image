@@ -405,7 +405,7 @@ class Image
      */
     public function jpeg($quality = 80)
     {
-        return $this->cacheFile("jpg", $quality);
+        return $this->cacheFile('jpg', $quality);
     }
 
     /**
@@ -413,7 +413,7 @@ class Image
      */
     public function gif()
     {
-        return $this->cacheFile("gif");
+        return $this->cacheFile('gif');
     }
 
     /**
@@ -433,9 +433,6 @@ class Image
             throw new \InvalidArgumentException('Given type ('.$type.') is not valid');
 
         $type = Image::$types[$type];
-
-        if (!count($this->operations) && $this->guessType() == $type)
-            return $this->file;
 
         $this->openFile();
 
