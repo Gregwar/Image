@@ -38,8 +38,8 @@ class Image
      * Supported types
      */
     public static $types = array(
-        'jpg'   => 'jpg',
-        'jpeg'  => 'jpg',
+        'jpg'   => 'jpeg',
+        'jpeg'  => 'jpeg',
         'png'   => 'png',
         'gif'   => 'gif'
     );
@@ -130,6 +130,9 @@ class Image
                 $this->openPng();
         }
 
+        if (null === $this->gd)
+            throw new \Exception('Unable to open file ('.$this->file.')');
+
         return $this;
     }
 
@@ -161,7 +164,7 @@ class Image
     /**
      * Adds a function to be called when generating hash
      */
-    public function addHashCall(\Callable $func)
+    public function addHashCall($func)
     {
         $this->hashCalls[] = $func;
     }
@@ -241,7 +244,7 @@ class Image
 
         $n = imagecreatetruecolor($w, $h);
 
-        if ($bg!='transparent') {
+        if ($bg != 'transparent') {
             imagefill($n, 0, 0, $bg);
         } else {
             imagealphablending($n,false);
@@ -262,9 +265,9 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */
-    protected function _forceResize($w=null,$h=null,$bg=0xffffff)
+    protected function _forceResize($width = null, $height = null, $background = 0xffffff)
     {
-        $this->_resize($w, $h, $bg, true);
+        $this->_resize($width, $height, $background, true);
     }
 
     /**
@@ -276,7 +279,7 @@ class Image
      */  
     protected function _scaleResize($width, $height, $background=0xffffff)
     {
-        $this->_resize($w, $h, $bg, false, true);
+        $this->_resize($width, $height, $background, false, true);
     }
 
     /**
@@ -288,7 +291,7 @@ class Image
      */
     protected function _cropResize($width, $height, $background=0xffffff)
     {
-        $this->_resize($w, $h, $bg, false, false, true);
+        $this->_resize($width, $height, $background, false, false, true);
     }
 
     /**
@@ -396,7 +399,9 @@ class Image
      */
     protected function _merge(Image $other, $x = 0, $y = 0, $w = null, $h = null)
     {
+        $other = clone $other;
         $other->openFile();
+        $other->applyOperations();
 
         if (null == $w)
             $w = $other->width();
@@ -404,18 +409,23 @@ class Image
         if (null == $y)
             $h = $other->height();
 
-        imagecopyresized($this->gd, $other->gd, $x, $y, 0, 0, $w, $h, $this->width(), $this->height());
+        imagecopyresized($this->gd, $other->gd, $x, $y, 0, 0, $w, $h, $w, $h);
     }
 
     /**
      * Merge with another image
+     *
+     * Note: the hash will change if the other Image is changed too
      */
     public function merge(Image $other)
     {
         $this->addOperation('_merge', func_get_args());
+
         $this->addHashCall(function (&$datas) use ($other) {
             $datas[] = $other->getHash();
         });
+
+        return $this;
     }
 
     /**
@@ -498,24 +508,33 @@ class Image
     }
 
     /**
+     * Applies the operations
+     */
+    public function applyOperations()
+    {
+        // Renders the effects
+        foreach ($this->operations as $operation) {
+            call_user_func_array(array($this, $operation[0]), $operation[1]);
+        }
+    }
+
+    /**
      * Save the file to a given output
      */
-    public function save($file, $type = 'jpg', $quality = 80)
+    public function save($file, $type = 'jpeg', $quality = 80)
     {
-        if (!in_array($type, Image::$types))
+        if (!isset(Image::$types[$type]))
             throw new \InvalidArgumentException('Given type ('.$type.') is not valid');
 
         $type = Image::$types[$type];
 
         $this->openFile();
 
-        // Renders the effects
-        foreach ($this->operations as $operation) {
-            call_user_func_array(array($this, $operation[0]), $operation[1]);
-        }
+        $this->applyOperations();
+
         $success = false;
 
-        if ($type == 'jpg') 
+        if ($type == 'jpeg') 
             $success = imagejpeg($this->gd, $file, $quality);
 
         if ($type == 'gif')

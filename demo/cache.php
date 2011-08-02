@@ -5,6 +5,6 @@ use Gregwar\Image;
 
 // Note: create a "cache" directory before try this
 
-echo Image::create('test.png')
+echo Image::open('test.png')
     ->sepia()
     ->jpeg();
