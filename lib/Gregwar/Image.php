@@ -375,7 +375,7 @@ class Image
      */
     public function cacheFile($type = 'jpg', $quality = 80)
     {
-        if (!count($this->operations))
+        if (!count($this->operations) && $type == $this->guessType())
             return $this->file;
 
         $datas = array(
