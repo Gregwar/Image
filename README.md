@@ -62,6 +62,12 @@ The methods available are:
 
 * `write($font, $text, $x, $y, $size, $angle, $color, $position)`: writes text over image, $position can be any of 'left', 'right', or 'center'
 
+* `rectangle($x1, $y1, $x2, $y2, $color, $filled=false)`: draws a rectangle
+
+* `line($x1, $y1, $x2, $y2, $color)`: draws a line
+
+* `imageellipse($cx, $cy, $width, $height, $color)`: draws an ellipse
+
 You can also create image from scratch using:
 
     Image::create(200, 100)

@@ -490,7 +490,7 @@ class Image
     }
 
     /**
-     * Draw a rectangle
+     * Draws a rectangle
      */
     protected function _rectangle($color, $x1, $y1, $x2, $y2, $filled = false)
     {
@@ -499,6 +499,22 @@ class Image
         } else {
             imagerectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
         }
+    }
+
+    /**
+     * Draws a line
+     */
+    protected function _line($x1, $y1, $x2, $y2, $color = 0x000000) 
+    {
+        imageline($this->gd, $x1, $y1, $c2, $y2, ImageColor::parse($color));
+    }
+
+    /**
+     * Draws an ellipse
+     */
+    protected function _ellipse($cx, $cy, $width, $height, $color = 0x000000)
+    {
+        imageellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
     }
 
     /**

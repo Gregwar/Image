@@ -4,5 +4,5 @@ require_once('../lib/Gregwar/Image.php');
 use Gregwar\Image;
 
 Image::open('img/test.png')
-    ->merge(Image::open('test2.jpg')->cropResize(100, 100))
+    ->merge(Image::open('img/test2.jpg')->cropResize(100, 100))
     ->save('out.jpg');
