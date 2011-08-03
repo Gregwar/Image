@@ -105,6 +105,17 @@ class Image
      */
     protected function guessType()
     {
+        $type = @exif_imagetype($this->file);
+
+        if (false !== $type) {
+            if ($type == IMAGETYPE_JPEG)
+                return 'jpeg';
+            if ($type == IMAGETYPE_GIF)
+                return 'gif';
+            if ($type == IMAGETYPE_PNG)
+                return 'png';
+        }
+
         $parts = explode('.', $this->file);
         $ext = strtolower($parts[count($parts)-1]);
 
@@ -154,7 +165,7 @@ class Image
             }
 
             if (null === $this->gd) {
-                throw new \Exception('Unable to open file ('.$this->file.')');
+                throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
             } else {
                 $this->convertToTrueColor();
             }
@@ -215,7 +226,7 @@ class Image
             return $this;
         }
 
-        throw new \Exception('Invalid method: '.$func);
+        throw new \BadFunctionCallException('Invalid method: '.$func);
     }
 
     /**
@@ -680,7 +691,7 @@ class Image
      */
     public static function create($width, $height)
     {
-       return new Image(null, $width, $height);
+        return new Image(null, $width, $height);
     }
 }
 
