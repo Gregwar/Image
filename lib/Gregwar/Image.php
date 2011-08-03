@@ -60,7 +60,9 @@ class Image
     public function __construct($originalFile = '', $ext = null)
     {
         $this->file = $originalFile;
-        $this->ext = strtolower($ext);
+
+        if (null !== $ext)
+            $this->ext = strtolower($ext);
     }
 
     /**
