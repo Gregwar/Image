@@ -446,7 +446,7 @@ class Image
         if (null == $y)
             $h = $other->height();
 
-        imagecopyresized($this->gd, $other->gd, $x, $y, 0, 0, $w, $h, $w, $h);
+        imagecopyresampled($this->gd, $other->gd, $x, $y, 0, 0, $w, $h, $w, $h);
     }
 
     /**
