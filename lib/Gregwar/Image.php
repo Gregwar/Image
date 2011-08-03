@@ -98,10 +98,9 @@ class Image
      */
     protected function guessType()
     {
-        $infos = @getimagesize($this->file);
+        $type = @exif_imagetype($this->file);
 
-        if ($infos !== false) {
-            $type = $infos[2];
+        if (false !== $type) {
             if ($type == IMAGETYPE_JPEG)
                 return 'jpeg';
             if ($type == IMAGETYPE_GIF)
