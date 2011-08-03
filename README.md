@@ -58,6 +58,16 @@ The methods available are:
 
 * `merge($image, $x, $y, $width, $height)`: merges two images
 
+* `fill($color, $x, $y)`: fills the image with the given color
+
+* `write($font, $text, $x, $y, $size, $angle, $color, $position)`: writes text over image, $position can be any of 'left', 'right', or 'center'
+
+You can also create image from scratch using:
+
+    Image::create(200, 100)
+
+Where 200 is the width and 100 the height
+
 Saving the image
 ----------------
 
