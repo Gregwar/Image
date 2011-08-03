@@ -116,6 +116,18 @@ class Image
         if (isset(self::$types[$ext]))
             return self::$types[$ext];
 
+        $infos = @getimagesize($this->file);
+
+        if ($infos !== false) {
+            $type = $infos[2];
+            if ($type == IMAGETYPE_JPEG)
+                return 'jpeg';
+            if ($type == IMAGETYPE_GIF)
+                return 'gif';
+            if ($type == IMAGETYPE_PNG)
+                return 'png';
+        }
+
         return 'jpeg';
     }
 
