@@ -144,7 +144,7 @@ class Image
         }
 
         if (null === $this->gd) {
-            throw new \Exception('Unable to open file ('.$this->file.')');
+            throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
         } else {
             $this->convertToTrueColor();
         }
@@ -204,7 +204,7 @@ class Image
             return $this;
         }
 
-        throw new \Exception('Invalid method: '.$func);
+        throw new \BadFunctionCallException('Invalid method: '.$func);
     }
 
     /**
