@@ -43,7 +43,13 @@ class Image
         'jpg'   => 'jpeg',
         'jpeg'  => 'jpeg',
         'png'   => 'png',
-        'gif'   => 'gif'
+        'gif'   => 'gif',
+    );
+
+    public static $gdTypes = array(
+        'jpeg'  => IMG_JPG,
+        'gif'   => IMG_GIF,
+        'png'   => IMG_PNG,
     );
 
     /**
@@ -64,6 +70,10 @@ class Image
         $this->file = $originalFile;
         $this->width = $width;
         $this->height = $height;
+
+        if (!(extension_loaded('gd') && function_exists('gd_info'))) {
+            throw new \RuntimeException('You need to install GD PHP Extension to use this library');
+        }
     }
 
     /**
@@ -154,6 +164,9 @@ class Image
         } else {
             if (null === $this->gd) {
                 $type = $this->guessType();
+
+                if (!(imagetypes() & self::$gdTypes[$type]))
+                    throw new \RuntimeException('Type '.$type.' is not supported by GD');
 
                 if ($type == 'jpeg')
                     $this->openJpeg();
