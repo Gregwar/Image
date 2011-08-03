@@ -125,6 +125,20 @@ You can use this directly in an HTML document:
 This is powerful since if you change the original image or any of your code the cached hash
 will change and the file will be regenerated. 
 
+Writing image
+-------------
+
+You can also create your own image on-the-fly using drawing functions:
+
+
+    <img src="<?php echo Image::create(300, 300)
+        ->fill(0xffaaaa)    // Filling with a light red
+        ->rectangle(0xff3333, 0, 100, 300, 200, true) // Drawing a red rectangle
+        // Writing "Hello $username !" on the picture using a custom TTF font file
+        ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
+        ->jpeg(); ?>" />
+        
+
 License
 =======
 
