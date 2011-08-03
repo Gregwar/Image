@@ -1,6 +1,7 @@
 <?php
-
 namespace Gregwar;
+
+require_once ('ImageColor.php');
 
 /**
  * Images handling class
@@ -462,7 +463,7 @@ class Image
      */
     protected function _fill($color = 0xffffff, $x = 0, $y = 0)
     {
-        imagefill($this->gd, $x, $y, $color);
+        imagefill($this->gd, $x, $y, ImageColor::parse($color));
     }
 
     /**
@@ -485,7 +486,7 @@ class Image
                 $y -= $h;
             }
         }
-        imagettftext($this->gd, $size, $angle, $x, $y, $color, $font, $text);
+        imagettftext($this->gd, $size, $angle, $x, $y, ImageColor::parse($color), $font, $text);
     }
 
     /**
@@ -494,9 +495,9 @@ class Image
     protected function _rectangle($color, $x1, $y1, $x2, $y2, $filled = false)
     {
         if ($filled) {
-            imagefilledrectangle($this->gd, $x1, $y1, $x2, $y2, $color);
+            imagefilledrectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
         } else {
-            imagerectangle($this->gd, $x1, $y1, $x2, $y2, $color);
+            imagerectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
         }
     }
 
