@@ -620,6 +620,11 @@ class Image
      */
     public function save($file, $type = 'jpeg', $quality = 80)
     {
+        if (is_int($type)) {
+            $quality = $type;
+            $type = 'jpeg';
+        }
+
         if (!isset(self::$types[$type]))
             throw new \InvalidArgumentException('Given type ('.$type.') is not valid');
 
