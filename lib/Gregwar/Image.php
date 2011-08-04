@@ -158,6 +158,7 @@ class Image
             throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
         } else {
             $this->convertToTrueColor();
+            imagesavealpha($this->gd, true);
         }
 
         return $this;
