@@ -58,6 +58,22 @@ The methods available are:
 
 * `merge($image, $x, $y, $width, $height)`: merges two images
 
+* `fill($color, $x, $y)`: fills the image with the given color
+
+* `write($font, $text, $x, $y, $size, $angle, $color, $position)`: writes text over image, $position can be any of 'left', 'right', or 'center'
+
+* `rectangle($x1, $y1, $x2, $y2, $color, $filled=false)`: draws a rectangle
+
+* `line($x1, $y1, $x2, $y2, $color)`: draws a line
+
+* `imageellipse($cx, $cy, $width, $height, $color)`: draws an ellipse
+
+You can also create image from scratch using:
+
+    Image::create(200, 100)
+
+Where 200 is the width and 100 the height
+
 Saving the image
 ----------------
 
@@ -108,6 +124,20 @@ You can use this directly in an HTML document:
 
 This is powerful since if you change the original image or any of your code the cached hash
 will change and the file will be regenerated. 
+
+Writing image
+-------------
+
+You can also create your own image on-the-fly using drawing functions:
+
+
+    <img src="<?php echo Image::create(300, 300)
+        ->fill(0xffaaaa)    // Filling with a light red
+        ->rectangle(0xff3333, 0, 100, 300, 200, true) // Drawing a red rectangle
+        // Writing "Hello $username !" on the picture using a custom TTF font file
+        ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
+        ->jpeg(); ?>" />
+        
 
 License
 =======
