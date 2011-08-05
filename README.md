@@ -81,6 +81,8 @@ You can save the image to an explicit file using `save($file, $type = 'jpg', $qu
 
     $image->save('output.jpg', 'jpg', 85);
 
+You can also get the contents of the image using `get($type = 'jpg', $quality = 80)`, which will return the binary contents of the image
+
 Using cache
 -----------
 
