@@ -525,7 +525,7 @@ class Image
 
         return array(
             'width' => $box[2] - $box[0],
-            'height' => $box[5] - $box[3]
+            'height' => $box[3] - $box[5]
         );
     }
 
