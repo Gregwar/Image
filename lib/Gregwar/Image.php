@@ -470,7 +470,7 @@ class Image
         if (null == $w)
             $w = $other->width();
 
-        if (null == $y)
+        if (null == $h)
             $h = $other->height();
 
         imagecopyresampled($this->gd, $other->gd, $x, $y, 0, 0, $w, $h, $w, $h);
