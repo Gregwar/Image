@@ -502,21 +502,31 @@ class Image
         imagealphablending($this->gd, true);
 
         if ($pos != 'left') {
-            $box = imagettfbbox($size, $angle, $font, $text);
-
-            $w = $box[2] - $box[0];
-            $h = $box[5] - $box[3];
+            $size = self::TTFBox($font, $text, $size, $angle);
 
             if ($pos == 'center') {
-                $x -= $w / 2;
-                $y -= $h / 2;
+                $x -= $size['width'] / 2;
+                $y -= $size['height'] / 2;
             } 
             if ($pos == 'right') {
-                $x -= $w;
-                $y -= $h;
+                $x -= $size['width'];
+                $y -= $size['height'];
             }
         }
         imagettftext($this->gd, $size, $angle, $x, $y, ImageColor::parse($color), $font, $text);
+    }
+
+    /**
+     * Gets the width and the height for writing some text
+     */
+    public static function TTFBox($font, $text, $size, $angle) 
+    {
+        $box = imagettfbbox($size, $angle, $font, $text);
+
+        return array(
+            'width' => $box[2] - $box[0],
+            'height' => $box[5] - $box[3]
+        );
     }
 
     /**
