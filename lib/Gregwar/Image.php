@@ -465,6 +465,8 @@ class Image
         $other->initGd();
         $other->applyOperations();
 
+        imagealphablending($this->gd, true);
+
         if (null == $w)
             $w = $other->width();
 
