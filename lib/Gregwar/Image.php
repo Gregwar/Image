@@ -502,15 +502,15 @@ class Image
         imagealphablending($this->gd, true);
 
         if ($pos != 'left') {
-            $size = self::TTFBox($font, $text, $size, $angle);
+            $sim_size = self::TTFBox($font, $text, $size, $angle);
 
             if ($pos == 'center') {
-                $x -= $size['width'] / 2;
-                $y -= $size['height'] / 2;
+                $x -= $sim_size['width'] / 2;
+                $y -= $sim_size['height'] / 2;
             } 
             if ($pos == 'right') {
-                $x -= $size['width'];
-                $y -= $size['height'];
+                $x -= $sim_size['width'];
+                $y -= $sim_size['height'];
             }
         }
         imagettftext($this->gd, $size, $angle, $x, $y, ImageColor::parse($color), $font, $text);
