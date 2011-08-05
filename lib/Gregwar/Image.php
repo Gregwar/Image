@@ -112,6 +112,14 @@ class Image
     }
 
     /**
+     * Tells if the image is correct
+     */
+    public function correct()
+    {
+        return (false !== @exif_imagetype($this->file));
+    }
+
+    /**
      * Guess the file type
      */
     protected function guessType()
