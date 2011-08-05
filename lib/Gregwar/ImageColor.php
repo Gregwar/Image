@@ -25,11 +25,12 @@ class ImageColor
         'orange'    =>  0xffA500,
         'red'       =>  0xff0000,
         'maroon'    =>  0x800000,
+        'transparent' => 0x7fffffff
     );
 
     public static function parse($color)
     {
-        if (is_int($color))
+        if (is_numeric($color))
             return $color;
 
         if (isset(self::$colors[$color]))

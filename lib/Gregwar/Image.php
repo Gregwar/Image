@@ -189,10 +189,12 @@ class Image
                     throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
                 } else {
                     $this->convertToTrueColor();
-                    imagesavealpha($this->gd, true);
                 }
             }
         }
+
+        if ($this->gd)
+            imagesavealpha($this->gd, true);
 
         return $this;
     }
@@ -485,7 +487,9 @@ class Image
      */
     protected function _fill($color = 0xffffff, $x = 0, $y = 0)
     {
-        imagefill($this->gd, $x, $y, ImageColor::parse($color));
+        imagealphablending($this->gd, false);
+
+        imagefilledrectangle($this->gd, $x, $y, imagesx($this->gd), imagesy($this->gd), ImageColor::parse($color));
     }
 
     /**
@@ -493,6 +497,8 @@ class Image
      */
     protected function _write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $pos = 'left')
     {
+        imagealphablending($this->gd, true);
+
         if ($pos != 'left') {
             $box = imagettfbbox($size, $angle, $font, $text);
 
