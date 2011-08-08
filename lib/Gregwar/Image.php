@@ -506,11 +506,9 @@ class Image
 
             if ($pos == 'center') {
                 $x -= $sim_size['width'] / 2;
-                $y -= $sim_size['height'] / 2;
             } 
             if ($pos == 'right') {
                 $x -= $sim_size['width'];
-                $y -= $sim_size['height'];
             }
         }
         imagettftext($this->gd, $size, $angle, $x, $y, ImageColor::parse($color), $font, $text);
@@ -524,8 +522,8 @@ class Image
         $box = imagettfbbox($size, $angle, $font, $text);
 
         return array(
-            'width' => $box[2] - $box[0],
-            'height' => $box[3] - $box[5]
+            'width' => abs($box[2] - $box[0]),
+            'height' => abs($box[3] - $box[5])
         );
     }
 
@@ -552,10 +550,22 @@ class Image
     /**
      * Draws an ellipse
      */
-    protected function _ellipse($cx, $cy, $width, $height, $color = 0x000000)
+    protected function _ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
     {
-        imageellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
+        if ($filled)
+            imagefilledellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
+        else
+            imageellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
     }
+
+    /**
+     * Draws a circle
+     */
+    protected function _circle($cx, $cy, $r, $color = 0x000000, $filled)
+    {
+        $this->_ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
+    }
+
 
     /**
      * Serialization of operations

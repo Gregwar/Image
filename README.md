@@ -66,7 +66,9 @@ The methods available are:
 
 * `line($x1, $y1, $x2, $y2, $color)`: draws a line
 
-* `imageellipse($cx, $cy, $width, $height, $color)`: draws an ellipse
+* `ellipse($cx, $cy, $width, $height, $color, $filled=false)`: draws an ellipse
+
+* `circle($cx, $cy, $r, $color, $filled=false)`: draws a circle
 
 You can also create image from scratch using:
 
