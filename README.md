@@ -11,14 +11,17 @@ Basic handling
 
 Using methods chaining, you can open, transform and save a file in a single line:
 
-    require_once('lib/Gregwar/Image.php');
+```php
+<?php
+require_once('lib/Gregwar/Image.php');
 
-    use Gregwar\Image;
+use Gregwar\Image;
 
-    Image::open('in.png')
-        ->resize(100, 100)
-        ->negate()
-        ->save('out.jpg');
+Image::open('in.png')
+    ->resize(100, 100)
+    ->negate()
+    ->save('out.jpg');
+```
 
 The methods available are:
 
@@ -72,7 +75,10 @@ The methods available are:
 
 You can also create image from scratch using:
 
-    Image::create(200, 100)
+```php
+<?php
+    Image::create(200, 100);
+```
 
 Where 200 is the width and 100 the height
 
@@ -81,7 +87,11 @@ Saving the image
 
 You can save the image to an explicit file using `save($file, $type = 'jpg', $quality = 80)`:
 
+```php
+<?php
+    // ...
     $image->save('output.jpg', 'jpg', 85);
+```
 
 You can also get the contents of the image using `get($type = 'jpg', $quality = 80)`, which will return the binary contents of the image
 
@@ -102,15 +112,18 @@ Once the cache directory configured, you can call the following methods:
 
 For instance:
 
-    require_once('lib/Gregwar/Image.php');
+```php
+<?php
+require_once('lib/Gregwar/Image.php');
 
-    use Gregwar\Image;
+use Gregwar\Image;
 
-    echo Image::open('test.png')
-        ->sepia()
-        ->jpeg();
+echo Image::open('test.png')
+    ->sepia()
+    ->jpeg();
 
-    //Outputs: cache/images/1/8/6/9/c/86e4532dbd9c073075ef08e9751fc9bc0f4.jpg
+//Outputs: cache/images/1/8/6/9/c/86e4532dbd9c073075ef08e9751fc9bc0f4.jpg
+```
 
 If the original file and operations do not change, the hashed value will be the same and the
 cache will not be generated again.
@@ -118,13 +131,16 @@ cache will not be generated again.
 You can use this directly in an HTML document:
 
     
-    require_once('lib/Gregwar/Image.php');
+```php
+<?php
+require_once('lib/Gregwar/Image.php');
 
-    use Gregwar\Image;
+use Gregwar\Image;
 
-    // ...
-    <img src="<?php echo Image::open('image.jpg')->resize(150, 150)->jpeg(); ?>" />
-    // ...
+// ...
+<img src="<?php echo Image::open('image.jpg')->resize(150, 150)->jpeg(); ?>" />
+// ...
+```
 
 This is powerful since if you change the original image or any of your code the cached hash
 will change and the file will be regenerated. 
@@ -135,13 +151,14 @@ Writing image
 You can also create your own image on-the-fly using drawing functions:
 
 
-    <img src="<?php echo Image::create(300, 300)
-        ->fill(0xffaaaa)    // Filling with a light red
-        ->rectangle(0xff3333, 0, 100, 300, 200, true) // Drawing a red rectangle
-        // Writing "Hello $username !" on the picture using a custom TTF font file
-        ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
-        ->jpeg(); ?>" />
-        
+```php
+<img src="<?php echo Image::create(300, 300)
+    ->fill(0xffaaaa)    // Filling with a light red
+    ->rectangle(0xff3333, 0, 100, 300, 200, true) // Drawing a red rectangle
+    // Writing "Hello $username !" on the picture using a custom TTF font file
+    ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
+    ->jpeg(); ?>" />
+```        
 
 License
 =======
@@ -158,14 +175,21 @@ will be automatically called when compiling down the image.
 
 You could for instance add your own method:
 
+```php
+<?php
+    // ***
     private function _myFilter()
     {
         $this->_negate();
         $this->_sepia();
     }
+```
 
 Which could be usable on the Images
 
+```php
+<?php
     $image->myFilter();
+```
 
 Do not hesitate to fork this repository and customize it !
