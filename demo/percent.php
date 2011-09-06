@@ -1,5 +1,5 @@
 <?php
-require_once('../lib/Gregwar/Image/Image.php');
+require_once('../Image.php');
 
 use Gregwar\Image\Image;
 
