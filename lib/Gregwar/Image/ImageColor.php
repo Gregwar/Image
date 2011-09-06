@@ -1,6 +1,6 @@
 <?php
 
-namespace Gregwar;
+namespace Gregwar\Image;
 
 /**
  * Color manipulation class

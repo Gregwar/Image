@@ -1,7 +1,7 @@
 <?php
-require_once('../lib/Gregwar/Image.php');
+require_once('../lib/Gregwar/Image/Image.php');
 
-use Gregwar\Image;
+use Gregwar\Image\Image;
 
 $image = Image::open('img/test.png')
     ->resize(100, 100)

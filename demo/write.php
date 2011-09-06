@@ -1,7 +1,7 @@
 <?php
-require_once('../lib/Gregwar/Image.php');
+require_once('../lib/Gregwar/Image/Image.php');
 
-use Gregwar\Image;
+use Gregwar\Image\Image;
 
 Image::create(300, 300)
     ->fill('rgb(255, 150, 150)')

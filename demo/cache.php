@@ -1,7 +1,7 @@
 <?php
-require_once('../lib/Gregwar/Image.php');
+require_once('../lib/Gregwar/Image/Image.php');
 
-use Gregwar\Image;
+use Gregwar\Image\Image;
 
 // Note: create a "cache" directory before try this
 
