@@ -2,7 +2,7 @@
 
 namespace Gregwar\Image;
 
-require_once ('ImageColor.php');
+require_once (__DIR__.'/ImageColor.php');
 
 /**
  * Images handling class
