@@ -531,7 +531,7 @@ class Image
     /**
      * Draws a rectangle
      */
-    protected function _rectangle($color, $x1, $y1, $x2, $y2, $filled = false)
+    protected function _rectangle($x1, $y1, $x2, $y2, $color, $filled = false)
     {
         if ($filled) {
             imagefilledrectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
