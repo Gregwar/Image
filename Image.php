@@ -108,7 +108,7 @@ class Image
      */
     public function fromFile($originalFile)
     {
-        $this->file = $file;
+        $this->file = $originalFile;
         return $this;
     }
 
