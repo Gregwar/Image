@@ -605,9 +605,15 @@ class Image
      */
     public function generateHash($type = 'jpeg', $quality = 80) 
     {
+        $ctime = 0;
+        
+        try {
+                $ctime = filectime($this->file);
+        } catch (\Exception $e) {}
+
         $datas = array(
             $this->file,
-            filectime($this->file),
+            $ctime,
             $this->serializeOperations(),
             $type,
             $quality
