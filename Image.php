@@ -22,6 +22,11 @@ class Image
     protected $gd = null;
 
     /**
+     * Type name
+     */
+    protected $type = 'jpeg';
+
+    /**
      * Transformations hash
      */
     protected $hash = null;
@@ -172,18 +177,18 @@ class Image
             $this->gd = imagecreatetruecolor($this->width, $this->height);
         } else {
             if (null === $this->gd) {
-                $type = $this->guessType();
+                $this->type = $this->guessType();
 
-                if (!(imagetypes() & self::$gdTypes[$type]))
-                    throw new \RuntimeException('Type '.$type.' is not supported by GD');
+                if (!(imagetypes() & self::$gdTypes[$this->type]))
+                    throw new \RuntimeException('Type '.$this->type.' is not supported by GD');
 
-                if ($type == 'jpeg')
+                if ($this->type == 'jpeg')
                     $this->openJpeg();
 
-                if ($type == 'gif')
+                if ($this->type == 'gif')
                     $this->openGif();
 
-                if ($type == 'png')
+                if ($this->type == 'png')
                     $this->openPng();
 
                 if (null === $this->gd) {
@@ -627,8 +632,9 @@ class Image
      */
     public function getHash($type = 'jpeg', $quality = 80)
     {
-        if (null === $this->hash)
+        if (null === $this->hash) {
             $this->generateHash();
+        }
 
         return $this->hash;
     }
@@ -640,6 +646,10 @@ class Image
      */
     public function cacheFile($type = 'jpg', $quality = 80)
     {
+        if ($type == 'guess') {
+            $type = $this->type;
+        }
+
         if (!count($this->operations) && $type == $this->guessType())
             return $this->getFilename($this->file);
 
@@ -690,6 +700,14 @@ class Image
     }
 
     /**
+     * Generates and output an image using the same type as input
+     */
+    public function guess($quality = 80)
+    {
+        return $this->cacheFile('guess', $quality);
+    }
+
+    /**
      * Applies the operations
      */
     public function applyOperations()
@@ -710,8 +728,13 @@ class Image
             $type = 'jpeg';
         }
 
-        if (!isset(self::$types[$type]))
+        if ($type == 'guess') {
+            $type = $this->type;
+        }
+
+        if (!isset(self::$types[$type])) {
             throw new \InvalidArgumentException('Given type ('.$type.') is not valid');
+        }
 
         $type = self::$types[$type];
 
@@ -721,20 +744,25 @@ class Image
 
         $success = false;
 
-        if (null == $file)
+        if (null == $file) {
             ob_start();
+        }
 
-        if ($type == 'jpeg') 
+        if ($type == 'jpeg') {
             $success = imagejpeg($this->gd, $file, $quality);
+        }
 
-        if ($type == 'gif')
+        if ($type == 'gif') {
             $success = imagegif($this->gd, $file);
+        }
 
-        if ($type == 'png')
+        if ($type == 'png') {
             $success = imagepng($this->gd, $file);
+        }
 
-        if (!$success)
+        if (!$success) {
             return false;
+        }
 
         return (null === $file ? ob_get_clean() : $file);
     }
