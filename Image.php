@@ -808,6 +808,14 @@ class Image
     }
 
     /**
+     * Returning basic html code for this image
+     */
+    public function html($title = '')
+    {
+        return '<img title="' . $title . '" src="' . $this->jpeg() . '" />';
+    }
+
+    /**
      * Creates an instance, usefull for one-line chaining
      */
     public static function open($file = '')
