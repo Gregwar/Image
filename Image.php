@@ -668,7 +668,7 @@ class Image
     }
 
     /**
-     * Hook to helps to extends and enhance this c lass
+     * Hook to helps to extends and enhance this class
      */
     protected function getFilename($filename)
     {
