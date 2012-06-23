@@ -157,11 +157,33 @@ class Image
     {
         if (!imageistruecolor($this->gd))
         {
+            $transparentIndex = imagecolortransparent($this->gd);
+
             $w = imagesx($this->gd);
             $h = imagesy($this->gd);
 
             $img = imagecreatetruecolor($w, $h);
             imagecopy($img, $this->gd, 0, 0, 0, 0, $w, $h);
+
+            if ($transparentIndex != -1)
+            {
+                $width = imagesx($this->gd);
+                $height = imagesy($this->gd);
+
+                imagealphablending($img, false);
+                imagesavealpha($img, true);
+
+                for ($x=0; $x<$width; $x++)
+                {
+                    for ($y=0; $y<$height; $y++)
+                    {
+                        if (imagecolorat($this->gd, $x, $y) == $transparentIndex)
+                        {
+                            imagesetpixel($img, $x, $y, 127 << 24);
+                        }
+                    }
+                }
+            }
 
             $this->gd = $img;
         }
@@ -199,8 +221,9 @@ class Image
             }
         }
 
-        if ($this->gd)
+        if ($this->gd) {
             imagesavealpha($this->gd, true);
+        }
 
         return $this;
     }
@@ -315,13 +338,17 @@ class Image
         if ($bg != 'transparent') {
             imagefill($n, 0, 0, $bg);
         } else {
-            imagealphablending($n,false);
+            imagealphablending($n, false);
+
             $color = imagecolorallocatealpha($n, 0, 0, 0, 127);
+
             imagefill($n, 0, 0, $color);
-            imagesavealpha($n,true);
+            imagesavealpha($n, true);
         }
+
         imagecopyresampled($n, $this->gd, ($w-$new_width)/2, ($h-$new_height)/2, 0, 0, $new_width, $new_height, $width, $height);
         imagedestroy($this->gd);
+
         $this->gd = $n;
     }
 
@@ -753,6 +780,8 @@ class Image
         }
 
         if ($type == 'gif') {
+            $transColor = imagecolorallocatealpha($this->gd, 0, 0, 0, 127);
+            imagecolortransparent($this->gd, $transColor);
             $success = imagegif($this->gd, $file);
         }
 
