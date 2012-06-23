@@ -336,7 +336,7 @@ class Image
         $n = imagecreatetruecolor($w, $h);
 
         if ($bg != 'transparent') {
-            imagefill($n, 0, 0, $bg);
+            imagefill($n, 0, 0, ImageColor::parse($bg));
         } else {
             imagealphablending($n, false);
 
