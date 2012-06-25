@@ -77,7 +77,8 @@ class Image
         $this->width = $width;
         $this->height = $height;
 
-        if (!(extension_loaded('gd') && function_exists('gd_info'))) {
+        if (!(extension_loaded('gd') && function_exists('gd_info')))
+        {
             throw new \RuntimeException('You need to install GD PHP Extension to use this library');
         }
     }
@@ -95,10 +96,13 @@ class Image
         if (!file_exists($directory))
             mkdir($directory); 
 
-        for ($i=0; $i<5; $i++) {
+        for ($i=0; $i<5; $i++)
+        {
             $c = $hash[$i];
             $directory .= '/'.$c;
-            if (!file_exists($directory)) {
+
+            if (!file_exists($directory))
+            {
                 mkdir($directory);
             }
         }
@@ -114,6 +118,7 @@ class Image
     public function fromFile($originalFile)
     {
         $this->file = $originalFile;
+
         return $this;
     }
 
@@ -130,22 +135,27 @@ class Image
      */
     public function guessType()
     {
-        $type = @exif_imagetype($this->file);
-
-        if (false !== $type) {
-            if ($type == IMAGETYPE_JPEG)
-                return 'jpeg';
-            if ($type == IMAGETYPE_GIF)
-                return 'gif';
-            if ($type == IMAGETYPE_PNG)
-                return 'png';
+        if (function_exists('exif_imagetype'))
+        {
+            $type = @exif_imagetype($this->file);
+    
+            if (false !== $type) {
+                if ($type == IMAGETYPE_JPEG)
+                    return 'jpeg';
+                if ($type == IMAGETYPE_GIF)
+                    return 'gif';
+                if ($type == IMAGETYPE_PNG)
+                    return 'png';
+            }
         }
 
         $parts = explode('.', $this->file);
         $ext = strtolower($parts[count($parts)-1]);
 
         if (isset(self::$types[$ext]))
+        {
             return self::$types[$ext];
+        }
 
         return 'jpeg';
     }
@@ -202,20 +212,31 @@ class Image
                 $this->type = $this->guessType();
 
                 if (!(imagetypes() & self::$gdTypes[$this->type]))
+                {
                     throw new \RuntimeException('Type '.$this->type.' is not supported by GD');
+                }
 
                 if ($this->type == 'jpeg')
+                {
                     $this->openJpeg();
+                }
 
                 if ($this->type == 'gif')
+                {
                     $this->openGif();
+                }
 
                 if ($this->type == 'png')
+                {
                     $this->openPng();
+                }
 
-                if (null === $this->gd) {
+                if (null === $this->gd)
+                {
                     throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
-                } else {
+                }
+                else
+                {
                     $this->convertToTrueColor();
                 }
             }
@@ -269,7 +290,8 @@ class Image
         $reflection = new \ReflectionClass(get_class($this));
         $methodName = '_'.$func;
 
-        if ($reflection->hasMethod($methodName)) {
+        if ($reflection->hasMethod($methodName))
+        {
             $method = $reflection->getMethod($methodName);
 
             if ($method->getNumberOfRequiredParameters() > count($args))
@@ -296,48 +318,75 @@ class Image
         $height = imagesy($this->gd);
         $scale = 1.0;
 
-        if ($h === null && preg_match('#^(.+)%$#mUsi', $w, $matches)) {
+        if ($h === null && preg_match('#^(.+)%$#mUsi', $w, $matches))
+        {
             $w = (int)($width * ((float)$matches[1]/100.0));
             $h = (int)($height * ((float)$matches[1]/100.0));
         }
 
-        if (!$force || $crop) {
-            if ($w!=null && $width>$w) {
+        if (!$force || $crop)
+        {
+            if ($w!=null && $width>$w)
+            {
                 $scale = $width/$w;
             }
-            if ($h!=null && $height>$h) {
+
+            if ($h!=null && $height>$h)
+            {
                 if ($height/$h > $scale)
                     $scale = $height/$h;
             }
-        } else {
-            if ($w!=null) {
+        } 
+        else
+        {
+            if ($w!=null)
+            {
                 $scale = $width/$w;
                 $new_width = $w;
             }
-            if ($h!=null) {
+
+            if ($h!=null)
+            {
                 if ($w!=null && $rescale)
+                {
                     $scale = max($scale,$height/$h);
+                }
                 else
+                {
                     $scale = $height/$h;
+                }
                 $new_height = $h;
             }
         }
 
         if (!$force || $w==null || $rescale)
+        {
             $new_width = (int)($width/$scale);
+        }
+
         if (!$force || $h==null || $rescale)
+        {
             $new_height = (int)($height/$scale);
+        }
 
         if ($w == null || $crop)
+        {
             $w = $new_width;
+        }
+
         if ($h == null || $crop)
+        {
             $h = $new_height;
+        }
 
         $n = imagecreatetruecolor($w, $h);
 
-        if ($bg != 'transparent') {
+        if ($bg != 'transparent')
+        {
             imagefill($n, 0, 0, ImageColor::parse($bg));
-        } else {
+        }
+        else
+        {
             imagealphablending($n, false);
 
             $color = imagecolorallocatealpha($n, 0, 0, 0, 127);
@@ -501,10 +550,14 @@ class Image
         imagealphablending($this->gd, true);
 
         if (null == $w)
+        {
             $w = $other->width();
+        }
 
         if (null == $h)
+        {
             $h = $other->height();
+        }
 
         imagecopyresampled($this->gd, $other->gd, $x, $y, 0, 0, $w, $h, $w, $h);
     }
@@ -534,16 +587,21 @@ class Image
     {
         imagealphablending($this->gd, true);
 
-        if ($pos != 'left') {
+        if ($pos != 'left')
+        {
             $sim_size = self::TTFBox($font, $text, $size, $angle);
 
-            if ($pos == 'center') {
+            if ($pos == 'center')
+            {
                 $x -= $sim_size['width'] / 2;
             } 
-            if ($pos == 'right') {
+
+            if ($pos == 'right')
+            {
                 $x -= $sim_size['width'];
             }
         }
+
         imagettftext($this->gd, $size, $angle, $x, $y, ImageColor::parse($color), $font, $text);
     }
 
@@ -565,9 +623,12 @@ class Image
      */
     protected function _rectangle($x1, $y1, $x2, $y2, $color, $filled = false)
     {
-        if ($filled) {
+        if ($filled)
+        {
             imagefilledrectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
-        } else {
+        }
+        else
+        {
             imagerectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
         }
     }
@@ -586,9 +647,13 @@ class Image
     protected function _ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
     {
         if ($filled)
+        {
             imagefilledellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
+        }
         else
+        {
             imageellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
+        }
     }
 
     /**
@@ -604,9 +669,12 @@ class Image
      */
     protected function _polygon(array $points, $color, $filled = false)
     {
-        if ($filled) {
+        if ($filled)
+        {
             imagefilledpolygon($this->gd, $points, count($points)/2, ImageColor::parse($color));
-        } else {
+        }
+        else
+        {
             imagepolygon($this->gd, $points, count($points)/2, ImageColor::parse($color));
         }
     }
@@ -618,11 +686,14 @@ class Image
     {
         $datas = array();
 
-        foreach ($this->operations as $operation) {
+        foreach ($this->operations as $operation)
+        {
             $method = $operation[0];
             $args = $operation[1];
-            foreach ($args as &$arg) {
-                if ($arg instanceof Image) {
+            foreach ($args as &$arg)
+            {
+                if ($arg instanceof Image)
+                {
                     $arg = $arg->getHash();
                 }
             }
@@ -641,7 +712,10 @@ class Image
         
         try {
                 $ctime = filectime($this->file);
-        } catch (\Exception $e) {}
+        } 
+        catch (\Exception $e)
+        {
+        }
 
         $datas = array(
             $this->file,
@@ -659,7 +733,8 @@ class Image
      */
     public function getHash($type = 'jpeg', $quality = 80)
     {
-        if (null === $this->hash) {
+        if (null === $this->hash)
+        {
             $this->generateHash();
         }
 
@@ -673,12 +748,15 @@ class Image
      */
     public function cacheFile($type = 'jpg', $quality = 80)
     {
-        if ($type == 'guess') {
+        if ($type == 'guess')
+        {
             $type = $this->type;
         }
 
         if (!count($this->operations) && $type == $this->guessType())
+        {
             return $this->getFilename($this->file);
+        }
 
         // Computes the hash
         $this->hash = $this->getHash($type, $quality);
@@ -687,7 +765,8 @@ class Image
         $file = $this->generateFileFromHash($this->hash.'.'.$type);
 
         // If the files does not exists, save it
-        if (!file_exists($file)) {
+        if (!file_exists($file))
+        {
             $this->save($file, $type, $quality);
         }
 
@@ -740,7 +819,8 @@ class Image
     public function applyOperations()
     {
         // Renders the effects
-        foreach ($this->operations as $operation) {
+        foreach ($this->operations as $operation)
+        {
             call_user_func_array(array($this, $operation[0]), $operation[1]);
         }
     }
@@ -750,16 +830,19 @@ class Image
      */
     public function save($file, $type = 'jpeg', $quality = 80)
     {
-        if (is_int($type)) {
+        if (is_int($type))
+        {
             $quality = $type;
             $type = 'jpeg';
         }
 
-        if ($type == 'guess') {
+        if ($type == 'guess')
+        {
             $type = $this->type;
         }
 
-        if (!isset(self::$types[$type])) {
+        if (!isset(self::$types[$type]))
+        {
             throw new \InvalidArgumentException('Given type ('.$type.') is not valid');
         }
 
@@ -771,25 +854,30 @@ class Image
 
         $success = false;
 
-        if (null == $file) {
+        if (null == $file)
+        {
             ob_start();
         }
 
-        if ($type == 'jpeg') {
+        if ($type == 'jpeg')
+        {
             $success = imagejpeg($this->gd, $file, $quality);
         }
 
-        if ($type == 'gif') {
+        if ($type == 'gif')
+        {
             $transColor = imagecolorallocatealpha($this->gd, 0, 0, 0, 127);
             imagecolortransparent($this->gd, $transColor);
             $success = imagegif($this->gd, $file);
         }
 
-        if ($type == 'png') {
+        if ($type == 'png')
+        {
             $success = imagepng($this->gd, $file);
         }
 
-        if (!$success) {
+        if (!$success)
+        {
             return false;
         }
 
@@ -812,7 +900,9 @@ class Image
     public function width()
     {
         if (null === $this->gd)
+        {
             $this->initGd();
+        }
 
         return imagesx($this->gd);
     }
@@ -823,7 +913,9 @@ class Image
     public function height()
     {
         if (null === $this->gd)
+        {
             $this->initGd();
+        }
 
         return imagesy($this->gd);
     }
