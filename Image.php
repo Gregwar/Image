@@ -94,7 +94,9 @@ class Image
         $directory = $this->cacheDir;
 
         if (!file_exists($directory))
+        {
             mkdir($directory); 
+        }
 
         for ($i=0; $i<5; $i++)
         {
@@ -141,11 +143,19 @@ class Image
     
             if (false !== $type) {
                 if ($type == IMAGETYPE_JPEG)
+                {
                     return 'jpeg';
+                }
+
                 if ($type == IMAGETYPE_GIF)
+                {
                     return 'gif';
+                }
+
                 if ($type == IMAGETYPE_PNG)
+                {
                     return 'png';
+                }
             }
         }
 
@@ -205,10 +215,14 @@ class Image
      */
     public function initGd()
     {
-        if (null === $this->file) {
+        if (null === $this->file)
+        {
             $this->gd = imagecreatetruecolor($this->width, $this->height);
-        } else {
-            if (null === $this->gd) {
+        }
+        else
+        {
+            if (null === $this->gd)
+            {
                 $this->type = $this->guessType();
 
                 if (!(imagetypes() & self::$gdTypes[$this->type]))
@@ -242,7 +256,8 @@ class Image
             }
         }
 
-        if ($this->gd) {
+        if ($this->gd)
+        {
             imagesavealpha($this->gd, true);
         }
 
@@ -295,7 +310,9 @@ class Image
             $method = $reflection->getMethod($methodName);
 
             if ($method->getNumberOfRequiredParameters() > count($args))
+            {
                 throw new \InvalidArgumentException('Not enough arguments given for '.$func);
+            }
 
             $this->addOperation($methodName, $args);
 
