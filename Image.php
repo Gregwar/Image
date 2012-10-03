@@ -17,9 +17,14 @@ class Image
     protected $cacheDir = 'cache/images';
 
     /**
-     * GD Ressource
+     * GD Rssource
      */
     protected $gd = null;
+
+    /**
+     * User-defined resource
+     */
+    protected $resource = null;
 
     /**
      * Type name
@@ -94,6 +99,14 @@ class Image
     public function setData($data)
     {
         $this->data = $data;
+    }
+
+    /**
+     * Sets the resource
+     */
+    public function setResource($resource)
+    {
+        $this->resource = $resource;
     }
 
     /**
@@ -232,7 +245,12 @@ class Image
         {
             if (null === $this->data)
             {
-                $this->gd = imagecreatetruecolor($this->width, $this->height);
+                if (null === $this->resource)
+                {
+                    $this->gd = imagecreatetruecolor($this->width, $this->height);
+                } else {
+                    $this->gd = $this->resource;
+                }
             }
             else
             {
@@ -996,6 +1014,17 @@ class Image
     {
         $image = new Image();
         $image->setData($data);
+
+        return $image;
+    }
+    
+    /**
+     * Creates an instance of image from resource
+     */
+    public static function fromResource($resource)
+    {
+        $image = new Image();
+        $image->setResource($resource);
 
         return $image;
     }
