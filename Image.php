@@ -37,6 +37,11 @@ class Image
     protected $file = null;
 
     /**
+     * Image data
+     */
+    protected $data = null;
+
+    /**
      * Dimensions for new resources
      */
     protected $width = null;
@@ -81,6 +86,14 @@ class Image
         {
             throw new \RuntimeException('You need to install GD PHP Extension to use this library');
         }
+    }
+
+    /**
+     * Sets the image data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
     }
 
     /**
@@ -217,7 +230,14 @@ class Image
     {
         if (null === $this->file)
         {
-            $this->gd = imagecreatetruecolor($this->width, $this->height);
+            if (null === $this->data)
+            {
+                $this->gd = imagecreatetruecolor($this->width, $this->height);
+            }
+            else
+            {
+                $this->gd = imagecreatefromstring($this->data);
+            }
         }
         else
         {
@@ -967,6 +987,17 @@ class Image
     public static function create($width, $height)
     {
         return new Image(null, $width, $height);
+    }
+
+    /**
+     * Creates an instance of image from its data
+     */
+    public static function fromData($data)
+    {
+        $image = new Image();
+        $image->setData($data);
+
+        return $image;
     }
 }
 
