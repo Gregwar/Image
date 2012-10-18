@@ -361,6 +361,42 @@ class Image
     }
 
     /**
+     * Perform a zoom crop of the image to desired width and height
+     *
+     * @param integer $width  Desired width
+     * @param integer $height Desired height
+     *
+     * @return void
+     */
+    private function _zoomCrop($width, $height)
+    {
+        // Calculate the different ratios
+        $originalRatio = imagesx($this->gd) / imagesy($this->gd);
+        $newRatio = $width / $height;
+
+        // Compare ratios
+        if ($originalRatio > $newRatio) {
+            // Original image is wider
+            $newHeight = $height;
+            $newWidth = (int) $height * $originalRatio;
+        } else {
+            // Equal width or smaller
+            $newHeight = (int) $width / $originalRatio;
+            $newWidth = $width;
+        }
+
+        // Perform resize
+        $this->_resize($newWidth, $newHeight);
+
+        // Calculate cropping area
+        $xPos = (int) ($newWidth - $width) / 2;
+        $yPos = (int) ($newHeight - $height) / 2;
+
+        // Crop image to reach desired size
+        $this->_crop($xPos, $yPos, $width, $height);
+    }
+
+    /**
      * Resizes the image. It will never be enlarged.
      *
      * @param int $w the width 
