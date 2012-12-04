@@ -165,6 +165,22 @@ You can also create your own image on-the-fly using drawing functions:
     ->jpeg(); ?>" />
 ```        
 
+Using with composer
+===================
+
+This repository is available with composer under the name `gregwar/image`, so simply add this to
+your requires :
+
+```
+    "requires": {
+        ...
+        "gregwar/image": "dev-master"
+        ...
+    }
+```
+
+And update your dependencies, you'll be able to use the composer autoloader to load the class
+
 License
 =======
 
