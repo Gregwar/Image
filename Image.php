@@ -116,7 +116,8 @@ class Image
      *
      * @return string the full file name
      */
-    public function generateFileFromhash($hash) {
+    public function generateFileFromHash($hash)
+    {
         $directory = $this->cacheDir;
 
         if (!file_exists($directory))
@@ -135,7 +136,7 @@ class Image
             }
         }
 
-        return $directory.'/'.substr($hash,5);
+        return $directory . '/' . substr($hash,5);
     }
 
     /**
