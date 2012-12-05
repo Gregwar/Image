@@ -17,6 +17,11 @@ class Image
     protected $cacheDir = 'cache/images';
 
     /**
+     * The actual cache dir
+     */
+    protected $actualCacheDir = null;
+
+    /**
      * GD Rssource
      */
     protected $gd = null;
@@ -77,6 +82,14 @@ class Image
     }
 
     /**
+     * The actual cache dir
+     */
+    public function setActualCacheDir($actualCacheDir)
+    {
+        $this->actualCacheDir = $actualCacheDir;
+    }
+
+    /**
      * Operations array
      */
     protected $operations = array();
@@ -120,23 +133,33 @@ class Image
     {
         $directory = $this->cacheDir;
 
-        if (!file_exists($directory))
+        if ($this->actualCacheDir === null) {
+            $actualDirectory = $directory;
+        } else {
+            $actualDirectory = $this->actualCacheDir;
+        }
+
+        if (!file_exists($actualDirectory))
         {
-            mkdir($directory); 
+            mkdir($actualDirectory); 
         }
 
         for ($i=0; $i<5; $i++)
         {
             $c = $hash[$i];
-            $directory .= '/'.$c;
+            $directory .= '/' . $c;
+            $actualDirectory .= '/' . $c;
 
-            if (!file_exists($directory))
+            if (!file_exists($actualDirectory))
             {
-                mkdir($directory);
+                mkdir($actualDirectory);
             }
         }
 
-        return $directory . '/' . substr($hash,5);
+        $file = $directory . '/' . substr($hash, 5);
+        $actualFile = $actualDirectory . '/' . substr($hash, 5);
+
+        return array($actualFile, $file);
     }
 
     /**
@@ -854,12 +877,12 @@ class Image
         $this->hash = $this->getHash($type, $quality);
 
         // Generates the cache file
-        $file = $this->generateFileFromHash($this->hash.'.'.$type);
+        list($actualFile, $file) = $this->generateFileFromHash($this->hash.'.'.$type);
 
         // If the files does not exists, save it
-        if (!file_exists($file))
+        if (!file_exists($actualFile))
         {
-            $this->save($file, $type, $quality);
+            $this->save($actualFile, $type, $quality);
         }
 
         return $this->getFilename($file);
