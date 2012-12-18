@@ -392,7 +392,7 @@ class Image
      *
      * @return void
      */
-    private function _zoomCrop($width, $height)
+    private function _zoomCrop($width, $height, $bg = 0xffffff)
     {
         // Calculate the different ratios
         $originalRatio = imagesx($this->gd) / imagesy($this->gd);
@@ -410,7 +410,7 @@ class Image
         }
 
         // Perform resize
-        $this->_resize($newWidth, $newHeight);
+        $this->_resize($newWidth, $newHeight, $bg, true);
 
         // Calculate cropping area
         $xPos = (int) ($newWidth - $width) / 2;

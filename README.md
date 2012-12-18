@@ -73,7 +73,7 @@ The methods available are:
 
 * `circle($cx, $cy, $r, $color, $filled=false)`: draws a circle
 
-* `zoomCrop($width, $height)`: resize and crop the image to fit to given dimensions
+* `zoomCrop($width, $height, $background)`: resize and crop the image to fit to given dimensions
 
 You can also create image from scratch using:
 
