@@ -139,21 +139,11 @@ class Image
             $actualDirectory = $this->actualCacheDir;
         }
 
-        if (!file_exists($actualDirectory))
-        {
-            mkdir($actualDirectory); 
-        }
-
         for ($i=0; $i<5; $i++)
         {
             $c = $hash[$i];
             $directory .= '/' . $c;
             $actualDirectory .= '/' . $c;
-
-            if (!file_exists($actualDirectory))
-            {
-                mkdir($actualDirectory);
-            }
         }
 
         $file = $directory . '/' . substr($hash, 5);
@@ -945,6 +935,14 @@ class Image
      */
     public function save($file, $type = 'jpeg', $quality = 80)
     {
+        if ($file) {
+            $directory = dirname($file);
+
+            if (!is_dir($directory)) {
+                @mkdir($directory, 0777, true);
+            }
+        }
+
         if (is_int($type))
         {
             $quality = $type;
