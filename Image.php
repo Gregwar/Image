@@ -672,7 +672,9 @@ class Image
      */
     protected function _rotate($angle, $background = 0xffffff)
     {
-        $this->gd = imagerotate($this->gd, $angle, $background);
+        $this->gd = imagerotate($this->gd, $angle, ImageColor::parse($background));
+        imagealphablending($this->gd, true);
+        imagesavealpha($this->gd, true);
     }
 
     /**
