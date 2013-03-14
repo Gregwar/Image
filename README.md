@@ -15,7 +15,7 @@ Using methods chaining, you can open, transform and save a file in a single line
 <?php
 require_once('lib/Gregwar/Image.php');
 
-use Gregwar\Image;
+use Gregwar\Image\Image;
 
 Image::open('in.png')
     ->resize(100, 100)
@@ -121,7 +121,7 @@ For instance:
 <?php
 require_once('lib/Gregwar/Image.php');
 
-use Gregwar\Image;
+use Gregwar\Image\Image;
 
 echo Image::open('test.png')
     ->sepia()
@@ -140,7 +140,7 @@ You can use this directly in an HTML document:
 <?php
 require_once('lib/Gregwar/Image.php');
 
-use Gregwar\Image;
+use Gregwar\Image\Image;
 
 // ...
 <img src="<?php echo Image::open('image.jpg')->resize(150, 150)->jpeg(); ?>" />
