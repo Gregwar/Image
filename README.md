@@ -168,6 +168,22 @@ You can also create your own image on-the-fly using drawing functions:
     ->jpeg(); ?>" />
 ```        
 
+Garbage Collect
+===============
+
+To prevent the cache from growing forever, you can use the provided GarbageCollect class as below:
+
+```php
+<?php
+// This could be a cron called each day @3:00AM for instance
+use Gregwar\Image\GarbageCollect;
+
+// Removes all the files from ../cache that are more than 30 days
+// old. A verbose output will explain which files are deleted
+GarbageCollect::dropOldFiles(__DIR__.'/../cache', 30, true);
+
+```
+
 Using with composer
 ===================
 
