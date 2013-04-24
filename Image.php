@@ -27,6 +27,11 @@ class Image
     protected $gd = null;
 
     /**
+     * Pretty name for the image
+     */
+    protected $prettyName = '';
+
+    /**
      * User-defined resource
      */
     protected $resource = null;
@@ -87,6 +92,20 @@ class Image
     public function setActualCacheDir($actualCacheDir)
     {
         $this->actualCacheDir = $actualCacheDir;
+
+        return $this;
+    }
+
+    /**
+     * Sets the pretty name of the image
+     */
+    public function setPrettyName($name)
+    {
+        $name = strtolower($name);
+        $name = str_replace(' ', '-', $name);
+        $this->prettyName = preg_replace('/([^a-z0-9\-]+)/m', '', $name);
+
+        return $this;
     }
 
     /**
@@ -146,8 +165,14 @@ class Image
             $actualDirectory .= '/' . $c;
         }
 
-        $file = $directory . '/' . substr($hash, 5);
-        $actualFile = $actualDirectory . '/' . substr($hash, 5);
+        $endName = substr($hash, 5);
+
+        if ($this->prettyName) {
+            $endName = $this->prettyName . '-' . $endName;
+        }
+
+        $file = $directory . '/' . $endName;
+        $actualFile = $actualDirectory . '/' . $endName;
 
         return array($actualFile, $file);
     }
