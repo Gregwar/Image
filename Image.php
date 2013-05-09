@@ -1,6 +1,6 @@
 <?php
 
-namespace Gregwar\Image;
+namespace Gregwar\ImageBundle;
 
 require_once (__DIR__.'/ImageColor.php');
 
@@ -293,7 +293,11 @@ class Image
             }
             else
             {
-                $this->gd = imagecreatefromstring($this->data);
+                $this->gd = @imagecreatefromstring($this->data);
+                
+                if (false === $this->gd) {
+                    throw new \UnexpectedValueException('Unable to create file from string.');
+                }
             }
         }
         else
@@ -347,7 +351,7 @@ class Image
      */
     public function openJpeg()
     {
-        $this->gd = imagecreatefromjpeg($this->file);
+        $this->gd = @imagecreatefromjpeg($this->file);
     }
 
     /**
@@ -355,7 +359,7 @@ class Image
      */
     public function openGif()
     {
-        $this->gd = imagecreatefromgif($this->file);
+        $this->gd = @imagecreatefromgif($this->file);
     }
 
     /**
@@ -363,7 +367,7 @@ class Image
      */
     public function openPng()
     {
-        $this->gd = imagecreatefrompng($this->file);
+        $this->gd = @imagecreatefrompng($this->file);
     }
 
     /**
