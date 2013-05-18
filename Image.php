@@ -582,6 +582,8 @@ class Image
      */
     public function _crop($x, $y, $w, $h) {
         $dst = imagecreatetruecolor($w, $h);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
         imagecopy($dst, $this->gd, 0, 0, $x, $y, imagesx($this->gd), imagesy($this->gd));
         imagedestroy($this->gd);
         $this->gd = $dst;
