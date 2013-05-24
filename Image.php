@@ -442,6 +442,22 @@ class Image
     }
 
     /**
+     * Fills the image background to $bg if the image is transparent
+     *
+     * @param $bg the background color
+     */
+    protected function _fillBackground($bg = 0xffffff)
+    {
+        $w = imagesx($this->gd);
+        $h = imagesy($this->gd);
+        $n = imagecreatetruecolor($w, $h);
+        imagefill($n, 0, 0, ImageColor::parse($bg));
+        imagecopyresampled($n, $this->gd, 0, 0, 0, 0, $w, $h, $w, $h);
+        imagedestroy($this->gd);
+        $this->gd = $n;
+    }
+
+    /**
      * Resizes the image. It will never be enlarged.
      *
      * @param int $w the width 
