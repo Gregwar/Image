@@ -476,7 +476,7 @@ class Image
             $h = (int)($height * ((float)$matches[1]/100.0));
         }
 
-        if (!$force || $crop)
+        if (!$rescale && (!$force || $crop))
         {
             if ($w!=null && $width>$w)
             {
