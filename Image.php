@@ -513,12 +513,12 @@ class Image
 
         if (!$force || $w==null || $rescale)
         {
-            $new_width = (int)($width/$scale);
+            $new_width = round($width/$scale);
         }
 
         if (!$force || $h==null || $rescale)
         {
-            $new_height = (int)($height/$scale);
+            $new_height = round($height/$scale);
         }
 
         if ($w == null || $crop)
@@ -573,9 +573,9 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */  
-    protected function _scaleResize($width, $height, $background=0xffffff)
+    protected function _scaleResize($width, $height, $background=0xffffff, $crop = false)
     {
-        $this->_resize($width, $height, $background, false, true);
+        $this->_resize($width, $height, $background, false, true, $crop);
     }
 
     /**
