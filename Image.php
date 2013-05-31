@@ -182,6 +182,17 @@ class Image
     }
 
     /**
+     * Get the file path
+     *
+     * @return mixed a string with the filen name, null if the image
+     *         does not depends on a file
+     */
+    public function getFilePath()
+    {
+        return $this->file;
+    }
+
+    /**
      * Defines the file only after instantiation
      *
      * @param string $originalFile the file path
