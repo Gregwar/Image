@@ -826,7 +826,7 @@ class Image
     /**
      * Draws a circle
      */
-    protected function _circle($cx, $cy, $r, $color = 0x000000, $filled)
+    protected function _circle($cx, $cy, $r, $color = 0x000000, $filled = false)
     {
         $this->_ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
     }
