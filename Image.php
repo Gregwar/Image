@@ -123,6 +123,10 @@ class Image
         {
             throw new \RuntimeException('You need to install GD PHP Extension to use this library');
         }
+
+        if ($originalFile !== null) {
+            $this->type = $this->guessType();
+        }
     }
 
     /**
@@ -175,6 +179,17 @@ class Image
         $actualFile = $actualDirectory . '/' . $endName;
 
         return array($actualFile, $file);
+    }
+
+    /**
+     * Get the file path
+     *
+     * @return mixed a string with the filen name, null if the image
+     *         does not depends on a file
+     */
+    public function getFilePath()
+    {
+        return $this->file;
     }
 
     /**
@@ -304,8 +319,6 @@ class Image
         {
             if (null === $this->gd)
             {
-                $this->type = $this->guessType();
-
                 if (!(imagetypes() & self::$gdTypes[$this->type]))
                 {
                     throw new \RuntimeException('Type '.$this->type.' is not supported by GD');
@@ -440,6 +453,22 @@ class Image
     }
 
     /**
+     * Fills the image background to $bg if the image is transparent
+     *
+     * @param $bg the background color
+     */
+    protected function _fillBackground($bg = 0xffffff)
+    {
+        $w = imagesx($this->gd);
+        $h = imagesy($this->gd);
+        $n = imagecreatetruecolor($w, $h);
+        imagefill($n, 0, 0, ImageColor::parse($bg));
+        imagecopyresampled($n, $this->gd, 0, 0, 0, 0, $w, $h, $w, $h);
+        imagedestroy($this->gd);
+        $this->gd = $n;
+    }
+
+    /**
      * Resizes the image. It will never be enlarged.
      *
      * @param int $w the width 
@@ -458,7 +487,7 @@ class Image
             $h = (int)($height * ((float)$matches[1]/100.0));
         }
 
-        if (!$force || $crop)
+        if (!$rescale && (!$force || $crop))
         {
             if ($w!=null && $width>$w)
             {
@@ -495,12 +524,12 @@ class Image
 
         if (!$force || $w==null || $rescale)
         {
-            $new_width = (int)($width/$scale);
+            $new_width = round($width/$scale);
         }
 
         if (!$force || $h==null || $rescale)
         {
-            $new_height = (int)($height/$scale);
+            $new_height = round($height/$scale);
         }
 
         if ($w == null || $crop)
@@ -555,9 +584,9 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */  
-    protected function _scaleResize($width, $height, $background=0xffffff)
+    protected function _scaleResize($width, $height, $background=0xffffff, $crop = false)
     {
-        $this->_resize($width, $height, $background, false, true);
+        $this->_resize($width, $height, $background, false, true, $crop);
     }
 
     /**
@@ -582,6 +611,8 @@ class Image
      */
     public function _crop($x, $y, $w, $h) {
         $dst = imagecreatetruecolor($w, $h);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
         imagecopy($dst, $this->gd, 0, 0, $x, $y, imagesx($this->gd), imagesy($this->gd));
         imagedestroy($this->gd);
         $this->gd = $dst;
@@ -795,7 +826,7 @@ class Image
     /**
      * Draws a circle
      */
-    protected function _circle($cx, $cy, $r, $color = 0x000000, $filled)
+    protected function _circle($cx, $cy, $r, $color = 0x000000, $filled = false)
     {
         $this->_ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
     }

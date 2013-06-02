@@ -75,6 +75,8 @@ The methods available are:
 
 * `zoomCrop($width, $height, $background)`: resize and crop the image to fit to given dimensions
 
+* `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
+
 You can also create image from scratch using:
 
 ```php
