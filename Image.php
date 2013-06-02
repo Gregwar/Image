@@ -339,7 +339,7 @@ class Image
                     $this->openPng();
                 }
 
-                if (null === $this->gd)
+                if (false === $this->gd)
                 {
                     throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
                 }
