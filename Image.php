@@ -220,7 +220,7 @@ class Image
         if (function_exists('exif_imagetype'))
         {
             $type = @exif_imagetype($this->file);
-    
+
             if (false !== $type) {
                 if ($type == IMAGETYPE_JPEG)
                 {
@@ -309,7 +309,7 @@ class Image
             else
             {
                 $this->gd = @imagecreatefromstring($this->data);
-                
+
                 if (false === $this->gd) {
                     throw new \UnexpectedValueException('Unable to create file from string.');
                 }
@@ -339,7 +339,7 @@ class Image
                     $this->openPng();
                 }
 
-                if (null === $this->gd)
+                if (false === $this->gd)
                 {
                     throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
                 }
@@ -826,11 +826,11 @@ class Image
     /**
      * Draws a circle
      */
-    protected function _circle($cx, $cy, $r, $color = 0x000000, $filled)
+    protected function _circle($cx, $cy, $r, $color = 0x000000, $filled = false)
     {
         $this->_ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
     }
-    
+
     /**
      * Draws a polygon
      */
@@ -876,9 +876,9 @@ class Image
     public function generateHash($type = 'jpeg', $quality = 80) 
     {
         $ctime = 0;
-        
+
         try {
-                $ctime = filectime($this->file);
+            $ctime = filectime($this->file);
         } 
         catch (\Exception $e)
         {
@@ -1137,7 +1137,7 @@ class Image
 
         return $image;
     }
-    
+
     /**
      * Creates an instance of image from resource
      */
