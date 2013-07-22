@@ -584,7 +584,7 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */  
-    protected function _scaleResize($width, $height, $background=0xffffff, $crop = false)
+    protected function _scaleResize($width = null, $height = null, $background=0xffffff, $crop = false)
     {
         $this->_resize($width, $height, $background, false, true, $crop);
     }
@@ -596,7 +596,7 @@ class Image
      * @param int $h the height
      * @param int $bg the background
      */
-    protected function _cropResize($width, $height, $background=0xffffff)
+    protected function _cropResize($width = null, $height = null, $background=0xffffff)
     {
         $this->_resize($width, $height, $background, false, false, true);
     }
