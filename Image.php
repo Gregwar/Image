@@ -873,7 +873,7 @@ class Image
     /**
      * Generates the hash
      */
-    public function generateHash($type = 'jpeg', $quality = 80) 
+    public function generateHash($type = 'guess', $quality = 80) 
     {
         $ctime = 0;
 
@@ -898,7 +898,7 @@ class Image
     /**
      * Gets the hash
      */
-    public function getHash($type = 'jpeg', $quality = 80)
+    public function getHash($type = 'guess', $quality = 80)
     {
         if (null === $this->hash)
         {
@@ -995,7 +995,7 @@ class Image
     /**
      * Save the file to a given output
      */
-    public function save($file, $type = 'jpeg', $quality = 80)
+    public function save($file, $type = 'guess', $quality = 80)
     {
         if ($file) {
             $directory = dirname($file);
@@ -1062,7 +1062,7 @@ class Image
     /**
      * Get the contents of the image
      */
-    public function get($type = 'jpeg', $quality = 80)
+    public function get($type = 'guess', $quality = 80)
     {
         return $this->save(null, $type, $quality);
     }
@@ -1100,7 +1100,7 @@ class Image
      */
     public function __toString()
     {
-        return $this->jpeg();
+        return $this->guess();
     }
 
     /**
