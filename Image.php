@@ -483,8 +483,8 @@ class Image
 
         if ($h === null && preg_match('#^(.+)%$#mUsi', $w, $matches))
         {
-            $w = (int)($width * ((float)$matches[1]/100.0));
-            $h = (int)($height * ((float)$matches[1]/100.0));
+            $w = round($width * ((float)$matches[1]/100.0));
+            $h = round($height * ((float)$matches[1]/100.0));
         }
 
         if (!$rescale && (!$force || $crop))
