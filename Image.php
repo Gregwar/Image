@@ -8,6 +8,33 @@ require_once (__DIR__.'/ImageColor.php');
  * Images handling class
  *
  * @author Gregwar <g.passault@gmail.com>
+ *
+ * @method \Gregwar\Image\Image zoomCrop(int $width, int $height, int $bg = null) Perform a zoom crop of the image to desired width and height
+ * @method \Gregwar\Image\Image fillBackground($bg = 0xffffff) Fills the image background to $bg if the image is transparent
+ * @method \Gregwar\Image\Image resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false) Resizes the image. It will never be enlarged.
+ * @method \Gregwar\Image\Image forceResize($width = null, $height = null, $background = 0xffffff) Resizes the image forcing the destination to have exactly the given width and the height
+ * @method \Gregwar\Image\Image scaleResize($width = null, $height = null, $background=0xffffff, $crop = false) Resizes the image preserving scale. Can enlarge it.
+ * @method \Gregwar\Image\Image cropResize($width = null, $height = null, $background=0xffffff) Works as resize() excepts that the layout will be cropped
+ * @method \Gregwar\Image\Image crop($x, $y, $w, $h) Crops the image
+ * @method \Gregwar\Image\Image negate() Negates the image
+ * @method \Gregwar\Image\Image brightness($brightness) Changes the brightness of the image
+ * @method \Gregwar\Image\Image contrast($contrast) Contrasts the image
+ * @method \Gregwar\Image\Image grayscale() Apply a grayscale level effect on the image
+ * @method \Gregwar\Image\Image emboss() Emboss the image
+ * @method \Gregwar\Image\Image smooth($smooth) Smooth the image
+ * @method \Gregwar\Image\Image sharp() Sharps the image
+ * @method \Gregwar\Image\Image edge() Edges the image
+ * @method \Gregwar\Image\Image colorize($red, $green, $blue) Colorize the image
+ * @method \Gregwar\Image\Image sepia() Sepias the image
+ * @method \Gregwar\Image\Image merge(Image $other, $x = 0, $y = 0, $w = null, $h = null) Merge with another image
+ * @method \Gregwar\Image\Image rotate($angle, $background = 0xffffff) Rotate the image
+ * @method \Gregwar\Image\Image fill($color = 0xffffff, $x = 0, $y = 0) Fills the image
+ * @method \Gregwar\Image\Image write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $pos = 'left') Writes some text
+ * @method \Gregwar\Image\Image rectangle($x1, $y1, $x2, $y2, $color, $filled = false) Draws a rectangle
+ * @method \Gregwar\Image\Image line($x1, $y1, $x2, $y2, $color = 0x000000) Draws a line
+ * @method \Gregwar\Image\Image ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false) Draws an ellipse
+ * @method \Gregwar\Image\Image circle($cx, $cy, $r, $color = 0x000000, $filled = false) Draws a circle
+ * @method \Gregwar\Image\Image polygon(array $points, $color, $filled = false) Draws a polygon
  */
 class Image
 {
@@ -421,10 +448,10 @@ class Image
      *
      * @param integer $width  Desired width
      * @param integer $height Desired height
-     *
+     * @param int $bg
      * @return void
      */
-    private function _zoomCrop($width, $height, $bg = 0xffffff)
+    protected function _zoomCrop($width, $height, $bg = 0xffffff)
     {
         // Calculate the different ratios
         $originalRatio = imagesx($this->gd) / imagesy($this->gd);
