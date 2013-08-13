@@ -451,7 +451,7 @@ class Image
      * @param int $bg
      * @return void
      */
-    private function _zoomCrop($width, $height, $bg = 0xffffff)
+    protected function _zoomCrop($width, $height, $bg = 0xffffff)
     {
         // Calculate the different ratios
         $originalRatio = imagesx($this->gd) / imagesy($this->gd);
