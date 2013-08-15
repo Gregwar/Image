@@ -25,12 +25,12 @@ Image::open('in.png')
 
 The methods available are:
 
-* `resize($width, $height, $background)`: resizes the image, will preserve scale and never 
+* `resize($width, $height, $background)`: resizes the image, will preserve scale and never
    enlarge it
 
 * `scaleResize($width, $height, $background)`: resizes the image, will preserve scale
 
-* `forceResize($width, $height, $background)`: resizes the image, will orce the image to 
+* `forceResize($width, $height, $background)`: resizes the image, will orce the image to
    be exactly $width by $height
 
 * `cropResize($width, $height, $background)`: resizes the image preserving scale and croping
@@ -64,6 +64,8 @@ The methods available are:
 * `fill($color, $x, $y)`: fills the image with the given color
 
 * `write($font, $text, $x, $y, $size, $angle, $color, $position)`: writes text over image, $position can be any of 'left', 'right', or 'center'
+
+* `rounded_rectangle($x1, $y1, $x2, $y2, $radius, $color, $filled=false)`: draws a rectangle
 
 * `rectangle($x1, $y1, $x2, $y2, $color, $filled=false)`: draws a rectangle
 
@@ -140,7 +142,7 @@ cache will not be generated again.
 
 You can use this directly in an HTML document:
 
-    
+
 ```php
 <?php
 require_once('lib/Gregwar/Image.php');
@@ -153,7 +155,7 @@ use Gregwar\Image\Image;
 ```
 
 This is powerful since if you change the original image or any of your code the cached hash
-will change and the file will be regenerated. 
+will change and the file will be regenerated.
 
 Writing image
 -------------
@@ -168,7 +170,7 @@ You can also create your own image on-the-fly using drawing functions:
     // Writing "Hello $username !" on the picture using a custom TTF font file
     ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
     ->jpeg(); ?>" />
-```        
+```
 
 Garbage Collect
 ===============
@@ -212,7 +214,7 @@ Development
 
 `Gregwar\Image` is using PHP metaprogramming paradigms so it make it easy to enhance.
 
-Each function begining with a single underscore `_` can be added to the operations array and 
+Each function begining with a single underscore `_` can be added to the operations array and
 will be automatically called when compiling down the image.
 
 You could for instance add your own method:
