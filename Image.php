@@ -872,16 +872,20 @@ class Image
      */
     public function generateHash($type = 'guess', $quality = 80)
     {
-        $ctime = 0;
+        $inputInfos = 0;
 
-        try {
-            $ctime = filectime($this->file);
-        } catch (\Exception $e) {
+        if ($this->file) {
+            try {
+                $inputInfos = filectime($this->file);
+            } catch (\Exception $e) {
+            }
+        } else {
+            $inputInfos = array($this->width, $this->height);
         }
 
         $datas = array(
             $this->file,
-            $ctime,
+            $inputInfos,
             $this->serializeOperations(),
             $type,
             $quality
