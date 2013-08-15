@@ -831,7 +831,7 @@ class Image
     /**
      * Draws a rounded rectangle
      */
-    protected function roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
+    protected function _roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
         if($color) {
             $color = ImageColor::parse($color);
         }
