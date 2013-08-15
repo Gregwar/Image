@@ -835,7 +835,7 @@ class Image
         if($color) {
             $color = ImageColor::parse($color);
         }
-        if ($filled==1){
+        if ($filled == true){
             imagefilledrectangle($this->gd, $x1+$radius, $y1, $x2-$radius, $y2, $color);
             imagefilledrectangle($this->gd, $x1, $y1+$radius, $x1+$radius-1, $y2-$radius, $color);
             imagefilledrectangle($this->gd, $x2-$radius+1, $y1+$radius, $x2, $y2-$radius, $color);
