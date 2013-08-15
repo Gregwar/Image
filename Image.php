@@ -31,6 +31,7 @@ require_once (__DIR__.'/ImageColor.php');
  * @method \Gregwar\Image\Image fill($color = 0xffffff, $x = 0, $y = 0) Fills the image
  * @method \Gregwar\Image\Image write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $pos = 'left') Writes some text
  * @method \Gregwar\Image\Image rectangle($x1, $y1, $x2, $y2, $color, $filled = false) Draws a rectangle
+ * @method \Gregwar\Image\Image roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) Draws a rounded rectangle
  * @method \Gregwar\Image\Image line($x1, $y1, $x2, $y2, $color = 0x000000) Draws a line
  * @method \Gregwar\Image\Image ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false) Draws an ellipse
  * @method \Gregwar\Image\Image circle($cx, $cy, $r, $color = 0x000000, $filled = false) Draws a circle
@@ -498,7 +499,7 @@ class Image
     /**
      * Resizes the image. It will never be enlarged.
      *
-     * @param int $w the width 
+     * @param int $w the width
      * @param int $h the height
      * @param int $bg the background
      */
@@ -526,7 +527,7 @@ class Image
                 if ($height/$h > $scale)
                     $scale = $height/$h;
             }
-        } 
+        }
         else
         {
             if ($w!=null)
@@ -610,7 +611,7 @@ class Image
      * @param int $w the width
      * @param int $h the height
      * @param int $bg the background
-     */  
+     */
     protected function _scaleResize($width = null, $height = null, $background=0xffffff, $crop = false)
     {
         $this->_resize($width, $height, $background, false, true, $crop);
@@ -629,7 +630,7 @@ class Image
     }
 
     /**
-     * Crops the image 
+     * Crops the image
      *
      * @param int $x the top-left x position of the crop box
      * @param int $y the top-left y position of the crop box
@@ -755,7 +756,7 @@ class Image
     }
 
     /**
-     * Rotate the image 
+     * Rotate the image
      */
     protected function _rotate($angle, $background = 0xffffff)
     {
@@ -788,7 +789,7 @@ class Image
             if ($pos == 'center')
             {
                 $x -= $sim_size['width'] / 2;
-            } 
+            }
 
             if ($pos == 'right')
             {
@@ -802,7 +803,7 @@ class Image
     /**
      * Gets the width and the height for writing some text
      */
-    public static function TTFBox($font, $text, $size, $angle = 0) 
+    public static function TTFBox($font, $text, $size, $angle = 0)
     {
         $box = imagettfbbox($size, $angle, $font, $text);
 
@@ -828,9 +829,38 @@ class Image
     }
 
     /**
+     * Draws a rounded rectangle
+     */
+    protected function _roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
+        if($color) {
+            $color = ImageColor::parse($color);
+        }
+        if ($filled == true){
+            imagefilledrectangle($this->gd, $x1+$radius, $y1, $x2-$radius, $y2, $color);
+            imagefilledrectangle($this->gd, $x1, $y1+$radius, $x1+$radius-1, $y2-$radius, $color);
+            imagefilledrectangle($this->gd, $x2-$radius+1, $y1+$radius, $x2, $y2-$radius, $color);
+
+            imagefilledarc($this->gd,$x1+$radius, $y1+$radius, $radius*2, $radius*2, 180 , 270, $color, IMG_ARC_PIE);
+            imagefilledarc($this->gd,$x2-$radius, $y1+$radius, $radius*2, $radius*2, 270 , 360, $color, IMG_ARC_PIE);
+            imagefilledarc($this->gd,$x1+$radius, $y2-$radius, $radius*2, $radius*2, 90 , 180, $color, IMG_ARC_PIE);
+            imagefilledarc($this->gd,$x2-$radius, $y2-$radius, $radius*2, $radius*2, 360 , 90, $color, IMG_ARC_PIE);
+        }else{
+            imageline($this->gd, $x1+$radius, $y1, $x2-$radius, $y1, $color);
+            imageline($this->gd, $x1+$radius, $y2, $x2-$radius, $y2, $color);
+            imageline($this->gd, $x1, $y1+$radius, $x1, $y2-$radius, $color);
+            imageline($this->gd, $x2, $y1+$radius, $x2, $y2-$radius, $color);
+
+            imagearc($this->gd,$x1+$radius, $y1+$radius, $radius*2, $radius*2, 180 , 270, $color);
+            imagearc($this->gd,$x2-$radius, $y1+$radius, $radius*2, $radius*2, 270 , 360, $color);
+            imagearc($this->gd,$x1+$radius, $y2-$radius, $radius*2, $radius*2, 90 , 180, $color);
+            imagearc($this->gd,$x2-$radius, $y2-$radius, $radius*2, $radius*2, 360 , 90, $color);
+        }
+    }
+
+    /**
      * Draws a line
      */
-    protected function _line($x1, $y1, $x2, $y2, $color = 0x000000) 
+    protected function _line($x1, $y1, $x2, $y2, $color = 0x000000)
     {
         imageline($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
     }
@@ -900,13 +930,13 @@ class Image
     /**
      * Generates the hash
      */
-    public function generateHash($type = 'guess', $quality = 80) 
+    public function generateHash($type = 'guess', $quality = 80)
     {
         $ctime = 0;
 
         try {
             $ctime = filectime($this->file);
-        } 
+        }
         catch (\Exception $e)
         {
         }
