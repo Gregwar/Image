@@ -31,7 +31,7 @@ require_once (__DIR__.'/ImageColor.php');
  * @method \Gregwar\Image\Image fill($color = 0xffffff, $x = 0, $y = 0) Fills the image
  * @method \Gregwar\Image\Image write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $pos = 'left') Writes some text
  * @method \Gregwar\Image\Image rectangle($x1, $y1, $x2, $y2, $color, $filled = false) Draws a rectangle
- * @method \Gregwar\Image\Image rounded_rectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) Draws a rounded rectangle
+ * @method \Gregwar\Image\Image roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) Draws a rounded rectangle
  * @method \Gregwar\Image\Image line($x1, $y1, $x2, $y2, $color = 0x000000) Draws a line
  * @method \Gregwar\Image\Image ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false) Draws an ellipse
  * @method \Gregwar\Image\Image circle($cx, $cy, $r, $color = 0x000000, $filled = false) Draws a circle
@@ -831,7 +831,7 @@ class Image
     /**
      * Draws a rounded rectangle
      */
-    protected function _rounded_rectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
+    protected function roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
         if($color) {
             $color = ImageColor::parse($color);
         }

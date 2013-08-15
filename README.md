@@ -65,9 +65,9 @@ The methods available are:
 
 * `write($font, $text, $x, $y, $size, $angle, $color, $position)`: writes text over image, $position can be any of 'left', 'right', or 'center'
 
-* `rounded_rectangle($x1, $y1, $x2, $y2, $radius, $color, $filled=false)`: draws a rectangle
-
 * `rectangle($x1, $y1, $x2, $y2, $color, $filled=false)`: draws a rectangle
+
+* `roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled=false)`: draws a rounded rectangle
 
 * `line($x1, $y1, $x2, $y2, $color)`: draws a line
 
