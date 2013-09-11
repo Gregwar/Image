@@ -50,14 +50,14 @@ class GD extends Adapter
         }
 
         // Perform resize
-        $this->_resize($newWidth, $newHeight, $bg, true);
+        $this->resize($newWidth, $newHeight, $bg, true);
 
         // Calculate cropping area
         $xPos = (int) ($newWidth - $width) / 2;
         $yPos = (int) ($newHeight - $height) / 2;
 
         // Crop image to reach desired size
-        $this->_crop($xPos, $yPos, $width, $height);
+        $this->crop($xPos, $yPos, $width, $height);
     }
 
     /**
@@ -164,7 +164,7 @@ class GD extends Adapter
      */
     public function forceResize($width = null, $height = null, $background = 0xffffff)
     {
-        $this->_resize($width, $height, $background, true);
+        $this->resize($width, $height, $background, true);
     }
 
     /**
@@ -176,7 +176,7 @@ class GD extends Adapter
      */
     public function scaleResize($width = null, $height = null, $background=0xffffff, $crop = false)
     {
-        $this->_resize($width, $height, $background, false, true, $crop);
+        $this->resize($width, $height, $background, false, true, $crop);
     }
 
     /**
@@ -188,7 +188,7 @@ class GD extends Adapter
      */
     public function cropResize($width = null, $height = null, $background=0xffffff)
     {
-        $this->_resize($width, $height, $background, false, false, true);
+        $this->resize($width, $height, $background, false, false, true);
     }
 
     /**
@@ -425,7 +425,7 @@ class GD extends Adapter
      */
     public function circle($cx, $cy, $r, $color = 0x000000, $filled = false)
     {
-        $this->_ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
+        $this->ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
     }
 
     /**
