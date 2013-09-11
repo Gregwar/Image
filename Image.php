@@ -3,39 +3,13 @@
 namespace Gregwar\Image;
 
 require_once (__DIR__.'/ImageColor.php');
+require_once (__DIR__.'/Adapter/Adapter.php');
+require_once (__DIR__.'/Adapter/GD.php');
 
 /**
  * Images handling class
  *
  * @author Gregwar <g.passault@gmail.com>
- *
- * @method \Gregwar\Image\Image zoomCrop(int $width, int $height, int $bg = null) Perform a zoom crop of the image to desired width and height
- * @method \Gregwar\Image\Image fillBackground($bg = 0xffffff) Fills the image background to $bg if the image is transparent
- * @method \Gregwar\Image\Image resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false) Resizes the image. It will never be enlarged.
- * @method \Gregwar\Image\Image forceResize($width = null, $height = null, $background = 0xffffff) Resizes the image forcing the destination to have exactly the given width and the height
- * @method \Gregwar\Image\Image scaleResize($width = null, $height = null, $background=0xffffff, $crop = false) Resizes the image preserving scale. Can enlarge it.
- * @method \Gregwar\Image\Image cropResize($width = null, $height = null, $background=0xffffff) Works as resize() excepts that the layout will be cropped
- * @method \Gregwar\Image\Image crop($x, $y, $w, $h) Crops the image
- * @method \Gregwar\Image\Image negate() Negates the image
- * @method \Gregwar\Image\Image brightness($brightness) Changes the brightness of the image
- * @method \Gregwar\Image\Image contrast($contrast) Contrasts the image
- * @method \Gregwar\Image\Image grayscale() Apply a grayscale level effect on the image
- * @method \Gregwar\Image\Image emboss() Emboss the image
- * @method \Gregwar\Image\Image smooth($smooth) Smooth the image
- * @method \Gregwar\Image\Image sharp() Sharps the image
- * @method \Gregwar\Image\Image edge() Edges the image
- * @method \Gregwar\Image\Image colorize($red, $green, $blue) Colorize the image
- * @method \Gregwar\Image\Image sepia() Sepias the image
- * @method \Gregwar\Image\Image merge(Image $other, $x = 0, $y = 0, $w = null, $h = null) Merge with another image
- * @method \Gregwar\Image\Image rotate($angle, $background = 0xffffff) Rotate the image
- * @method \Gregwar\Image\Image fill($color = 0xffffff, $x = 0, $y = 0) Fills the image
- * @method \Gregwar\Image\Image write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $pos = 'left') Writes some text
- * @method \Gregwar\Image\Image rectangle($x1, $y1, $x2, $y2, $color, $filled = false) Draws a rectangle
- * @method \Gregwar\Image\Image roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) Draws a rounded rectangle
- * @method \Gregwar\Image\Image line($x1, $y1, $x2, $y2, $color = 0x000000) Draws a line
- * @method \Gregwar\Image\Image ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false) Draws an ellipse
- * @method \Gregwar\Image\Image circle($cx, $cy, $r, $color = 0x000000, $filled = false) Draws a circle
- * @method \Gregwar\Image\Image polygon(array $points, $color, $filled = false) Draws a polygon
  */
 class Image
 {
@@ -50,9 +24,9 @@ class Image
     protected $actualCacheDir = null;
 
     /**
-     * GD Rssource
+     * Internal adapter
      */
-    protected $gd = null;
+    protected $adapter = null;
 
     /**
      * Pretty name for the image
@@ -100,12 +74,6 @@ class Image
         'gif'   => 'gif',
     );
 
-    public static $gdTypes = array(
-        'jpeg'  => IMG_JPG,
-        'gif'   => IMG_GIF,
-        'png'   => IMG_PNG,
-    );
-
     /**
      * Change the caching directory
      */
@@ -147,10 +115,6 @@ class Image
         $this->width = $width;
         $this->height = $height;
 
-        if (!(extension_loaded('gd') && function_exists('gd_info'))) {
-            throw new \RuntimeException('You need to install GD PHP Extension to use this library');
-        }
-
         if ($originalFile !== null) {
             $this->type = $this->guessType();
         }
@@ -170,6 +134,48 @@ class Image
     public function setResource($resource)
     {
         $this->resource = $resource;
+    }
+
+    public function getAdapter()
+    {
+        if (null === $this->adapter) {
+            // Defaults to GD
+            $this->setAdapter('gd');
+        }
+
+        return $this->adapter;
+    }
+
+    public function setAdapter($adapter)
+    {
+        if ($adapter instanceof Adapter\Adapter) {
+            $this->adapter = $adapter;
+        } else {
+            if (is_string($adapter)) {
+                $adapter = strtolower($adapter);
+
+                switch ($adapter) {
+                case 'gd':
+                    $this->adapter = new Adapter\GD;
+                    break;
+                case 'imagemagick':
+                case 'imagick':
+                    $this->adapter = new Adapter\Imagick;
+                    break;
+                default:
+                    throw new \Exception('Unknown adapter: '.$adapter);
+                    break;
+                }
+            } else {
+                throw new \Exception('Unable to load the given adapter (not string or Adapter)');
+            }
+        }
+
+        $this->adapter->setData($this->data);
+        $this->adapter->setResource($this->resource);
+        $this->adapter->setFile($this->file);
+        $this->adapter->setType($this->type);
+        $this->adapter->setDimensions($this->width, $this->height);
     }
 
     /**
@@ -272,118 +278,6 @@ class Image
     }
 
     /**
-     * Converts the image to true color
-     */
-    protected function convertToTrueColor()
-    {
-        if (!imageistruecolor($this->gd)) {
-            $transparentIndex = imagecolortransparent($this->gd);
-
-            $w = imagesx($this->gd);
-            $h = imagesy($this->gd);
-
-            $img = imagecreatetruecolor($w, $h);
-            imagecopy($img, $this->gd, 0, 0, 0, 0, $w, $h);
-
-            if ($transparentIndex != -1) {
-                $width = imagesx($this->gd);
-                $height = imagesy($this->gd);
-
-                imagealphablending($img, false);
-                imagesavealpha($img, true);
-
-                for ($x=0; $x<$width; $x++) {
-                    for ($y=0; $y<$height; $y++) {
-                        if (imagecolorat($this->gd, $x, $y) == $transparentIndex) {
-                            imagesetpixel($img, $x, $y, 127 << 24);
-                        }
-                    }
-                }
-            }
-
-            $this->gd = $img;
-        }
-    }
-
-
-    /**
-     * Try to open the file
-     */
-    public function initGd()
-    {
-        if (null === $this->file) {
-            if (null === $this->data) {
-                if (null === $this->resource) {
-                    $this->gd = imagecreatetruecolor($this->width, $this->height);
-                } else {
-                    $this->gd = $this->resource;
-                }
-            } else {
-                $this->gd = @imagecreatefromstring($this->data);
-
-                if (false === $this->gd) {
-                    throw new \UnexpectedValueException('Unable to create file from string.');
-                }
-            }
-        } else {
-            if (null === $this->gd) {
-                if (!(imagetypes() & self::$gdTypes[$this->type])) {
-                    throw new \RuntimeException('Type '.$this->type.' is not supported by GD');
-                }
-
-                if ($this->type == 'jpeg') {
-                    $this->openJpeg();
-                }
-
-                if ($this->type == 'gif') {
-                    $this->openGif();
-                }
-
-                if ($this->type == 'png') {
-                    $this->openPng();
-                }
-
-                if (false === $this->gd) {
-                    throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
-                } else {
-                    $this->convertToTrueColor();
-                }
-            }
-        }
-
-        if ($this->gd) {
-            imagesavealpha($this->gd, true);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Try to open the file using jpeg
-     *
-     */
-    public function openJpeg()
-    {
-        $this->gd = @imagecreatefromjpeg($this->file);
-    }
-
-    /**
-     * Try to open the file using gif
-     */
-    public function openGif()
-    {
-        $this->gd = @imagecreatefromgif($this->file);
-    }
-
-    /**
-     * Try to open the file using PNG
-     */
-    public function openPng()
-    {
-        $this->gd = @imagecreatefrompng($this->file);
-    }
-
-    /**
      * Adds an operation
      */
     protected function addOperation($method, $args)
@@ -396,8 +290,9 @@ class Image
      */
     public function __call($func, $args)
     {
-        $reflection = new \ReflectionClass(get_class($this));
-        $methodName = '_'.$func;
+        $adapter = $this->getAdapter();
+        $reflection = new \ReflectionClass(get_class($adapter));
+        $methodName = $func;
 
         if ($reflection->hasMethod($methodName)) {
             $method = $reflection->getMethod($methodName);
@@ -412,436 +307,6 @@ class Image
         }
 
         throw new \BadFunctionCallException('Invalid method: '.$func);
-    }
-
-    /**
-     * Perform a zoom crop of the image to desired width and height
-     *
-     * @param integer $width  Desired width
-     * @param integer $height Desired height
-     * @param int $bg
-     * @return void
-     */
-    protected function _zoomCrop($width, $height, $bg = 0xffffff)
-    {
-        // Calculate the different ratios
-        $originalRatio = imagesx($this->gd) / imagesy($this->gd);
-        $newRatio = $width / $height;
-
-        // Compare ratios
-        if ($originalRatio > $newRatio) {
-            // Original image is wider
-            $newHeight = $height;
-            $newWidth = (int) $height * $originalRatio;
-        } else {
-            // Equal width or smaller
-            $newHeight = (int) $width / $originalRatio;
-            $newWidth = $width;
-        }
-
-        // Perform resize
-        $this->_resize($newWidth, $newHeight, $bg, true);
-
-        // Calculate cropping area
-        $xPos = (int) ($newWidth - $width) / 2;
-        $yPos = (int) ($newHeight - $height) / 2;
-
-        // Crop image to reach desired size
-        $this->_crop($xPos, $yPos, $width, $height);
-    }
-
-    /**
-     * Fills the image background to $bg if the image is transparent
-     *
-     * @param $bg the background color
-     */
-    protected function _fillBackground($bg = 0xffffff)
-    {
-        $w = imagesx($this->gd);
-        $h = imagesy($this->gd);
-        $n = imagecreatetruecolor($w, $h);
-        imagefill($n, 0, 0, ImageColor::parse($bg));
-        imagecopyresampled($n, $this->gd, 0, 0, 0, 0, $w, $h, $w, $h);
-        imagedestroy($this->gd);
-        $this->gd = $n;
-    }
-
-    /**
-     * Resizes the image. It will never be enlarged.
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
-     */
-    protected function _resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false)
-    {
-        $width = imagesx($this->gd);
-        $height = imagesy($this->gd);
-        $scale = 1.0;
-
-        if ($h === null && preg_match('#^(.+)%$#mUsi', $w, $matches)) {
-            $w = round($width * ((float)$matches[1]/100.0));
-            $h = round($height * ((float)$matches[1]/100.0));
-        }
-
-        if (!$rescale && (!$force || $crop)) {
-            if ($w!=null && $width>$w) {
-                $scale = $width/$w;
-            }
-
-            if ($h!=null && $height>$h) {
-                if ($height/$h > $scale)
-                    $scale = $height/$h;
-            }
-        } else {
-            if ($w!=null) {
-                $scale = $width/$w;
-                $new_width = $w;
-            }
-
-            if ($h!=null) {
-                if ($w!=null && $rescale) {
-                    $scale = max($scale,$height/$h);
-                } else {
-                    $scale = $height/$h;
-                }
-                $new_height = $h;
-            }
-        }
-
-        if (!$force || $w==null || $rescale) {
-            $new_width = round($width/$scale);
-        }
-
-        if (!$force || $h==null || $rescale) {
-            $new_height = round($height/$scale);
-        }
-
-        if ($w == null || $crop) {
-            $w = $new_width;
-        }
-
-        if ($h == null || $crop) {
-            $h = $new_height;
-        }
-
-        $n = imagecreatetruecolor($w, $h);
-
-        if ($bg != 'transparent') {
-            imagefill($n, 0, 0, ImageColor::parse($bg));
-        } else {
-            imagealphablending($n, false);
-
-            $color = imagecolorallocatealpha($n, 0, 0, 0, 127);
-
-            imagefill($n, 0, 0, $color);
-            imagesavealpha($n, true);
-        }
-
-        imagecopyresampled($n, $this->gd, ($w-$new_width)/2, ($h-$new_height)/2, 0, 0, $new_width, $new_height, $width, $height);
-        imagedestroy($this->gd);
-
-        $this->gd = $n;
-    }
-
-    /**
-     * Resizes the image forcing the destination to have exactly the
-     * given width and the height
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
-     */
-    protected function _forceResize($width = null, $height = null, $background = 0xffffff)
-    {
-        $this->_resize($width, $height, $background, true);
-    }
-
-    /**
-     * Resizes the image preserving scale. Can enlarge it.
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
-     */
-    protected function _scaleResize($width = null, $height = null, $background=0xffffff, $crop = false)
-    {
-        $this->_resize($width, $height, $background, false, true, $crop);
-    }
-
-    /**
-     * Works as resize() excepts that the layout will be cropped
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
-     */
-    protected function _cropResize($width = null, $height = null, $background=0xffffff)
-    {
-        $this->_resize($width, $height, $background, false, false, true);
-    }
-
-    /**
-     * Crops the image
-     *
-     * @param int $x the top-left x position of the crop box
-     * @param int $y the top-left y position of the crop box
-     * @param int $w the width of the crop box
-     * @param int $h the height of the crop box
-     */
-    public function _crop($x, $y, $w, $h)
-    {
-        $destination = imagecreatetruecolor($w, $h);
-        imagealphablending($destination, false);
-        imagesavealpha($destination, true);
-        imagecopy($destination, $this->gd, 0, 0, $x, $y, imagesx($this->gd), imagesy($this->gd));
-        imagedestroy($this->gd);
-        $this->gd = $destination;
-    }
-
-    /**
-     * Negates the image
-     */
-    public function _negate()
-    {
-        imagefilter($this->gd, IMG_FILTER_NEGATE);
-    }
-
-    /**
-     * Changes the brightness of the image
-     *
-     * @param int $brightness the brightness
-     */
-    protected function _brightness($b)
-    {
-        imagefilter($this->gd, IMG_FILTER_BRIGHTNESS, $b);
-    }
-
-    /**
-     * Contrasts the image
-     *
-     * @param int $c the contrast
-     */
-    protected function _contrast($c)
-    {
-        imagefilter($this->gd, IMG_FILTER_CONTRAST, $c);
-    }
-
-    /**
-     * Apply a grayscale level effect on the image
-     */
-    protected function _grayscale()
-    {
-        imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
-    }
-
-    /**
-     * Emboss the image
-     */
-    protected function _emboss()
-    {
-        imagefilter($this->gd, IMG_FILTER_EMBOSS);
-    }
-
-    /**
-     * Smooth the image
-     */
-    protected function _smooth($p)
-    {
-        imagefilter($this->gd, IMG_FILTER_SMOOTH, $p);
-    }
-
-    /**
-     * Sharps the image
-     */
-    protected function _sharp()
-    {
-        imagefilter($this->gd, IMG_FILTER_MEAN_REMOVAL);
-    }
-
-    /**
-     * Edges the image
-     */
-    protected function _edge()
-    {
-        imagefilter($this->gd, IMG_FILTER_EDGEDETECT);
-    }
-
-    /**
-     * Colorize the image
-     */
-    protected function _colorize($red, $green, $blue)
-    {
-        imagefilter($this->gd, IMG_FILTER_COLORIZE, $red, $green, $blue);
-    }
-
-    /**
-     * Sepias the image
-     */
-    protected function _sepia()
-    {
-        imagefilter($this->gd, IMG_FILTER_GRAYSCALE);
-        imagefilter($this->gd, IMG_FILTER_COLORIZE, 100, 50, 0);
-    }
-
-    /**
-     * Merge with another image
-     */
-    protected function _merge(Image $other, $x = 0, $y = 0, $w = null, $h = null)
-    {
-        $other = clone $other;
-        $other->initGd();
-        $other->applyOperations();
-
-        imagealphablending($this->gd, true);
-
-        if (null == $w) {
-            $w = $other->width();
-        }
-
-        if (null == $h) {
-            $h = $other->height();
-        }
-
-        imagecopyresampled($this->gd, $other->gd, $x, $y, 0, 0, $w, $h, $w, $h);
-    }
-
-    /**
-     * Rotate the image
-     */
-    protected function _rotate($angle, $background = 0xffffff)
-    {
-        $this->gd = imagerotate($this->gd, $angle, ImageColor::parse($background));
-        imagealphablending($this->gd, true);
-        imagesavealpha($this->gd, true);
-    }
-
-    /**
-     * Fills the image
-     */
-    protected function _fill($color = 0xffffff, $x = 0, $y = 0)
-    {
-        imagealphablending($this->gd, false);
-
-        imagefilledrectangle($this->gd, $x, $y, imagesx($this->gd), imagesy($this->gd), ImageColor::parse($color));
-    }
-
-    /**
-     * Writes some text
-     */
-    protected function _write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $pos = 'left')
-    {
-        imagealphablending($this->gd, true);
-
-        if ($pos != 'left') {
-            $sim_size = self::TTFBox($font, $text, $size, $angle);
-
-            if ($pos == 'center') {
-                $x -= $sim_size['width'] / 2;
-            }
-
-            if ($pos == 'right') {
-                $x -= $sim_size['width'];
-            }
-        }
-
-        imagettftext($this->gd, $size, $angle, $x, $y, ImageColor::parse($color), $font, $text);
-    }
-
-    /**
-     * Gets the width and the height for writing some text
-     */
-    public static function TTFBox($font, $text, $size, $angle = 0)
-    {
-        $box = imagettfbbox($size, $angle, $font, $text);
-
-        return array(
-            'width' => abs($box[2] - $box[0]),
-            'height' => abs($box[3] - $box[5])
-        );
-    }
-
-    /**
-     * Draws a rectangle
-     */
-    protected function _rectangle($x1, $y1, $x2, $y2, $color, $filled = false)
-    {
-        if ($filled) {
-            imagefilledrectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
-        } else {
-            imagerectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
-        }
-    }
-
-    /**
-     * Draws a rounded rectangle
-     */
-    protected function _roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
-        if ($color) {
-            $color = ImageColor::parse($color);
-        }
-
-        if ($filled == true) {
-            imagefilledrectangle($this->gd, $x1+$radius, $y1, $x2-$radius, $y2, $color);
-            imagefilledrectangle($this->gd, $x1, $y1+$radius, $x1+$radius-1, $y2-$radius, $color);
-            imagefilledrectangle($this->gd, $x2-$radius+1, $y1+$radius, $x2, $y2-$radius, $color);
-
-            imagefilledarc($this->gd,$x1+$radius, $y1+$radius, $radius*2, $radius*2, 180 , 270, $color, IMG_ARC_PIE);
-            imagefilledarc($this->gd,$x2-$radius, $y1+$radius, $radius*2, $radius*2, 270 , 360, $color, IMG_ARC_PIE);
-            imagefilledarc($this->gd,$x1+$radius, $y2-$radius, $radius*2, $radius*2, 90 , 180, $color, IMG_ARC_PIE);
-            imagefilledarc($this->gd,$x2-$radius, $y2-$radius, $radius*2, $radius*2, 360 , 90, $color, IMG_ARC_PIE);
-        } else {
-            imageline($this->gd, $x1+$radius, $y1, $x2-$radius, $y1, $color);
-            imageline($this->gd, $x1+$radius, $y2, $x2-$radius, $y2, $color);
-            imageline($this->gd, $x1, $y1+$radius, $x1, $y2-$radius, $color);
-            imageline($this->gd, $x2, $y1+$radius, $x2, $y2-$radius, $color);
-
-            imagearc($this->gd,$x1+$radius, $y1+$radius, $radius*2, $radius*2, 180 , 270, $color);
-            imagearc($this->gd,$x2-$radius, $y1+$radius, $radius*2, $radius*2, 270 , 360, $color);
-            imagearc($this->gd,$x1+$radius, $y2-$radius, $radius*2, $radius*2, 90 , 180, $color);
-            imagearc($this->gd,$x2-$radius, $y2-$radius, $radius*2, $radius*2, 360 , 90, $color);
-        }
-    }
-
-    /**
-     * Draws a line
-     */
-    protected function _line($x1, $y1, $x2, $y2, $color = 0x000000)
-    {
-        imageline($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
-    }
-
-    /**
-     * Draws an ellipse
-     */
-    protected function _ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
-    {
-        if ($filled) {
-            imagefilledellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
-        } else {
-            imageellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
-        }
-    }
-
-    /**
-     * Draws a circle
-     */
-    protected function _circle($cx, $cy, $r, $color = 0x000000, $filled = false)
-    {
-        $this->_ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
-    }
-
-    /**
-     * Draws a polygon
-     */
-    protected function _polygon(array $points, $color, $filled = false)
-    {
-        if ($filled)
-        {
-            imagefilledpolygon($this->gd, $points, count($points)/2, ImageColor::parse($color));
-        } else {
-            imagepolygon($this->gd, $points, count($points)/2, ImageColor::parse($color));
-        }
     }
 
     /**
@@ -982,8 +447,16 @@ class Image
     {
         // Renders the effects
         foreach ($this->operations as $operation) {
-            call_user_func_array(array($this, $operation[0]), $operation[1]);
+            call_user_func_array(array($this->adapter, $operation[0]), $operation[1]);
         }
+    }
+
+    /**
+     * Initialize the adapter
+     */
+    public function init()
+    {
+        $this->getAdapter()->init();
     }
 
     /**
@@ -1014,8 +487,7 @@ class Image
 
         $type = self::$types[$type];
 
-        $this->initGd();
-
+        $this->init();
         $this->applyOperations();
 
         $success = false;
@@ -1025,17 +497,15 @@ class Image
         }
 
         if ($type == 'jpeg') {
-            $success = imagejpeg($this->gd, $file, $quality);
+            $this->getAdapter()->saveJpeg($file, $quality);
         }
 
         if ($type == 'gif') {
-            $transColor = imagecolorallocatealpha($this->gd, 0, 0, 0, 127);
-            imagecolortransparent($this->gd, $transColor);
-            $success = imagegif($this->gd, $file);
+            $this->getAdapter()->saveGif($file);
         }
 
         if ($type == 'png') {
-            $success = imagepng($this->gd, $file);
+            $this->getAdapter()->savePng($file);
         }
 
         if (!$success) {
@@ -1056,27 +526,19 @@ class Image
     /* Image API */
 
     /**
-     * Gets the width
+     * Image width
      */
     public function width()
     {
-        if (null === $this->gd) {
-            $this->initGd();
-        }
-
-        return imagesx($this->gd);
+        return $this->getAdapter()->width();
     }
 
     /**
-     * Gets the height
+     * Image height
      */
     public function height()
     {
-        if (null === $this->gd) {
-            $this->initGd();
-        }
-
-        return imagesy($this->gd);
+        return $this->getAdapter()->height();
     }
 
     /**
