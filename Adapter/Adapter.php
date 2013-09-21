@@ -67,19 +67,6 @@ abstract class Adapter
     abstract public function getName();
 
     /**
-     * Gets the width and the height for writing some text
-     */
-    public static function TTFBox($font, $text, $size, $angle = 0)
-    {
-        $box = imagettfbbox($size, $angle, $font, $text);
-
-        return array(
-            'width' => abs($box[2] - $box[0]),
-            'height' => abs($box[3] - $box[5])
-        );
-    }
-
-    /**
      * Image width
      */
     abstract public function width();

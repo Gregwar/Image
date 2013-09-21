@@ -12,6 +12,19 @@ class GD extends Common
         'png'   => IMG_PNG,
     );
 
+    /**
+     * Gets the width and the height for writing some text
+     */
+    public static function TTFBox($font, $text, $size, $angle = 0)
+    {
+        $box = imagettfbbox($size, $angle, $font, $text);
+
+        return array(
+            'width' => abs($box[2] - $box[0]),
+            'height' => abs($box[3] - $box[5])
+        );
+    }
+
     public function getName()
     {
         return 'GD';
