@@ -4,7 +4,7 @@ namespace Gregwar\Image\Adapter;
 
 use Gregwar\Image\ImageColor;
 
-class GD extends Adapter
+class GD extends Common
 {
     public static $gdTypes = array(
         'jpeg'  => IMG_JPG,
@@ -25,50 +25,14 @@ class GD extends Adapter
     }
 
     /**
-     * Perform a zoom crop of the image to desired width and height
-     *
-     * @param integer $width  Desired width
-     * @param integer $height Desired height
-     * @param int $bg
-     * @return void
-     */
-    public function zoomCrop($width, $height, $bg = 0xffffff)
-    {
-        // Calculate the different ratios
-        $originalRatio = imagesx($this->resource) / imagesy($this->resource);
-        $newRatio = $width / $height;
-
-        // Compare ratios
-        if ($originalRatio > $newRatio) {
-            // Original image is wider
-            $newHeight = $height;
-            $newWidth = (int) $height * $originalRatio;
-        } else {
-            // Equal width or smaller
-            $newHeight = (int) $width / $originalRatio;
-            $newWidth = $width;
-        }
-
-        // Perform resize
-        $this->resize($newWidth, $newHeight, $bg, true);
-
-        // Calculate cropping area
-        $xPos = (int) ($newWidth - $width) / 2;
-        $yPos = (int) ($newHeight - $height) / 2;
-
-        // Crop image to reach desired size
-        $this->crop($xPos, $yPos, $width, $height);
-    }
-
-    /**
      * Fills the image background to $bg if the image is transparent
      *
      * @param $bg the background color
      */
     public function fillBackground($bg = 0xffffff)
     {
-        $w = imagesx($this->resource);
-        $h = imagesy($this->resource);
+        $w = $this->width();
+        $h = $this->height();
         $n = imagecreatetruecolor($w, $h);
         imagefill($n, 0, 0, ImageColor::parse($bg));
         imagecopyresampled($n, $this->resource, 0, 0, 0, 0, $w, $h, $w, $h);
@@ -85,8 +49,8 @@ class GD extends Adapter
      */
     public function resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false)
     {
-        $width = imagesx($this->resource);
-        $height = imagesy($this->resource);
+        $width = $this->width();
+        $height = $this->height();
         $scale = 1.0;
 
         if ($h === null && preg_match('#^(.+)%$#mUsi', $w, $matches)) {
@@ -153,44 +117,7 @@ class GD extends Adapter
 
         $this->resource = $n;
     }
-
-    /**
-     * Resizes the image forcing the destination to have exactly the
-     * given width and the height
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
-     */
-    public function forceResize($width = null, $height = null, $background = 0xffffff)
-    {
-        $this->resize($width, $height, $background, true);
-    }
-
-    /**
-     * Resizes the image preserving scale. Can enlarge it.
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
-     */
-    public function scaleResize($width = null, $height = null, $background=0xffffff, $crop = false)
-    {
-        $this->resize($width, $height, $background, false, true, $crop);
-    }
-
-    /**
-     * Works as resize() excepts that the layout will be cropped
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
-     */
-    public function cropResize($width = null, $height = null, $background=0xffffff)
-    {
-        $this->resize($width, $height, $background, false, false, true);
-    }
-
+    
     /**
      * Crops the image
      *
@@ -204,7 +131,7 @@ class GD extends Adapter
         $destination = imagecreatetruecolor($w, $h);
         imagealphablending($destination, false);
         imagesavealpha($destination, true);
-        imagecopy($destination, $this->resource, 0, 0, $x, $y, imagesx($this->resource), imagesy($this->resource));
+        imagecopy($destination, $this->resource, 0, 0, $x, $y, $this->width(), $this->height());
         imagedestroy($this->resource);
         $this->resource = $destination;
     }
@@ -332,8 +259,7 @@ class GD extends Adapter
     public function fill($color = 0xffffff, $x = 0, $y = 0)
     {
         imagealphablending($this->resource, false);
-
-        imagefilledrectangle($this->resource, $x, $y, imagesx($this->resource), imagesy($this->resource), ImageColor::parse($color));
+        imagefilledrectangle($this->resource, $x, $y, $this->width(), $this->height(), ImageColor::parse($color));
     }
 
     /**
@@ -464,59 +390,15 @@ class GD extends Adapter
 
         return imagesy($this->resource);
     }
-    
-    /**
-     * Try to open the file
-     *
-     * XXX: this logic should maybe be factorized
-     */
-    public function init()
+
+    protected function createImage($width, $height)
     {
-        if (null === $this->file) {
-            if (null === $this->data) {
-                if (null === $this->resource) {
-                    $this->resource = imagecreatetruecolor($this->width, $this->height);
-                } else {
-                    $this->resource = $this->resource;
-                }
-            } else {
-                $this->resource = @imagecreatefromstring($this->data);
+        $this->resource = imagecreatetruecolor($width, $height);
+    }
 
-                if (false === $this->resource) {
-                    throw new \UnexpectedValueException('Unable to create file from string.');
-                }
-            }
-        } else {
-            if (null === $this->resource) {
-                if (!(imagetypes() & self::$gdTypes[$this->type])) {
-                    throw new \RuntimeException('Type '.$this->type.' is not supported by GD');
-                }
-
-                if ($this->type == 'jpeg') {
-                    $this->openJpeg();
-                }
-
-                if ($this->type == 'gif') {
-                    $this->openGif();
-                }
-
-                if ($this->type == 'png') {
-                    $this->openPng();
-                }
-
-                if (false === $this->resource) {
-                    throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
-                } else {
-                    $this->convertToTrueColor();
-                }
-            }
-        }
-
-        if ($this->resource) {
-            imagesavealpha($this->resource, true);
-        }
-
-        return $this;
+    protected function createImageFromData($data)
+    {
+        $this->resource = @imagecreatefromstring($data);
     }
     
     /**
@@ -527,15 +409,15 @@ class GD extends Adapter
         if (!imageistruecolor($this->resource)) {
             $transparentIndex = imagecolortransparent($this->resource);
 
-            $w = imagesx($this->resource);
-            $h = imagesy($this->resource);
+            $w = $this->width();
+            $h = $this->height();
 
             $img = imagecreatetruecolor($w, $h);
             imagecopy($img, $this->resource, 0, 0, 0, 0, $w, $h);
 
             if ($transparentIndex != -1) {
-                $width = imagesx($this->resource);
-                $height = imagesy($this->resource);
+                $width = $this->width();
+                $height = $this->height();
 
                 imagealphablending($img, false);
                 imagesavealpha($img, true);
@@ -593,5 +475,10 @@ class GD extends Adapter
     public function openPng()
     {
         $this->resource = @imagecreatefrompng($this->file);
+    }
+
+    public function supports($type)
+    {
+        return (imagetypes() & self::$gdTypes[$this->type]);
     }
 }
