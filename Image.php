@@ -2,10 +2,6 @@
 
 namespace Gregwar\Image;
 
-require_once (__DIR__.'/ImageColor.php');
-require_once (__DIR__.'/Adapter/Adapter.php');
-require_once (__DIR__.'/Adapter/GD.php');
-
 /**
  * Images handling class
  *
@@ -288,11 +284,10 @@ class Image
     /**
      * Generic function
      */
-    public function __call($func, $args)
+    public function __call($methodName, $args)
     {
         $adapter = $this->getAdapter();
         $reflection = new \ReflectionClass(get_class($adapter));
-        $methodName = $func;
 
         if ($reflection->hasMethod($methodName)) {
             $method = $reflection->getMethod($methodName);

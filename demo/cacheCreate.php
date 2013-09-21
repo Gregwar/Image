@@ -1,5 +1,5 @@
 <?php
-require_once('../Image.php');
+require_once('../autoload.php');
 
 use Gregwar\Image\Image;
 

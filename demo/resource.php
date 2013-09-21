@@ -5,7 +5,7 @@ $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
     . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
 $data = base64_decode($data);
 
-require_once('../Image.php');
+require_once('../autoload.php');
 
 use Gregwar\Image\Image;
 
