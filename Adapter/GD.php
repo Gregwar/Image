@@ -320,8 +320,7 @@ class GD extends Common
      */
     public function polygon(array $points, $color, $filled = false)
     {
-        if ($filled)
-        {
+        if ($filled) {
             imagefilledpolygon($this->resource, $points, count($points)/2, ImageColor::parse($color));
         } else {
             imagepolygon($this->resource, $points, count($points)/2, ImageColor::parse($color));
