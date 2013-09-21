@@ -54,65 +54,13 @@ class GD extends Common
     }
 
     /**
-     * Resizes the image. It will never be enlarged.
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
+     * Do the image resize
      */
-    public function resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false)
+    protected function doResize($bg, $target_width, $target_height, $new_width, $new_height)
     {
         $width = $this->width();
         $height = $this->height();
-        $scale = 1.0;
-
-        if ($h === null && preg_match('#^(.+)%$#mUsi', $w, $matches)) {
-            $w = round($width * ((float)$matches[1]/100.0));
-            $h = round($height * ((float)$matches[1]/100.0));
-        }
-
-        if (!$rescale && (!$force || $crop)) {
-            if ($w!=null && $width>$w) {
-                $scale = $width/$w;
-            }
-
-            if ($h!=null && $height>$h) {
-                if ($height/$h > $scale)
-                    $scale = $height/$h;
-            }
-        } else {
-            if ($w!=null) {
-                $scale = $width/$w;
-                $new_width = $w;
-            }
-
-            if ($h!=null) {
-                if ($w!=null && $rescale) {
-                    $scale = max($scale,$height/$h);
-                } else {
-                    $scale = $height/$h;
-                }
-                $new_height = $h;
-            }
-        }
-
-        if (!$force || $w==null || $rescale) {
-            $new_width = round($width/$scale);
-        }
-
-        if (!$force || $h==null || $rescale) {
-            $new_height = round($height/$scale);
-        }
-
-        if ($w == null || $crop) {
-            $w = $new_width;
-        }
-
-        if ($h == null || $crop) {
-            $h = $new_height;
-        }
-
-        $n = imagecreatetruecolor($w, $h);
+        $n = imagecreatetruecolor($target_width, $target_height);
 
         if ($bg != 'transparent') {
             imagefill($n, 0, 0, ImageColor::parse($bg));
@@ -125,7 +73,7 @@ class GD extends Common
             imagesavealpha($n, true);
         }
 
-        imagecopyresampled($n, $this->resource, ($w-$new_width)/2, ($h-$new_height)/2, 0, 0, $new_width, $new_height, $width, $height);
+        imagecopyresampled($n, $this->resource, ($target_width-$new_width)/2, ($target_height-$new_height)/2, 0, 0, $new_width, $new_height, $width, $height);
         imagedestroy($this->resource);
 
         $this->resource = $n;
