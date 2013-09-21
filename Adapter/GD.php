@@ -456,7 +456,7 @@ class GD extends Common
      * Try to open the file using jpeg
      *
      */
-    public function openJpeg()
+    protected function openJpeg()
     {
         $this->resource = @imagecreatefromjpeg($this->file);
     }
@@ -464,7 +464,7 @@ class GD extends Common
     /**
      * Try to open the file using gif
      */
-    public function openGif()
+    protected function openGif()
     {
         $this->resource = @imagecreatefromgif($this->file);
     }
@@ -472,7 +472,7 @@ class GD extends Common
     /**
      * Try to open the file using PNG
      */
-    public function openPng()
+    protected function openPng()
     {
         $this->resource = @imagecreatefrompng($this->file);
     }

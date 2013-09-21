@@ -77,6 +77,12 @@ abstract class Common extends Adapter
         $this->resize($width, $height, $background, false, false, true);
     }
     
+    abstract protected function openGif();
+    abstract protected function openJpeg();
+    abstract protected function openPng();
+    abstract protected function createImage($width, $height);
+    abstract protected function createImageFromData($data);
+    
     /**
      * Try to open the file
      *
