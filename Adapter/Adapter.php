@@ -79,4 +79,13 @@ abstract class Adapter
     abstract public function saveGif($file);
     abstract public function savePng($file);
     abstract public function saveJpeg($file, $quality);
+    
+    protected function supports($type)
+    {
+        return true;
+    }
+
+    protected function convertToTrueColor()
+    {
+    }
 }

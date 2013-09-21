@@ -365,7 +365,7 @@ class GD extends Common
     /**
      * Converts the image to true color
      */
-    public function convertToTrueColor()
+    protected function convertToTrueColor()
     {
         if (!imageistruecolor($this->resource)) {
             $transparentIndex = imagecolortransparent($this->resource);
@@ -438,7 +438,10 @@ class GD extends Common
         $this->resource = @imagecreatefrompng($this->file);
     }
 
-    public function supports($type)
+    /**
+     * Does this adapter supports type ?
+     */
+    protected function supports($type)
     {
         return (imagetypes() & self::$gdTypes[$this->type]);
     }
