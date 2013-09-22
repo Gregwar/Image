@@ -101,9 +101,9 @@ class Image
     );
 
     public static $gdTypes = array(
-        'jpeg'  => IMG_JPG,
-        'gif'   => IMG_GIF,
-        'png'   => IMG_PNG,
+        'jpeg'  => \IMG_JPG,
+        'gif'   => \IMG_GIF,
+        'png'   => \IMG_PNG,
     );
 
     /**
