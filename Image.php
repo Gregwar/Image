@@ -845,6 +845,64 @@ class Image
     }
 
     /**
+      * Trim background color arround the image
+      *
+      * @param int $bg the background
+      */
+    protected function _trimColor($background=0xffffff)
+    {
+        $width = imagesx($this->gd);
+        $height = imagesy($this->gd);
+        
+        if($width == 0 || $height == 0) {
+            return false;
+        }
+        
+        $b_top = 0;
+        $b_lft = 0;
+        $b_btm = $height - 1;
+        $b_rt = $width - 1;
+    
+        //top
+        for(; $b_top < $height; ++$b_top) {
+            for($x = 0; $x < $width; ++$x) {
+                if(imagecolorat($this->gd, $x, $b_top) != $background) {
+                    break 2;
+                }
+            }
+        }
+    
+        // bottom
+        for(; $b_btm >= 0; --$b_btm) {
+            for($x = 0; $x < $width; ++$x) {
+                if(imagecolorat($this->gd, $x, $b_btm) != $background) {
+                    break 2;
+                }
+            }
+        }
+    
+        // left
+        for(; $b_lft < $width; ++$b_lft) {
+            for($y = $b_top; $y <= $b_btm; ++$y) {
+                if(imagecolorat($this->gd, $b_lft, $y) != $background) {
+                    break 2;
+                }
+            }
+        }
+    
+        // right
+        for(; $b_rt >= 0; --$b_rt) {
+            for($y = $b_top; $y <= $b_btm; ++$y) {
+                if(imagecolorat($this->gd, $b_rt, $y) != $background) {
+                    break 2;
+                }
+            }
+        }
+                
+        $this->_crop($b_lft, $b_top, $b_rt - $b_lft, $b_btm - $b_top);
+    }
+
+    /**
      * Serialization of operations
      */
     public function serializeOperations()
