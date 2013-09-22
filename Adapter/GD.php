@@ -444,4 +444,9 @@ class GD extends Common
     {
         return (imagetypes() & self::$gdTypes[$this->type]);
     }
+    
+    protected function getColor($x, $y)
+    {
+        return imagecolorat($this->resource, $x, $y);
+    }
 }
