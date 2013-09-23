@@ -53,7 +53,7 @@ class GD extends Common
         $w = $this->width();
         $h = $this->height();
         $n = imagecreatetruecolor($w, $h);
-        imagefill($n, 0, 0, ImageColor::parse($bg));
+        imagefill($n, 0, 0, ImageColor::gdAllocate($this->resource, $bg));
         imagecopyresampled($n, $this->resource, 0, 0, 0, 0, $w, $h, $w, $h);
         imagedestroy($this->resource);
         $this->resource = $n;
@@ -69,7 +69,7 @@ class GD extends Common
         $n = imagecreatetruecolor($target_width, $target_height);
 
         if ($bg != 'transparent') {
-            imagefill($n, 0, 0, ImageColor::parse($bg));
+            imagefill($n, 0, 0, ImageColor::gdAllocate($this->resource, $bg));
         } else {
             imagealphablending($n, false);
 
@@ -215,7 +215,7 @@ class GD extends Common
      */
     public function rotate($angle, $background = 0xffffff)
     {
-        $this->resource = imagerotate($this->resource, $angle, ImageColor::parse($background));
+        $this->resource = imagerotate($this->resource, $angle, ImageColor::gdAllocate($this->resource, $background));
         imagealphablending($this->resource, true);
         imagesavealpha($this->resource, true);
     }
@@ -226,7 +226,7 @@ class GD extends Common
     public function fill($color = 0xffffff, $x = 0, $y = 0)
     {
         imagealphablending($this->resource, false);
-        imagefilledrectangle($this->resource, $x, $y, $this->width(), $this->height(), ImageColor::parse($color));
+        imagefilledrectangle($this->resource, $x, $y, $this->width(), $this->height(), ImageColor::gdAllocate($this->resource, $color));
     }
 
     /**
@@ -248,7 +248,7 @@ class GD extends Common
             }
         }
 
-        imagettftext($this->resource, $size, $angle, $x, $y, ImageColor::parse($color), $font, $text);
+        imagettftext($this->resource, $size, $angle, $x, $y, ImageColor::gdAllocate($this->resource, $color), $font, $text);
     }
 
     /**
@@ -257,9 +257,9 @@ class GD extends Common
     public function rectangle($x1, $y1, $x2, $y2, $color, $filled = false)
     {
         if ($filled) {
-            imagefilledrectangle($this->resource, $x1, $y1, $x2, $y2, ImageColor::parse($color));
+            imagefilledrectangle($this->resource, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->resource, $color));
         } else {
-            imagerectangle($this->resource, $x1, $y1, $x2, $y2, ImageColor::parse($color));
+            imagerectangle($this->resource, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->resource, $color));
         }
     }
 
@@ -268,7 +268,7 @@ class GD extends Common
      */
     public function roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
         if ($color) {
-            $color = ImageColor::parse($color);
+            $color = ImageColor::gdAllocate($this->resource, $color);
         }
 
         if ($filled == true) {
@@ -298,7 +298,7 @@ class GD extends Common
      */
     public function line($x1, $y1, $x2, $y2, $color = 0x000000)
     {
-        imageline($this->resource, $x1, $y1, $x2, $y2, ImageColor::parse($color));
+        imageline($this->resource, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->resource, $color));
     }
 
     /**
@@ -307,9 +307,9 @@ class GD extends Common
     public function ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
     {
         if ($filled) {
-            imagefilledellipse($this->resource, $cx, $cy, $width, $height, ImageColor::parse($color));
+            imagefilledellipse($this->resource, $cx, $cy, $width, $height, ImageColor::gdAllocate($this->resource, $color));
         } else {
-            imageellipse($this->resource, $cx, $cy, $width, $height, ImageColor::parse($color));
+            imageellipse($this->resource, $cx, $cy, $width, $height, ImageColor::gdAllocate($this->resource, $color));
         }
     }
 
@@ -318,7 +318,7 @@ class GD extends Common
      */
     public function circle($cx, $cy, $r, $color = 0x000000, $filled = false)
     {
-        $this->ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
+        $this->ellipse($cx, $cy, $r, $r, ImageColor::gdAllocate($this->resource, $color), $filled);
     }
 
     /**
@@ -327,9 +327,9 @@ class GD extends Common
     public function polygon(array $points, $color, $filled = false)
     {
         if ($filled) {
-            imagefilledpolygon($this->resource, $points, count($points)/2, ImageColor::parse($color));
+            imagefilledpolygon($this->resource, $points, count($points)/2, ImageColor::gdAllocate($this->resource, $color));
         } else {
-            imagepolygon($this->resource, $points, count($points)/2, ImageColor::parse($color));
+            imagepolygon($this->resource, $points, count($points)/2, ImageColor::gdAllocate($this->resource, $color));
         }
     }
 
