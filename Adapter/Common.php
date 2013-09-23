@@ -82,12 +82,26 @@ abstract class Common extends Adapter
         $this->resize($width, $height, $background, false, false, true);
     }
 
+    /**
+     * Opens the image
+     */
     abstract protected function openGif($file);
     abstract protected function openJpeg($file);
     abstract protected function openPng($file);
+
+    /**
+     * Creates an image
+     */
     abstract protected function createImage($width, $height);
+
+    /**
+     * Creating an image using $data
+     */
     abstract protected function createImageFromData($data);
 
+    /**
+     * Loading image from $resource
+     */
     protected function loadResource($resource)
     {
         $this->resource = $resource;
@@ -258,8 +272,20 @@ abstract class Common extends Adapter
                 
         $this->crop($b_lft, $b_top, $b_rt - $b_lft, $b_btm - $b_top);
     }
-    
+
+    /**
+     * Resizes the image to an image having size of $target_width, $target_height, using
+     * $new_width and $new_height and padding with $bg color
+     */
     abstract protected function doResize($bg, $target_width, $target_height, $new_width, $new_height);
+
+    /**
+     * Crops the image at $x, $y with a size of $w x $h
+     */
     abstract public function crop($x, $y, $w, $h);
+
+    /**
+     * Gets the color of the $x, $y pixel
+     */
     abstract protected function getColor($x, $y);
 }
