@@ -2,6 +2,9 @@
 
 namespace Gregwar\Image\Source;
 
+/**
+ * Open an image from a file
+ */
 class File extends Source
 {
     protected $file;

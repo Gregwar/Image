@@ -2,6 +2,9 @@
 
 namespace Gregwar\Image\Source;
 
+/**
+ * Creates a new image from scratch
+ */
 class Create extends Source
 {
     protected $width;
@@ -26,5 +29,10 @@ class Create extends Source
     public function getInfos()
     {
         return array($this->width, $this->height);
+    }
+
+    public function correct()
+    {
+        return $this->width > 0 && $this->height > 0;
     }
 }

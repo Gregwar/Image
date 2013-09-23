@@ -2,6 +2,9 @@
 
 namespace Gregwar\Image\Source;
 
+/**
+ * Having image in some string
+ */
 class Data extends Source
 {
     protected $data;
