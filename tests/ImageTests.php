@@ -188,6 +188,25 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Testing transparent image
+     */
+    public function testTransparent()
+    {
+        $gif = $this->output('transparent.gif');
+        $i = Image::create(200, 100)
+            ->fill('transparent')
+            ->save($gif, 'gif');
+
+        $this->assertTrue(file_exists($gif));
+        $img = imagecreatefromgif($gif);
+        $this->assertEquals(200, imagesx($img));
+        $this->assertEquals(100, imagesy($img));
+        $index = imagecolorat($img, 2, 2);
+        $color = imagecolorsforindex($img, $index);
+        $this->assertEquals(127, $color['alpha']);
+    }
+
+    /**
      * Outputing an image to a file
      */
     protected function output($file)

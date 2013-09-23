@@ -460,7 +460,7 @@ class Image
         $w = imagesx($this->gd);
         $h = imagesy($this->gd);
         $n = imagecreatetruecolor($w, $h);
-        imagefill($n, 0, 0, ImageColor::parse($bg));
+        imagefill($n, 0, 0, ImageColor::gdAllocate($this->gd, $bg));
         imagecopyresampled($n, $this->gd, 0, 0, 0, 0, $w, $h, $w, $h);
         imagedestroy($this->gd);
         $this->gd = $n;
@@ -528,7 +528,7 @@ class Image
         $n = imagecreatetruecolor($w, $h);
 
         if ($bg != 'transparent') {
-            imagefill($n, 0, 0, ImageColor::parse($bg));
+            imagefill($n, 0, 0, ImageColor::gdAllocate($this->gd, $bg));
         } else {
             imagealphablending($n, false);
 
@@ -711,7 +711,7 @@ class Image
      */
     protected function _rotate($angle, $background = 0xffffff)
     {
-        $this->gd = imagerotate($this->gd, $angle, ImageColor::parse($background));
+        $this->gd = imagerotate($this->gd, $angle, ImageColor::gdAllocate($this->gd, $background));
         imagealphablending($this->gd, true);
         imagesavealpha($this->gd, true);
     }
@@ -723,7 +723,7 @@ class Image
     {
         imagealphablending($this->gd, false);
 
-        imagefilledrectangle($this->gd, $x, $y, imagesx($this->gd), imagesy($this->gd), ImageColor::parse($color));
+        imagefilledrectangle($this->gd, $x, $y, imagesx($this->gd), imagesy($this->gd), ImageColor::gdAllocate($this->gd, $color));
     }
 
     /**
@@ -745,7 +745,7 @@ class Image
             }
         }
 
-        imagettftext($this->gd, $size, $angle, $x, $y, ImageColor::parse($color), $font, $text);
+        imagettftext($this->gd, $size, $angle, $x, $y, ImageColor::gdAllocate($this->gd, $color), $font, $text);
     }
 
     /**
@@ -767,9 +767,9 @@ class Image
     protected function _rectangle($x1, $y1, $x2, $y2, $color, $filled = false)
     {
         if ($filled) {
-            imagefilledrectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
+            imagefilledrectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->gd, $color));
         } else {
-            imagerectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
+            imagerectangle($this->gd, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->gd, $color));
         }
     }
 
@@ -778,7 +778,7 @@ class Image
      */
     protected function _roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
         if ($color) {
-            $color = ImageColor::parse($color);
+            $color = ImageColor::gdAllocate($this->gd, $color);
         }
 
         if ($filled == true) {
@@ -808,7 +808,7 @@ class Image
      */
     protected function _line($x1, $y1, $x2, $y2, $color = 0x000000)
     {
-        imageline($this->gd, $x1, $y1, $x2, $y2, ImageColor::parse($color));
+        imageline($this->gd, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->gd, $color));
     }
 
     /**
@@ -817,9 +817,9 @@ class Image
     protected function _ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
     {
         if ($filled) {
-            imagefilledellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
+            imagefilledellipse($this->gd, $cx, $cy, $width, $height, ImageColor::gdAllocate($this->gd, $color));
         } else {
-            imageellipse($this->gd, $cx, $cy, $width, $height, ImageColor::parse($color));
+            imageellipse($this->gd, $cx, $cy, $width, $height, ImageColor::gdAllocate($this->gd, $color));
         }
     }
 
@@ -828,7 +828,7 @@ class Image
      */
     protected function _circle($cx, $cy, $r, $color = 0x000000, $filled = false)
     {
-        $this->_ellipse($cx, $cy, $r, $r, ImageColor::parse($color), $filled);
+        $this->_ellipse($cx, $cy, $r, $r, ImageColor::gdAllocate($this->gd, $color), $filled);
     }
 
     /**
@@ -838,9 +838,9 @@ class Image
     {
         if ($filled)
         {
-            imagefilledpolygon($this->gd, $points, count($points)/2, ImageColor::parse($color));
+            imagefilledpolygon($this->gd, $points, count($points)/2, ImageColor::gdAllocate($this->gd, $color));
         } else {
-            imagepolygon($this->gd, $points, count($points)/2, ImageColor::parse($color));
+            imagepolygon($this->gd, $points, count($points)/2, ImageColor::gdAllocate($this->gd, $color));
         }
     }
 

@@ -25,8 +25,29 @@ class ImageColor
         'orange'    =>  0xffA500,
         'red'       =>  0xff0000,
         'maroon'    =>  0x800000,
-        'transparent' => 0x7fffffff
+        'transparent' => 0x7f000000
     );
+
+    public static function gdAllocate($image, $color)
+    {
+        $colorRGBA = self::parse($color);
+
+        $b = ($colorRGBA)&0xff;
+        $colorRGBA >>= 8;
+        $g = ($colorRGBA)&0xff;
+        $colorRGBA >>= 8;
+        $r = ($colorRGBA)&0xff;
+        $colorRGBA >>= 8;
+        $a = ($colorRGBA)&0xff;
+
+        $c = imagecolorallocatealpha($image, $r, $g, $b, $a);
+
+        if ($color == 'transparent') {
+            imagecolortransparent($image, $c);
+        }
+
+        return $c;
+    }
 
     public static function parse($color)
     {
