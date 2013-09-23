@@ -30,11 +30,6 @@ class Image
     protected $prettyName = '';
 
     /**
-     * Type name
-     */
-    protected $type = 'jpeg';
-
-    /**
      * Transformations hash
      */
     protected $hash = null;
@@ -93,7 +88,6 @@ class Image
     {
         if ($originalFile) {
             $this->source = new Source\File($originalFile);
-            $this->type = $this->guessType();
         } else {
             $this->source = new Source\Create($width, $height);
         }
@@ -324,7 +318,7 @@ class Image
     public function cacheFile($type = 'jpg', $quality = 80)
     {
         if ($type == 'guess') {
-            $type = $this->type;
+            $type = $this->guessType();
         }
 
         if (!count($this->operations) && $type == $this->guessType()) {
@@ -423,7 +417,7 @@ class Image
         }
 
         if ($type == 'guess') {
-            $type = $this->type;
+            $type = $this->guessType();
         }
 
         if (!isset(self::$types[$type])) {
