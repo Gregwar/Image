@@ -30,11 +30,6 @@ class Image
     protected $prettyName = '';
 
     /**
-     * User-defined resource
-     */
-    protected $resource = null;
-
-    /**
      * Type name
      */
     protected $type = 'jpeg';
@@ -45,20 +40,9 @@ class Image
     protected $hash = null;
 
     /**
-     * File
+     * The image source
      */
-    protected $file = null;
-
-    /**
-     * Image data
-     */
-    protected $data = null;
-
-    /**
-     * Dimensions for new resources
-     */
-    protected $width = null;
-    protected $height = null;
+    protected $source = null;
 
     /**
      * Supported types
@@ -107,12 +91,11 @@ class Image
 
     public function __construct($originalFile = null, $width = null, $height = null)
     {
-        $this->file = $originalFile;
-        $this->width = $width;
-        $this->height = $height;
-
-        if ($originalFile !== null) {
+        if ($originalFile) {
+            $this->source = new Source\File($originalFile);
             $this->type = $this->guessType();
+        } else {
+            $this->source = new Source\Create($width, $height);
         }
     }
 
@@ -121,7 +104,7 @@ class Image
      */
     public function setData($data)
     {
-        $this->data = $data;
+        $this->source = new Source\Data($data);
     }
 
     /**
@@ -129,7 +112,7 @@ class Image
      */
     public function setResource($resource)
     {
-        $this->resource = $resource;
+        $this->source = new Source\Resource($resource);
     }
 
     public function getAdapter()
@@ -167,11 +150,7 @@ class Image
             }
         }
 
-        $this->adapter->setData($this->data);
-        $this->adapter->setResource($this->resource);
-        $this->adapter->setFile($this->file);
-        $this->adapter->setType($this->type);
-        $this->adapter->setDimensions($this->width, $this->height);
+        $this->adapter->setSource($this->source);
     }
 
     /**
@@ -217,7 +196,11 @@ class Image
      */
     public function getFilePath()
     {
-        return $this->file;
+        if ($this->source instanceof Source\File) {
+            return $this->source->getFile();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -227,7 +210,7 @@ class Image
      */
     public function fromFile($originalFile)
     {
-        $this->file = $originalFile;
+        $this->source = new Source\File($originalFile);
 
         return $this;
     }
@@ -237,7 +220,7 @@ class Image
      */
     public function correct()
     {
-        return (false !== @exif_imagetype($this->file));
+        return $thi->source->correct();
     }
 
     /**
@@ -245,32 +228,7 @@ class Image
      */
     public function guessType()
     {
-        if (function_exists('exif_imagetype')) {
-            $type = @exif_imagetype($this->file);
-
-            if (false !== $type) {
-                if ($type == IMAGETYPE_JPEG) {
-                    return 'jpeg';
-                }
-
-                if ($type == IMAGETYPE_GIF) {
-                    return 'gif';
-                }
-
-                if ($type == IMAGETYPE_PNG) {
-                    return 'png';
-                }
-            }
-        }
-
-        $parts = explode('.', $this->file);
-        $ext = strtolower($parts[count($parts)-1]);
-
-        if (isset(self::$types[$ext])) {
-            return self::$types[$ext];
-        }
-
-        return 'jpeg';
+        return $this->source->guessType();
     }
 
     /**
@@ -334,17 +292,9 @@ class Image
     {
         $inputInfos = 0;
 
-        if ($this->file) {
-            try {
-                $inputInfos = filectime($this->file);
-            } catch (\Exception $e) {
-            }
-        } else {
-            $inputInfos = array($this->width, $this->height);
-        }
+        $inputInfos = $this->source->getInfos();
 
         $datas = array(
-            $this->file,
             $inputInfos,
             $this->serializeOperations(),
             $type,
@@ -378,7 +328,7 @@ class Image
         }
 
         if (!count($this->operations) && $type == $this->guessType()) {
-            return $this->getFilename($this->file);
+            return $this->getFilename($this->getFilePath());
         }
 
         // Computes the hash

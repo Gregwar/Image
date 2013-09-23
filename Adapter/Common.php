@@ -5,6 +5,11 @@ namespace Gregwar\Image\Adapter;
 abstract class Common extends Adapter
 {
     /**
+     * The image resource handler
+     */
+    protected $resource = null;
+
+    /**
      * Perform a zoom crop of the image to desired width and height
      *
      * @param integer $width  Desired width
@@ -77,59 +82,59 @@ abstract class Common extends Adapter
         $this->resize($width, $height, $background, false, false, true);
     }
 
-    abstract protected function openGif();
-    abstract protected function openJpeg();
-    abstract protected function openPng();
+    abstract protected function openGif($file);
+    abstract protected function openJpeg($file);
+    abstract protected function openPng($file);
     abstract protected function createImage($width, $height);
     abstract protected function createImageFromData($data);
 
+    protected function loadResource($resource)
+    {
+        $this->resource = $resource;
+    }
+
+    protected function loadFile($file, $type)
+    {
+        if (!$this->supports($type)) {
+            throw new \RuntimeException('Type '.$type.' is not supported by GD');
+        }
+
+        if ($type == 'jpeg') {
+            $this->openJpeg($file);
+        }
+
+        if ($type == 'gif') {
+            $this->openGif($file);
+        }
+
+        if ($type == 'png') {
+            $this->openPng($file);
+        }
+
+        if (false === $this->resource) {
+            throw new \UnexpectedValueException('Unable to open file ('.$file.')');
+        } else {
+            $this->convertToTrueColor();
+        }
+    }
+
     /**
-     * Try to open the file
-     *
-     * XXX: this logic should maybe be factorized
+     * Loads or create the image from its source
      */
     public function init()
     {
-        if (null === $this->file) {
-            if (null === $this->data) {
-                if (null === $this->resource) {
-                    $this->createImage($this->width, $this->height);
-                }
-            } else {
-                $this->createImageFromData($this->data);
+        $source = $this->source;
 
-                if (false === $this->resource) {
-                    throw new \UnexpectedValueException('Unable to create file from string.');
-                }
-            }
+        if ($source instanceof \Gregwar\Image\Source\File) {
+            $this->loadFile($source->getFile(), $source->guessType());
+        } else if ($source instanceof \Gregwar\Image\Source\Create) {
+            $this->createImage($source->getWidth(), $source->getHeight());
+        } else if ($source instanceof \Gregwar\Image\Source\Data) {
+            $this->createImageFromData($source->getData());
+        } else if ($source instanceof \Gregwar\Image\Source\Resource) {
+            $this->loadResource($source->getResource());
         } else {
-            if (null === $this->resource) {
-                if (!$this->supports($this->type)) {
-                    throw new \RuntimeException('Type '.$this->type.' is not supported by GD');
-                }
-
-                if ($this->type == 'jpeg') {
-                    $this->openJpeg();
-                }
-
-                if ($this->type == 'gif') {
-                    $this->openGif();
-                }
-
-                if ($this->type == 'png') {
-                    $this->openPng();
-                }
-
-                if (false === $this->resource) {
-                    throw new \UnexpectedValueException('Unable to open file ('.$this->file.')');
-                } else {
-                    $this->convertToTrueColor();
-                }
-            }
-        }
-
-        if ($this->resource) {
-            imagesavealpha($this->resource, true);
+            throw new \Exception('Unsupported image source type '.get_class($source));
         }
 
         return $this;

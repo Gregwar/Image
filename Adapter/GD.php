@@ -12,6 +12,12 @@ class GD extends Common
         'png'   => \IMG_PNG,
     );
 
+    protected function loadResource($resource)
+    {
+        parent::loadResource($resource);
+        imagesavealpha($this->resource, true);
+    }
+
     /**
      * Gets the width and the height for writing some text
      */
@@ -416,25 +422,25 @@ class GD extends Common
      * Try to open the file using jpeg
      *
      */
-    protected function openJpeg()
+    protected function openJpeg($file)
     {
-        $this->resource = @imagecreatefromjpeg($this->file);
+        $this->resource = @imagecreatefromjpeg($file);
     }
 
     /**
      * Try to open the file using gif
      */
-    protected function openGif()
+    protected function openGif($file)
     {
-        $this->resource = @imagecreatefromgif($this->file);
+        $this->resource = @imagecreatefromgif($file);
     }
 
     /**
      * Try to open the file using PNG
      */
-    protected function openPng()
+    protected function openPng($file)
     {
-        $this->resource = @imagecreatefrompng($this->file);
+        $this->resource = @imagecreatefrompng($file);
     }
 
     /**
@@ -442,7 +448,7 @@ class GD extends Common
      */
     protected function supports($type)
     {
-        return (imagetypes() & self::$gdTypes[$this->type]);
+        return (imagetypes() & self::$gdTypes[$type]);
     }
     
     protected function getColor($x, $y)

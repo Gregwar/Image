@@ -2,58 +2,18 @@
 
 namespace Gregwar\Image\Adapter;
 
+use Gregwar\Image\Source\Source;
+
 abstract class Adapter
 {
     /**
-     * File
+     * Source
      */
-    protected $file = null;
+    protected $source = null;
 
-    /**
-     * Resource
-     */
-    protected $resource = null;
-
-    /**
-     * Data
-     */
-    protected $data = null;
-
-    /**
-     * Type
-     */
-    protected $type = null;
-
-    /**
-     * Width & height
-     */
-    protected $width = null;
-    protected $height = null;
-
-    public function setFile($file)
+    public function setSource(Source $source)
     {
-        $this->file = $file;
-    }
-
-    public function setResource($resource)
-    {
-        $this->resource = $resource;
-    }
-
-    public function setDimensions($width, $height)
-    {
-        $this->width = $width;
-        $this->height = $height;
-    }
-
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-
-    public function setType($type)
-    {
-        $this->type = $type;
+        $this->source = $source;
     }
 
     /**
@@ -76,15 +36,24 @@ abstract class Adapter
      */
     abstract public function height();
 
+    /**
+     * Save the image as a git, png or jpeg
+     */
     abstract public function saveGif($file);
     abstract public function savePng($file);
     abstract public function saveJpeg($file, $quality);
-    
+
+    /**
+     * Does this adapter supports the given type ?
+     */
     protected function supports($type)
     {
-        return true;
+        return false;
     }
 
+    /**
+     * Converts the image to true color
+     */
     protected function convertToTrueColor()
     {
     }
