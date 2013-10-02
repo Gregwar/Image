@@ -214,22 +214,26 @@ Development
 
 `Gregwar\Image` is using PHP metaprogramming paradigms so it make it easy to enhance.
 
-Each function begining with a single underscore `_` can be added to the operations array and
-will be automatically called when compiling down the image.
+Each function that handle the image is implemented in an *Adapter*, this is where
+all the specific actions take places.
 
-You could for instance add your own method:
+The `Common` adapter is design to contain common abstract actions, while the
+specific adatpers (like `GD`) are designed to contain actions specific to the low
+level layer.
+
+You can add your own methods by adding it in the corresponding adapter.
 
 ```php
 <?php
-    // ***
-    private function _myFilter()
+    // In the adapter
+    private function myFilter()
     {
-        $this->_negate();
-        $this->_sepia();
+        $this->negate();
+        $this->sepia();
     }
 ```
 
-Which could be usable on the Images
+Which could be usable on the Image
 
 ```php
 <?php
