@@ -240,4 +240,12 @@ Which could be usable on the Image
     $image->myFilter();
 ```
 
+You can also write your own adapter in your application, which could extend one of this repository,
+and uses it calling `setAdapter()`:
+
+```php
+<?php
+    $image->setAdapter(new MyCustomAdapter);
+```
+
 Do not hesitate to fork this repository and customize it !
