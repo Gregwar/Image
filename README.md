@@ -172,6 +172,19 @@ You can also create your own image on-the-fly using drawing functions:
     ->jpeg(); ?>" />
 ```
 
+Using fallback image
+--------------------
+
+If the image file doesn't exists, you can configurate a fallback image that will be used
+by the class (note that this require the cache directory to be available).
+
+A default "error" image which is used is in `images/error.jpg`, you can change it with:
+
+```php
+<?php
+    $img->setFallback('/path/to/my/fallback.jpg');
+```
+
 Garbage Collect
 ===============
 
