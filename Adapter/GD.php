@@ -401,6 +401,8 @@ class GD extends Common
 
             $this->resource = $img;
         }
+        
+        imagesavealpha($this->resource, true);
     }
     
     public function saveGif($file)
