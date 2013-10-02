@@ -48,6 +48,16 @@ class Image
         'png'   => 'png',
         'gif'   => 'gif',
     );
+    
+    /**
+     * Fallback image
+     */
+    protected $fallback;
+
+    /**
+     * Use fallback image
+     */
+    protected $useFallbackImage = true;
 
     /**
      * Change the caching directory
@@ -86,6 +96,8 @@ class Image
 
     public function __construct($originalFile = null, $width = null, $height = null)
     {
+        $this->setFallback(null);
+
         if ($originalFile) {
             $this->source = new Source\File($originalFile);
         } else {
@@ -107,6 +119,38 @@ class Image
     public function setResource($resource)
     {
         $this->source = new Source\Resource($resource);
+    }
+
+    /**
+     * Use the fallback image or not
+     */
+    public function useFallback($useFallbackImage = true)
+    {
+        $this->useFallbackImage = $useFallbackImage;
+
+        return $this;
+    }
+
+    /**
+     * Sets the fallback image to use
+     */
+    public function setFallback($fallback = null)
+    {
+        if ($fallback === null) {
+            $this->fallback = __DIR__ . '/images/error.jpg';
+        } else {
+            $this->fallback = $fallback;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the fallack image path
+     */
+    public function getFallback()
+    {
+        return $this->fallback;
     }
 
     public function getAdapter()
@@ -426,32 +470,41 @@ class Image
 
         $type = self::$types[$type];
 
-        $this->init();
-        $this->applyOperations();
+        try {
+            $this->init();
+            $this->applyOperations();
 
-        $success = false;
+            $success = false;
 
-        if (null == $file) {
-            ob_start();
+            if (null == $file) {
+                ob_start();
+            }
+
+            if ($type == 'jpeg') {
+                $this->getAdapter()->saveJpeg($file, $quality);
+            }
+
+            if ($type == 'gif') {
+                $this->getAdapter()->saveGif($file);
+            }
+
+            if ($type == 'png') {
+                $this->getAdapter()->savePng($file);
+            }
+
+            if (!$success) {
+                return false;
+            }
+
+            return (null === $file ? ob_get_clean() : $file);
+
+        } catch (\Exception $e) {
+            if ($this->useFallbackImage) {
+                return (null === $file ? file_get_contents($this->fallback) : $this->fallback);
+            } else {
+                throw $e;
+            }
         }
-
-        if ($type == 'jpeg') {
-            $this->getAdapter()->saveJpeg($file, $quality);
-        }
-
-        if ($type == 'gif') {
-            $this->getAdapter()->saveGif($file);
-        }
-
-        if ($type == 'png') {
-            $this->getAdapter()->savePng($file);
-        }
-
-        if (!$success) {
-            return false;
-        }
-
-        return (null === $file ? ob_get_clean() : $file);
     }
 
     /**

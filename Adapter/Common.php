@@ -9,6 +9,10 @@ abstract class Common extends Adapter
      */
     protected $resource = null;
 
+    public function __construct()
+    {
+    }
+
     /**
      * Perform a zoom crop of the image to desired width and height
      *

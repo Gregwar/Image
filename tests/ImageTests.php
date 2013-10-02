@@ -206,6 +206,26 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(127, $color['alpha']);
     }
 
+    public function testNonExistingFile()
+    {
+        $jpg = $this->output('a.jpg');
+        $img =Image::open('non_existing_file.jpg');
+        $error = $img->save($jpg);
+
+        $this->assertTrue(file_exists($error));
+        $this->assertEquals($img->getFallback(), $error);
+    }
+
+    /**
+     * * @expectedException              \Exception
+     */
+    public function testNonExistingFileNoFallback()
+    {
+        Image::open('non_existing_file.jpg')
+            ->useFallback(false)
+            ->save();
+    }
+
     /**
      * Outputing an image to a file
      */

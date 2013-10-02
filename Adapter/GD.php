@@ -38,6 +38,8 @@ class GD extends Common
 
     public function __construct()
     {
+        parent::__construct();
+
         if (!(extension_loaded('gd') && function_exists('gd_info'))) {
             throw new \RuntimeException('You need to install GD PHP Extension to use this library');
         }
