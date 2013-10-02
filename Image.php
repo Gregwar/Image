@@ -391,7 +391,7 @@ class Image
 
         // If the files does not exists, save it
         if (!file_exists($actualFile)) {
-            $this->save($actualFile, $type, $quality);
+            $file = $this->save($actualFile, $type, $quality);
         }
 
         return $this->getFilename($file);
