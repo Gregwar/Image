@@ -209,11 +209,11 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     public function testNonExistingFile()
     {
         $jpg = $this->output('a.jpg');
-        $img =Image::open('non_existing_file.jpg');
+        $img = $this->open('non_existing_file.jpg')
+            ->negate();
         $error = $img->save($jpg);
 
         $this->assertTrue(file_exists($error));
-        $this->assertEquals($img->getFallback(), $error);
     }
 
     /**
@@ -242,5 +242,6 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $dir = $this->output('');
         `rm -rf $dir`;
         mkdir($dir);
+        mkdir($this->output('cache'));
     }
 }

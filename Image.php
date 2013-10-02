@@ -153,6 +153,20 @@ class Image
         return $this->fallback;
     }
 
+    /**
+     * Gets the fallback into the cache dir
+     */
+    public function getCacheFallback()
+    {
+        $file = ($this->actualCacheDir ?: $this->cacheDir) . '/fallback.jpg';
+
+        if (!file_exists($file)) {
+            file_put_contents($file, file_get_contents($this->fallback));
+        }
+
+        return $this->cacheDir . '/fallback.jpg';
+    }
+
     public function getAdapter()
     {
         if (null === $this->adapter) {
@@ -500,7 +514,7 @@ class Image
 
         } catch (\Exception $e) {
             if ($this->useFallbackImage) {
-                return (null === $file ? file_get_contents($this->fallback) : $this->fallback);
+                return (null === $file ? file_get_contents($this->fallback) : $this->getCacheFallback());
             } else {
                 throw $e;
             }
