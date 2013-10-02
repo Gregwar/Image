@@ -268,7 +268,7 @@ class Image
             $args = $operation[1];
 
             foreach ($args as &$arg) {
-                if ($arg instanceof Image) {
+                if ($arg instanceof self) {
                     $arg = $arg->getHash();
                 }
             }
@@ -501,7 +501,7 @@ class Image
      */
     public static function open($file = '')
     {
-        return new Image($file);
+        return new self($file);
     }
 
     /**
@@ -509,7 +509,7 @@ class Image
      */
     public static function create($width, $height)
     {
-        return new Image(null, $width, $height);
+        return new self(null, $width, $height);
     }
 
     /**
@@ -517,7 +517,7 @@ class Image
      */
     public static function fromData($data)
     {
-        $image = new Image();
+        $image = new self();
         $image->setData($data);
 
         return $image;
@@ -528,7 +528,7 @@ class Image
      */
     public static function fromResource($resource)
     {
-        $image = new Image();
+        $image = new self();
         $image->setResource($resource);
 
         return $image;
