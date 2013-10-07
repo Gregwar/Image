@@ -409,17 +409,17 @@ class GD extends Common
     {
         $transColor = imagecolorallocatealpha($this->resource, 0, 0, 0, 127);
         imagecolortransparent($this->resource, $transColor);
-        imagegif($this->resource, $file);
+        return imagegif($this->resource, $file);
     }
 
     public function savePng($file)
     {
-        imagepng($this->resource, $file);
+        return imagepng($this->resource, $file);
     }
 
     public function saveJpeg($file, $quality)
     {
-        $success = imagejpeg($this->resource, $file, $quality);
+        return imagejpeg($this->resource, $file, $quality);
     }
 
     /**

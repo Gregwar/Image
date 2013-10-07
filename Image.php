@@ -495,15 +495,15 @@ class Image
             }
 
             if ($type == 'jpeg') {
-                $this->getAdapter()->saveJpeg($file, $quality);
+                $success = $this->getAdapter()->saveJpeg($file, $quality);
             }
 
             if ($type == 'gif') {
-                $this->getAdapter()->saveGif($file);
+                $success = $this->getAdapter()->saveGif($file);
             }
 
             if ($type == 'png') {
-                $this->getAdapter()->savePng($file);
+                $success = $this->getAdapter()->savePng($file);
             }
 
             if (!$success) {

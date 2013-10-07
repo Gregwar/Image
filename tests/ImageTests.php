@@ -227,6 +227,19 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that image::save returns the file name
+     */
+    public function testSaveReturn()
+    {
+        $red = $this->output('red.jpg');
+        $result = Image::create(10, 10)
+            ->fill('red')
+            ->save($red);
+
+        $this->assertEquals($red, $result);
+    }
+
+    /**
      * Outputing an image to a file
      */
     protected function output($file)
