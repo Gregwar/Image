@@ -291,6 +291,25 @@ class Image
         $this->operations[] = array($method, $args);
     }
 
+   /**
+    * Guess Switchable parameters on call
+    */
+    private function guessSwitchableParametersCallDetect(array $callsChoose, $choice)
+    {
+        if(!is_string($choice)) throw new \InvalidArgumentException("Bad type to be ".gettype($choice)." string given");
+        
+        if(!array_key_exists($choice, $callsChoose)) throw new \Exception("Choice not avaiable");
+
+        $args = $callsChoose[$choice];
+
+        if(!is_array($args))
+        {
+            throw new \InvalidArgumentException("Bad type to be ".gettype($arg)." array given");
+        }
+
+        return $args;
+    }
+
     /**
      * Generic function
      */
@@ -299,11 +318,33 @@ class Image
         $adapter = $this->getAdapter();
         $reflection = new \ReflectionClass(get_class($adapter));
 
+        if(preg_match("/Switch$/", $methodName))
+        {
+            list($methodName) = explode("Switch", $methodName);
+
+            if(count($args) != 2) 
+            {
+                throw new \InvalidArgumentException("Not enough arguments given");
+            }
+
+            $callsChoose = $args[0];
+            $choice = $args[1];
+
+            $args = $this->guessSwitchableParametersCallDetect($callsChoose, $choice);
+            
+            if(!is_array($args))
+            {
+                throw new \InvalidArgumentException("Bad type for first arguments type to be ".gettype($arg)." array given for switchable call");
+            }
+        }
+        
+
+
         if ($reflection->hasMethod($methodName)) {
             $method = $reflection->getMethod($methodName);
 
             if ($method->getNumberOfRequiredParameters() > count($args)) {
-                throw new \InvalidArgumentException('Not enough arguments given for '.$func);
+                throw new \InvalidArgumentException('Not enough arguments given for '.$methodName);
             }
 
             $this->addOperation($methodName, $args);
@@ -311,7 +352,7 @@ class Image
             return $this;
         }
 
-        throw new \BadFunctionCallException('Invalid method: '.$func);
+        throw new \BadFunctionCallException('Invalid method: '.$methodName);
     }
 
     /**
