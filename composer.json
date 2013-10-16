@@ -13,7 +13,10 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "ext-gd": "*"
+        "ext-gd": "*",
+    },
+    "suggest": {
+        "mobiledetect/mobiledetectlib": "Allows detect device phone, tablet and other for generate responsive images",
     },
     "target-dir": "Gregwar/Image",
     "autoload": {

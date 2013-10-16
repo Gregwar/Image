@@ -101,6 +101,87 @@ You can save the image to an explicit file using `save($file, $type = 'jpg', $qu
 
 You can also get the contents of the image using `get($type = 'jpg', $quality = 80)`, which will return the binary contents of the image
 
+Optimise image for device
+-------------------------
+
+You can optimize the images for a device thanks to switchable parameter included.
+
+If you call an action suffix of 'Switch' case sensitive, you can make a table with two levels that can contain different arguments, cache key is a choice and its value is an array of arguments passed to the action seron if this option is selected, your choice should be passed as the second parameter and it should preferably be a string.
+
+There are two ways to use the switchable parameters by appending the action 'Switch'
+Or using the component 'https://github.com/onetest/php-full-power' which has a functionality of switchable parameter compatible with the older version of gregwar / image.
+
+Example using the integrated gregwar / image switchable settings
+
+
+```php
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+require_once('../autoload.php');
+require_once('../vendor/autoload.php');
+
+use Gregwar\Image\Image;
+
+$detect = new \Detection\MobileDetect();
+$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'other');
+
+try {
+Image::open(__DIR__.'/img/test.png')
+    ->resizeSwitch(array(
+        "phone" => array(150, 150),
+        "tablet" => array(300, 300),
+        "other" => array(400, 400)
+        ), $deviceType)
+    ->save('out.jpg', 'jpg');
+}
+catch(\Exception $e)
+{
+    echo $e->getMessage();
+}
+?>
+```
+
+Example using component 'https://github.com/onetest/php-full-power'
+
+The component 'php-full-power' development are being use is not recommended to use it only if you are sure what you are doing.
+
+```php
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+require_once('../autoload.php');
+require_once('../vendor/autoload.php');
+
+use Gregwar\Image\Image;
+
+$phpFull = new fullPhp\lib\PhpFullPower();
+
+$phpFull->addFunctionality(new fullPhp\functionality\ParamSwitcher());
+
+$phpFull->enable();
+
+$detect = new \Detection\MobileDetect();
+$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'other');
+
+try {
+Image::open(__DIR__.'/img/test.png')
+    ->resize(new fullPhp\lib\SwitchableParameters(array(
+        "phone" => array(150, 150),
+        "tablet" => array(300, 300),
+        "other" => array(400, 400)
+        ), $deviceType))
+    ->save('out.jpg', 'jpg');
+}
+catch(\Exception $e)
+{
+    echo $e->getMessage();
+}
+?>
+```
+
 Using cache
 -----------
 

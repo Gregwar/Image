@@ -41,6 +41,32 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Testing the resize optimised with parameters switchable
+     */
+    public function testResizeSwitch()
+    {
+        $image = $this->open('monalisa.jpg');
+
+        $out = $this->output('monalisa_small.jpg');
+        $image
+            ->resizeSwitch(array(
+                "phone" => array(150, 150),
+                "tablet" => array(300, 300),
+                "other" => array(400, 400)
+                ), "phone")
+            )
+            ->save($out)
+            ;
+
+        $this->assertTrue(file_exists($out));
+
+        $i = imagecreatefromjpeg($out);
+        $this->assertEquals(150, imagesx($i));
+        $this->assertEquals(150, imagesy($i));
+    }
+
+
+    /**
      * Testing the resize %
      */
     public function testResizePercent()
