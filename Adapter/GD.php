@@ -3,6 +3,7 @@
 namespace Gregwar\Image\Adapter;
 
 use Gregwar\Image\ImageColor;
+use Gregwar\Image\Image;
 
 class GD extends Common
 {
