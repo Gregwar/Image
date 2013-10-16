@@ -13,6 +13,11 @@ abstract class Common extends Adapter
     {
     }
 
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
     /**
      * Perform a zoom crop of the image to desired width and height
      *

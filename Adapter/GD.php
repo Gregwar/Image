@@ -210,7 +210,7 @@ class GD extends Common
             $h = $other->height();
         }
 
-        imagecopyresampled($this->resource, $other->resource, $x, $y, 0, 0, $w, $h, $w, $h);
+        imagecopyresampled($this->resource, $other->getAdapter()->getResource(), $x, $y, 0, 0, $w, $h, $w, $h);
     }
 
     /**
