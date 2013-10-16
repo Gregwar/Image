@@ -2,6 +2,8 @@
 
 use Gregwar\Image\Image;
 
+use Gregwar\Image\ImageColor;
+
 /**
  * Unit testing for Image
  */
@@ -237,6 +239,55 @@ class ImageTests extends \PHPUnit_Framework_TestCase
             ->save($red);
 
         $this->assertEquals($red, $result);
+    }
+
+    /**
+     * Testing merge
+     */
+    public function testMerge()
+    {
+        $out = $this->output('merge.jpg');
+        Image::create(100, 100)
+            ->fill('red')
+            ->merge(Image::create(50, 50)
+                ->fill('black')
+            )
+            ->save($out);
+
+        // Merge file exists
+        $this->assertTrue(file_exists($out));
+
+        // Test that the upper left zone contain a black pixel, and the lower
+        // down contains a red one
+        $img = imagecreatefromjpeg($out);
+        $this->assertColorEquals('black', imagecolorat($img, 5, 12));
+        $this->assertColorEquals('red', imagecolorat($img, 55, 62));
+    }
+
+    /**
+     * Asaserting that two colors are equals
+     * (JPG compression is not preserving colors for instance, so we
+     * need a non-strict way to compare it)
+     */
+    protected function assertColorEquals($c1, $c2, $delta = 8)
+    {
+        $c1 = ImageColor::parse($c1);
+        $c2 = ImageColor::parse($c2);
+        list($r1, $g1, $b1) = $this->toRGB($c1);
+        list($r2, $g2, $b2) = $this->toRGB($c2);
+
+        $this->assertLessThan($delta, abs($r1 - $r2));
+        $this->assertLessThan($delta, abs($g1 - $g2));
+        $this->assertLessThan($delta, abs($b1 - $b2));
+    }
+
+    protected function toRGB($color)
+    {
+        $b = $color&0xff;
+        $g = ($color>>8)&0xff;
+        $r = ($color>>16)&0xff;
+
+        return array($r, $g, $b);
     }
 
     /**
