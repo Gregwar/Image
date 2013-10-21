@@ -124,6 +124,18 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals($monalisa, $image->guess());
     }
 
+    public function testActualCache()
+    {
+        $output = $this->open('monalisa.jpg')
+            ->setCacheDir('/magic/path/to/cache/')
+            ->resize(100, 50)->negate()
+            ->guess();
+
+        $this->assertContains('/magic/path/to/cache', $output);
+        $file = str_replace('/magic/path/to', __DIR__.'/output/', $output);
+        $this->assertTrue(file_exists($file));
+    }
+
     /**
      * Testing using cache
      */
@@ -186,6 +198,7 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     {
         $image = Image::open(__DIR__ . '/files/' . $file);
         $image->setCacheDir(__DIR__.'/output/cache/');
+        $image->setActualCacheDir(__DIR__.'/output/cache/');
         return $image;
     }
 

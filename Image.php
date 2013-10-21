@@ -65,6 +65,8 @@ class Image
     public function setCacheDir($cacheDir)
     {
         $this->cacheDir = $cacheDir;
+
+        return $this;
     }
 
     /**
