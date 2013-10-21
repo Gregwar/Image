@@ -1,5 +1,10 @@
 <?php
 
+$vendors = __DIR__.'/vendor/autoload.php';
+if (file_exists($vendors)) {
+    require($vendors);
+}
+
 /**
 * Registers an autoload for all the classes in Gregwar\Image
 */

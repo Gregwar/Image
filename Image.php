@@ -15,11 +15,6 @@ class Image
     protected $cacheDir = 'cache/images';
 
     /**
-     * The actual cache dir
-     */
-    protected $actualCacheDir = null;
-
-    /**
      * Internal adapter
      */
     protected $adapter = null;
@@ -60,11 +55,16 @@ class Image
     protected $useFallbackImage = true;
 
     /**
+     * Cache system
+     */
+    protected $cache;
+
+    /**
      * Change the caching directory
      */
     public function setCacheDir($cacheDir)
     {
-        $this->cacheDir = $cacheDir;
+        $this->cache->setCacheDirectory($cacheDir);
 
         return $this;
     }
@@ -74,7 +74,7 @@ class Image
      */
     public function setActualCacheDir($actualCacheDir)
     {
-        $this->actualCacheDir = $actualCacheDir;
+        $this->cache->setActualCacheDirectory($actualCacheDir);
 
         return $this;
     }
@@ -98,6 +98,9 @@ class Image
 
     public function __construct($originalFile = null, $width = null, $height = null)
     {
+        $this->cache = new \Gregwar\Cache\Cache;
+        $this->cache->setCacheDirectory($this->cacheDir);
+
         $this->setFallback(null);
 
         if ($originalFile) {
@@ -160,13 +163,11 @@ class Image
      */
     public function getCacheFallback()
     {
-        $file = ($this->actualCacheDir ?: $this->cacheDir) . '/fallback.jpg';
+        $fallback = $this->fallback;
 
-        if (!file_exists($file)) {
-            file_put_contents($file, file_get_contents($this->fallback));
-        }
-
-        return $this->cacheDir . '/fallback.jpg';
+        return $this->cache->getOrCreate('fallback.jpg', array(), function($target) use ($fallback) {
+            copy($fallback, $target);
+        }, true);
     }
 
     public function getAdapter()
@@ -205,41 +206,6 @@ class Image
         }
 
         $this->adapter->setSource($this->source);
-    }
-
-    /**
-     * Create and returns the absolute directory for a hash
-     *
-     * @param string $hash the hash
-     *
-     * @return string the full file name
-     */
-    public function generateFileFromHash($hash)
-    {
-        $directory = $this->cacheDir;
-
-        if ($this->actualCacheDir === null) {
-            $actualDirectory = $directory;
-        } else {
-            $actualDirectory = $this->actualCacheDir;
-        }
-
-        for ($i=0; $i<5; $i++) {
-            $c = $hash[$i];
-            $directory .= '/' . $c;
-            $actualDirectory .= '/' . $c;
-        }
-
-        $endName = substr($hash, 5);
-
-        if ($this->prettyName) {
-            $endName = $this->prettyName . '-' . $endName;
-        }
-
-        $file = $directory . '/' . $endName;
-        $actualFile = $actualDirectory . '/' . $endName;
-
-        return array($actualFile, $file);
     }
 
     /**
@@ -389,16 +355,13 @@ class Image
         $this->hash = $this->getHash($type, $quality);
 
         // Generates the cache file
-        list($actualFile, $file) = $this->generateFileFromHash($this->hash.'.'.$type);
+        $cacheFile = $this->hash.'.'.$type;
 
         // If the files does not exists, save it
-        if (!file_exists($actualFile)) {
-            $resultFile = $this->save($actualFile, $type, $quality);
-
-            if ($resultFile != $actualFile) {
-                $file = $resultFile;
-            }
-        }
+        $image = $this;
+        $file = $this->cache->getOrCreate($cacheFile, array(), function($actualFile) use ($image, $type, $quality) {
+            $image->save($actualFile, $type, $quality);
+        }, true);
 
         return $this->getFilename($file);
     }
