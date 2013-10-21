@@ -136,6 +136,17 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($file));
     }
 
+    public function testCacheData()
+    {
+        $output = $this->open('monalisa.jpg')
+            ->resize(300, 200)
+            ->cacheData();
+
+        $jpg = imagecreatefromstring($output);
+        $this->assertEquals(300, imagesx($jpg));
+        $this->assertEquals(200, imagesy($jpg));
+    }
+
     /**
      * Testing using cache
      */

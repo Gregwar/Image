@@ -279,7 +279,7 @@ class Image
             return $this;
         }
 
-        throw new \BadFunctionCallException('Invalid method: '.$func);
+        throw new \BadFunctionCallException('Invalid method: '.$methodName);
     }
 
     /**
@@ -340,6 +340,9 @@ class Image
      * Gets the cache file name and generate it if it does not exists.
      * Note that if it exists, all the image computation process will
      * not be done.
+     *
+     * @param $type the image type
+     * @param $quality the quality (for JPEG)
      */
     public function cacheFile($type = 'jpg', $quality = 80)
     {
@@ -364,6 +367,17 @@ class Image
         }, true);
 
         return $this->getFilename($file);
+    }
+
+    /**
+     * Get cache data (to render the image)
+     *
+     * @param $type the image type
+     * @param $quality the quality (for JPEG)
+     */
+    public function cacheData($type = 'jpg', $quality = 80)
+    {
+        return file_get_contents($this->cacheFile($type, $quality));
     }
 
     /**
