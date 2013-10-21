@@ -289,6 +289,31 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that dependencies are well generated
+     */
+    public function testDependencies()
+    {
+        $this->assertEquals(array(), Image::create(100, 100)
+            ->getDependencies());
+        $this->assertEquals(array(), Image::create(100, 100)
+            ->merge(Image::create(100, 50))
+            ->getDependencies());
+
+        $this->assertEquals(array('toto.jpg'), Image::open('toto.jpg')
+            ->merge(Image::create(100, 50))
+            ->getDependencies());
+        
+        $this->assertEquals(array('toto.jpg', 'titi.jpg'), Image::open('toto.jpg')
+            ->merge(Image::open('titi.jpg'))
+            ->getDependencies());
+        
+        $this->assertEquals(array('toto.jpg', 'titi.jpg', 'tata.jpg'), Image::open('toto.jpg')
+            ->merge(Image::open('titi.jpg')
+                    ->merge(Image::open('tata.jpg')))
+            ->getDependencies());
+    }
+
+    /**
      * Asaserting that two colors are equals
      * (JPG compression is not preserving colors for instance, so we
      * need a non-strict way to compare it)

@@ -421,6 +421,29 @@ class Image
     }
 
     /**
+     * Get all the files that this image depends on
+     */
+    public function getDependencies()
+    {
+        $dependencies = array();
+
+        $file = $this->getFilePath();
+        if ($file) {
+            $dependencies[] = $file;
+        }
+
+        foreach ($this->operations as $operation) {
+            foreach ($operation[1] as $argument) {
+                if ($argument instanceof self) {
+                    $dependencies = array_merge($dependencies, $argument->getDependencies());
+                }
+            }
+        }
+
+        return $dependencies;
+    }
+
+    /**
      * Applies the operations
      */
     public function applyOperations()
