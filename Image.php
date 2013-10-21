@@ -362,9 +362,20 @@ class Image
 
         // If the files does not exists, save it
         $image = $this;
-        $file = $this->cache->getOrCreate($cacheFile, array(), function($actualFile) use ($image, $type, $quality) {
-            $image->save($actualFile, $type, $quality);
-        }, true);
+
+        // Target file should be younger than all the current image 
+        // dependencies        
+        $conditions = array(
+            'younger-than' => $this->getDependencies()
+        );
+
+        // The generating function
+        $generate = function($target) use ($image, $type, $quality) {
+            $image->save($target, $type, $quality);
+        };
+
+        // Asking the cache for the cacheFile
+        $file = $this->cache->getOrCreate($cacheFile, $conditions, $generate, true);
 
         return $this->getFilename($file);
     }
@@ -422,6 +433,9 @@ class Image
 
     /**
      * Get all the files that this image depends on
+     *
+     * @return an array of strings containing all the files that the 
+     *         current Image depends on
      */
     public function getDependencies()
     {

@@ -58,13 +58,6 @@ class File extends Source
 
     public function getInfos()
     {
-        $time = null;
-
-        try {
-            $time = @filectime($this->file);
-        } catch (\Exception $e) {
-        }
-
-        return array($this->file, $time);
+        return $this->file;
     }
 }
