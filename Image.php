@@ -240,7 +240,7 @@ class Image
      */
     public function correct()
     {
-        return $thi->source->correct();
+        return $this->source->correct();
     }
 
     /**
