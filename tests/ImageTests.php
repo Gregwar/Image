@@ -320,10 +320,30 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     {
         $output = $this->open('monalisa.jpg')
             ->resize(100, 50)->negate()
-            ->setPrettyName('davinci')
+            ->setPrettyName('davinci', false)
             ->guess();
 
         $this->assertContains('davinci', $output);
+        
+        $output2 = $this->open('monalisa.jpg')
+            ->resize(100, 55)->negate()
+            ->setPrettyName('davinci', false)
+            ->guess();
+
+        $this->assertEquals($output, $output2);
+        
+        $prefix1 = $this->open('monalisa.jpg')
+            ->resize(100, 50)->negate()
+            ->setPrettyName('davinci')
+            ->guess();
+        $prefix2 = $this->open('monalisa.jpg')
+            ->resize(100, 55)->negate()
+            ->setPrettyName('davinci')
+            ->guess();
+
+        $this->assertContains('davinci', $prefix1);
+        $this->assertContains('davinci', $prefix2);
+        $this->assertNotEquals($prefix1, $prefix2);
     }
 
     /**

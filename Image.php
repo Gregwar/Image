@@ -23,6 +23,7 @@ class Image
      * Pretty name for the image
      */
     protected $prettyName = '';
+    protected $prettyPrefix;
 
     /**
      * Transformations hash
@@ -82,11 +83,12 @@ class Image
     /**
      * Sets the pretty name of the image
      */
-    public function setPrettyName($name)
+    public function setPrettyName($name, $prefix = true)
     {
         $name = strtolower($name);
         $name = str_replace(' ', '-', $name);
         $this->prettyName = preg_replace('/([^a-z0-9\-]+)/m', '', $name);
+        $this->prettyPrefix = $prefix;
 
         return $this;
     }
@@ -358,11 +360,21 @@ class Image
         $this->hash = $this->getHash($type, $quality);
 
         // Generates the cache file
+        $cacheFile = '';
+
         if ($this->prettyName) {
-            $cacheFile = $this->prettyName.'.'.$type;
-        } else {
-            $cacheFile = $this->hash.'.'.$type;
+            $cacheFile .= $this->prettyName;
         }
+
+        if ($this->prettyPrefix) {
+            $cacheFile .= '-';
+        }
+
+        if (!$this->prettyName || $this->prettyPrefix) {
+            $cacheFile .= $this->hash;
+        }
+
+        $cacheFile .= '.'.$type;
 
         // If the files does not exists, save it
         $image = $this;
