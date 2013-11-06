@@ -119,9 +119,9 @@ Once the cache directory configured, you can call the following methods:
 * `guess($quality = 80)`: guesses the type (use the same as input) and lookup or create a
   cache file on-the-fly
 
-* `setPrettyName($prettyName, $prefix = true)`: sets a name prefix for the file, if you want it to be more SEO-friendly.
-   for instance, if you call it "Fancy Image", the cache will look like something/fancy-image-something.jpg.
-   If `$prefix` is passed to `false` (default `true`), the pretty name won't have any suffix.
+* `setPrettyName($prettyName, $prefix = true)`: sets a "pretty" name suffix for the file, if you want it to be more SEO-friendly.
+   for instance, if you call it "Fancy Image", the cache will look like something/something-fancy-image.jpg.
+   If `$prefix` is passed to `false` (default `true`), the pretty name won't have any hash prefix.
 
 For instance:
 

@@ -362,16 +362,16 @@ class Image
         // Generates the cache file
         $cacheFile = '';
 
-        if ($this->prettyName) {
-            $cacheFile .= $this->prettyName;
+        if (!$this->prettyName || $this->prettyPrefix) {
+            $cacheFile .= $this->hash;
         }
 
         if ($this->prettyPrefix) {
             $cacheFile .= '-';
         }
 
-        if (!$this->prettyName || $this->prettyPrefix) {
-            $cacheFile .= $this->hash;
+        if ($this->prettyName) {
+            $cacheFile .= $this->prettyName;
         }
 
         $cacheFile .= '.'.$type;
