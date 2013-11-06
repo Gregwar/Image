@@ -358,7 +358,11 @@ class Image
         $this->hash = $this->getHash($type, $quality);
 
         // Generates the cache file
-        $cacheFile = $this->hash.'.'.$type;
+        if ($this->prettyName) {
+            $cacheFile = $this->prettyName.'.'.$type;
+        } else {
+            $cacheFile = $this->hash.'.'.$type;
+        }
 
         // If the files does not exists, save it
         $image = $this;

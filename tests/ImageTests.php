@@ -314,6 +314,19 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that pretty name (for referencing) is well respected
+     */
+    public function testPrettyName()
+    {
+        $output = $this->open('monalisa.jpg')
+            ->resize(100, 50)->negate()
+            ->setPrettyName('davinci')
+            ->guess();
+
+        $this->assertContains('davinci', $output);
+    }
+
+    /**
      * Asaserting that two colors are equals
      * (JPG compression is not preserving colors for instance, so we
      * need a non-strict way to compare it)
