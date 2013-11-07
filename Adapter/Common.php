@@ -297,4 +297,11 @@ abstract class Common extends Adapter
      * Gets the color of the $x, $y pixel
      */
     abstract protected function getColor($x, $y);
+
+	/**
+	 * enable progressive image loading
+	 */
+	public function enableProgressive(){
+		throw new \Exception('The Adapter '.$this->getName().' does not support Progressive Image loading');
+	}
 }
