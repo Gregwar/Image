@@ -460,4 +460,11 @@ class GD extends Common
     {
         return imagecolorat($this->resource, $x, $y);
     }
+
+	/**
+	 * enable progressive image loading
+	 */
+	public function enableProgressive(){
+		imageinterlace($this->resource, 1);
+	}
 }
