@@ -5,28 +5,9 @@ namespace Gregwar\Image\Adapter;
 abstract class Common extends Adapter
 {
     /**
-     * The image resource handler
+     * @inheritdoc
      */
-    protected $resource = null;
-
-    public function __construct()
-    {
-    }
-
-    public function getResource()
-    {
-        return $this->resource;
-    }
-
-    /**
-     * Perform a zoom crop of the image to desired width and height
-     *
-     * @param integer $width  Desired width
-     * @param integer $height Desired height
-     * @param int $bg
-     * @return void
-     */
-    public function zoomCrop($width, $height, $bg = 0xffffff)
+    public function zoomCrop($width, $height, $background = 0xffffff)
     {
         // Calculate the different ratios
         $originalRatio = $this->width() / $this->height();
@@ -44,7 +25,7 @@ abstract class Common extends Adapter
         }
 
         // Perform resize
-        $this->resize($newWidth, $newHeight, $bg, true);
+        $this->resize($newWidth, $newHeight, $background, true);
 
         // Calculate cropping area
         $xPos = (int) ($newWidth - $width) / 2;
@@ -52,6 +33,8 @@ abstract class Common extends Adapter
 
         // Crop image to reach desired size
         $this->crop($xPos, $yPos, $width, $height);
+
+		return $this;
     }
 
     /**
@@ -64,31 +47,23 @@ abstract class Common extends Adapter
      */
     public function forceResize($width = null, $height = null, $background = 0xffffff)
     {
-        $this->resize($width, $height, $background, true);
+        return $this->resize($width, $height, $background, true);
     }
 
     /**
-     * Resizes the image preserving scale. Can enlarge it.
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
+     * @inheritdoc
      */
     public function scaleResize($width = null, $height = null, $background=0xffffff, $crop = false)
     {
-        $this->resize($width, $height, $background, false, true, $crop);
+        return $this->resize($width, $height, $background, false, true, $crop);
     }
 
     /**
-     * Works as resize() excepts that the layout will be cropped
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
+     * @inheritdoc
      */
     public function cropResize($width = null, $height = null, $background=0xffffff)
     {
-        $this->resize($width, $height, $background, false, false, true);
+        return $this->resize($width, $height, $background, false, false, true);
     }
 
     /**
@@ -142,7 +117,7 @@ abstract class Common extends Adapter
     }
 
     /**
-     * Loads or create the image from its source
+     * @inheritdoc
      */
     public function init()
     {
@@ -164,65 +139,63 @@ abstract class Common extends Adapter
     }
 
     /**
-     * Resizes the image. It will never be enlarged.
-     *
-     * @param int $w the width
-     * @param int $h the height
-     * @param int $bg the background
+     * @inheritdoc
      */
-    public function resize($w = null, $h = null, $bg = 0xffffff, $force = false, $rescale = false, $crop = false)
+    public function resize($width = null, $height = null, $background = 0xffffff, $force = false, $rescale = false, $crop = false)
     {
         $width = $this->width();
         $height = $this->height();
+		$new_width = 0;
+		$new_height = 0;
         $scale = 1.0;
 
-        if ($h === null && preg_match('#^(.+)%$#mUsi', $w, $matches)) {
-            $w = round($width * ((float)$matches[1]/100.0));
-            $h = round($height * ((float)$matches[1]/100.0));
+        if ($height === null && preg_match('#^(.+)%$#mUsi', $width, $matches)) {
+            $width = round($width * ((float)$matches[1]/100.0));
+            $height = round($height * ((float)$matches[1]/100.0));
         }
 
         if (!$rescale && (!$force || $crop)) {
-            if ($w!=null && $width>$w) {
-                $scale = $width/$w;
+            if ($width!=null && $width>$width) {
+                $scale = $width/$width;
             }
 
-            if ($h!=null && $height>$h) {
-                if ($height/$h > $scale)
-                    $scale = $height/$h;
+            if ($height!=null && $height>$height) {
+                if ($height/$height > $scale)
+                    $scale = $height/$height;
             }
         } else {
-            if ($w!=null) {
-                $scale = $width/$w;
-                $new_width = $w;
+            if ($width!=null) {
+                $scale = $width/$width;
+                $new_width = $width;
             }
 
-            if ($h!=null) {
-                if ($w!=null && $rescale) {
-                    $scale = max($scale,$height/$h);
+            if ($height!=null) {
+                if ($width!=null && $rescale) {
+                    $scale = max($scale,$height/$height);
                 } else {
-                    $scale = $height/$h;
+                    $scale = $height/$height;
                 }
-                $new_height = $h;
+                $new_height = $height;
             }
         }
 
-        if (!$force || $w==null || $rescale) {
+        if (!$force || $width==null || $rescale) {
             $new_width = round($width/$scale);
         }
 
-        if (!$force || $h==null || $rescale) {
+        if (!$force || $height==null || $rescale) {
             $new_height = round($height/$scale);
         }
 
-        if ($w == null || $crop) {
-            $w = $new_width;
+        if ($width == null || $crop) {
+            $width = $new_width;
         }
 
-        if ($h == null || $crop) {
-            $h = $new_height;
+        if ($height == null || $crop) {
+            $height = $new_height;
         }
 
-        $this->doResize($bg, $w, $h, $new_width, $new_height);
+        $this->doResize($background, $width, $height, $new_width, $new_height);
     }
 
     /**
@@ -289,17 +262,12 @@ abstract class Common extends Adapter
     abstract protected function doResize($bg, $target_width, $target_height, $new_width, $new_height);
 
     /**
-     * Crops the image at $x, $y with a size of $w x $h
-     */
-    abstract public function crop($x, $y, $w, $h);
-
-    /**
      * Gets the color of the $x, $y pixel
      */
     abstract protected function getColor($x, $y);
 
 	/**
-	 * enable progressive image loading
+	 * @inheritdoc
 	 */
 	public function enableProgressive(){
 		throw new \Exception('The Adapter '.$this->getName().' does not support Progressive Image loading');
