@@ -143,48 +143,48 @@ abstract class Common extends Adapter
      */
     public function resize($width = null, $height = null, $background = 0xffffff, $force = false, $rescale = false, $crop = false)
     {
-        $width = $this->width();
-        $height = $this->height();
+        $current_width = $this->width();
+        $current_height = $this->height();
 		$new_width = 0;
 		$new_height = 0;
         $scale = 1.0;
 
         if ($height === null && preg_match('#^(.+)%$#mUsi', $width, $matches)) {
-            $width = round($width * ((float)$matches[1]/100.0));
-            $height = round($height * ((float)$matches[1]/100.0));
+            $width = round($current_width * ((float)$matches[1]/100.0));
+            $height = round($current_height * ((float)$matches[1]/100.0));
         }
 
         if (!$rescale && (!$force || $crop)) {
-            if ($width!=null && $width>$width) {
-                $scale = $width/$width;
+            if ($width!=null && $current_width>$width) {
+                $scale = $current_width/$width;
             }
 
-            if ($height!=null && $height>$height) {
-                if ($height/$height > $scale)
-                    $scale = $height/$height;
+            if ($height!=null && $current_height>$height) {
+                if ($current_height/$height > $scale)
+                    $scale = $current_height/$height;
             }
         } else {
             if ($width!=null) {
-                $scale = $width/$width;
+                $scale = $current_width/$width;
                 $new_width = $width;
             }
 
             if ($height!=null) {
                 if ($width!=null && $rescale) {
-                    $scale = max($scale,$height/$height);
+                    $scale = max($scale,$current_height/$height);
                 } else {
-                    $scale = $height/$height;
+                    $scale = $current_height/$height;
                 }
                 $new_height = $height;
             }
         }
 
         if (!$force || $width==null || $rescale) {
-            $new_width = round($width/$scale);
+            $new_width = round($current_width/$scale);
         }
 
         if (!$force || $height==null || $rescale) {
-            $new_height = round($height/$scale);
+            $new_height = round($current_height/$scale);
         }
 
         if ($width == null || $crop) {
