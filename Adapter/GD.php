@@ -7,7 +7,7 @@ use Gregwar\Image\Image;
 
 class GD extends Common
 {
-	public static $gdTypes = array(
+    public static $gdTypes = array(
         'jpeg'  => \IMG_JPG,
         'gif'   => \IMG_GIF,
         'png'   => \IMG_PNG,
