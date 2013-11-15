@@ -4,44 +4,42 @@ namespace Gregwar\Image\Adapter;
 
 use Gregwar\Image\Source\Source;
 
-abstract class Adapter
+/**
+ * Base Adapter Implementation to handle Image information
+ */
+abstract class Adapter implements AdapterInterface
 {
-    /**
-     * Source
-     */
-    protected $source = null;
+	/**
+	 * @var Source
+	 */
+	protected $source;
 
-    public function setSource(Source $source)
+	/**
+	 * The image resource handler
+	 */
+	protected $resource;
+
+	public function __construct(){
+
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function setSource(Source $source)
     {
         $this->source = $source;
+
+		return $this;
     }
 
-    /**
-     * Init the resource
-     */
-    abstract public function init();
-
-    /**
-     * Gets the name of the adapter
-     */
-    abstract public function getName();
-
-    /**
-     * Image width
-     */
-    abstract public function width();
-
-    /**
-     * Image height
-     */
-    abstract public function height();
-
-    /**
-     * Save the image as a git, png or jpeg
-     */
-    abstract public function saveGif($file);
-    abstract public function savePng($file);
-    abstract public function saveJpeg($file, $quality);
+	/**
+	 * @inheritdoc
+	 */
+	public function getResource()
+	{
+		return $this->resource;
+	}
 
     /**
      * Does this adapter supports the given type ?
