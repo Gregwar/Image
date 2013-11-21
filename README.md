@@ -30,7 +30,7 @@ The methods available are:
 
 * `scaleResize($width, $height, $background)`: resizes the image, will preserve scale
 
-* `forceResize($width, $height, $background)`: resizes the image, will orce the image to
+* `forceResize($width, $height, $background)`: resizes the image, will force the image to
    be exactly $width by $height
 
 * `cropResize($width, $height, $background)`: resizes the image preserving scale and croping
