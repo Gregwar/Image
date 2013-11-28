@@ -36,6 +36,11 @@ class Image
     protected $source = null;
 
     /**
+     * Force image caching, even if there is no operation applied
+     */
+    protected $forceCache = true;
+
+    /**
      * Supported types
      */
     public static $types = array(
@@ -66,6 +71,16 @@ class Image
     public function setCacheDir($cacheDir)
     {
         $this->cache->setCacheDirectory($cacheDir);
+
+        return $this;
+    }
+
+    /**
+     * Enable or disable to force cache even if the file is unchanged
+     */
+    public function setForceCache($forceCache = true)
+    {
+        $this->forceCache = $forceCache;
 
         return $this;
     }
@@ -352,7 +367,7 @@ class Image
             $type = $this->guessType();
         }
 
-        if (!count($this->operations) && $type == $this->guessType()) {
+        if (!count($this->operations) && $type == $this->guessType() && !$this->forceCache) {
             return $this->getFilename($this->getFilePath());
         }
 

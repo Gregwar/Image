@@ -115,13 +115,17 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
     /**
      * Testing that caching an image without operations will result
-     * in the original image
+     * in the original image when force cache is disabled
      */
     public function testNoCache()
     {
         $monalisa = __DIR__ . '/files/monalisa.jpg';
-        $image = $this->open('monalisa.jpg');
+        $image = $this->open('monalisa.jpg')->setForceCache(false);
         $this->assertEquals($monalisa, $image->guess());
+        $image = $this->open('monalisa.jpg');
+        $this->assertNotEquals($monalisa, $image->guess());
+        $image = $this->open('monalisa.jpg')->setForceCache(true);
+        $this->assertNotEquals($monalisa, $image->guess());
     }
 
     public function testActualCache()
