@@ -12,7 +12,7 @@
         }
     ],
     "require": {
-        "gregwar/cache": "v1.0.4",
+        "gregwar/cache": "v1.0.5",
         "php": ">=5.3.0",
         "ext-gd": "*"
     },

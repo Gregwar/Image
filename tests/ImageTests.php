@@ -247,13 +247,13 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * * @expectedException              \Exception
+     * * @expectedException              \UnexpectedValueException
      */
     public function testNonExistingFileNoFallback()
     {
         Image::open('non_existing_file.jpg')
             ->useFallback(false)
-            ->save();
+            ->save($this->output('a.jpg'));
     }
 
     /**

@@ -2,10 +2,44 @@
 
 namespace Gregwar\Image;
 
+use Gregwar\Image\Adapter\AdapterInterface;
+
 /**
  * Images handling class
  *
  * @author Gregwar <g.passault@gmail.com>
+ *
+ * @method Image saveGif($file)
+ * @method Image savePng($file)
+ * @method Image saveJpeg($file, $quality)
+ * @method Image cropResize($width = null, $height = null, $background=0xffffff)
+ * @method Image scale($width = null, $height = null, $background=0xffffff, $crop = false)
+ * @method Image ($width = null, $height = null, $background = 0xffffff, $force = false, $rescale = false, $crop = false)
+ * @method Image crop($x, $y, $width, $height)
+ * @method Image enableProgressive()
+ * @method Image force($width = null, $height = null, $background = 0xffffff)
+ * @method Image zoomCrop($width, $height, $background = 0xffffff)
+ * @method Image fillBackground($background = 0xffffff)
+ * @method Image negate()
+ * @method Image brightness($brightness)
+ * @method Image contrast($contrast)
+ * @method Image grayscale()
+ * @method Image emboss()
+ * @method Image smooth($p)
+ * @method Image sharp()
+ * @method Image edge()
+ * @method Image colorize($red, $green, $blue)
+ * @method Image sepia()
+ * @method Image merge(Image $other, $x = 0, $y = 0, $width = null, $height = null)
+ * @method Image rotate($angle, $background = 0xffffff)
+ * @method Image fill($color = 0xffffff, $x = 0, $y = 0)
+ * @method Image write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $align = 'left')
+ * @method Image rectangle($x1, $y1, $x2, $y2, $color, $filled = false)
+ * @method Image roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false)
+ * @method Image line($x1, $y1, $x2, $y2, $color = 0x000000)
+ * @method Image ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
+ * @method Image circle($cx, $cy, $r, $color = 0x000000, $filled = false)
+ * @method Image polygon(array $points, $color, $filled = false)
  */
 class Image
 {
@@ -16,6 +50,8 @@ class Image
 
     /**
      * Internal adapter
+	 *
+	 * @var AdapterInterface
      */
     protected $adapter = null;
 
@@ -187,7 +223,10 @@ class Image
         }, true);
     }
 
-    public function getAdapter()
+	/**
+	 * @return AdapterInterface
+	 */
+	public function getAdapter()
     {
         if (null === $this->adapter) {
             // Defaults to GD
@@ -207,11 +246,11 @@ class Image
 
                 switch ($adapter) {
                 case 'gd':
-                    $this->adapter = new Adapter\GD;
+                    $this->adapter = new Adapter\GD();
                     break;
                 case 'imagemagick':
                 case 'imagick':
-                    $this->adapter = new Adapter\Imagick;
+                    $this->adapter = new Adapter\Imagick();
                     break;
                 default:
                     throw new \Exception('Unknown adapter: '.$adapter);
@@ -288,7 +327,7 @@ class Image
             $method = $reflection->getMethod($methodName);
 
             if ($method->getNumberOfRequiredParameters() > count($args)) {
-                throw new \InvalidArgumentException('Not enough arguments given for '.$func);
+                throw new \InvalidArgumentException('Not enough arguments given for '.$methodName);
             }
 
             $this->addOperation($methodName, $args);
@@ -327,8 +366,6 @@ class Image
      */
     public function generateHash($type = 'guess', $quality = 80)
     {
-        $inputInfos = 0;
-
         $inputInfos = $this->source->getInfos();
 
         $datas = array(
@@ -347,7 +384,7 @@ class Image
     public function getHash($type = 'guess', $quality = 80)
     {
         if (null === $this->hash) {
-            $this->generateHash();
+            $this->generateHash($type, $quality);
         }
 
         return $this->hash;
@@ -358,8 +395,8 @@ class Image
      * Note that if it exists, all the image computation process will
      * not be done.
      *
-     * @param $type the image type
-     * @param $quality the quality (for JPEG)
+     * @param string $type the image type
+     * @param int $quality the quality (for JPEG)
      */
     public function cacheFile($type = 'jpg', $quality = 80)
     {
@@ -414,8 +451,8 @@ class Image
     /**
      * Get cache data (to render the image)
      *
-     * @param $type the image type
-     * @param $quality the quality (for JPEG)
+     * @param string $type the image type
+     * @param int $quality the quality (for JPEG)
      */
     public function cacheData($type = 'jpg', $quality = 80)
     {
@@ -465,7 +502,7 @@ class Image
     /**
      * Get all the files that this image depends on
      *
-     * @return an array of strings containing all the files that the 
+     * @return string[] this is an array of strings containing all the files that the
      *         current Image depends on
      */
     public function getDependencies()
