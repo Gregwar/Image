@@ -631,9 +631,22 @@ class Image
     /**
      * Returning basic html code for this image
      */
-    public function html($title = '')
+    public function html($title = '', $type = 'jpg')
     {
-        return '<img title="' . $title . '" src="' . $this->jpeg() . '" />';
+        return '<img title="' . $title . '" src="' . $this->cacheFile($type) . '" />';
+    }
+
+    /**
+     * Returns the Base64 inlinable representation
+     */
+    public function inline($type = 'jpg')
+    {
+        $mime = $type;
+        if ($mime == 'jpg') {
+            $mime = 'jpeg';
+        }
+
+        return 'data:image/'.$mime.';base64,'.base64_encode(file_get_contents($this->cacheFile($type)));
     }
 
     /**
