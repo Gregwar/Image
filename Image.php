@@ -203,9 +203,9 @@ class Image
     {
         $fallback = $this->fallback;
 
-        return $this->cache->getOrCreate('fallback.jpg', array(), function($target) use ($fallback) {
+        return $this->cache->getOrCreateFile('fallback.jpg', array(), function($target) use ($fallback) {
             copy($fallback, $target);
-        }, true);
+        });
     }
 
 	/**
@@ -428,7 +428,7 @@ class Image
         };
 
         // Asking the cache for the cacheFile
-        $file = $this->cache->getOrCreate($cacheFile, $conditions, $generate, true);
+        $file = $this->cache->getOrCreateFile($cacheFile, $conditions, $generate);
 
         return $this->getFilename($file);
     }
