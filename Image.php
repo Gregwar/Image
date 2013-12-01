@@ -383,7 +383,7 @@ class Image
      * @param string $type the image type
      * @param int $quality the quality (for JPEG)
      */
-    public function cacheFile($type = 'jpg', $quality = 80)
+    public function cacheFile($type = 'jpg', $quality = 80, $actual = false)
     {
         if ($type == 'guess') {
             $type = $this->guessType();
@@ -428,9 +428,13 @@ class Image
         };
 
         // Asking the cache for the cacheFile
-        $file = $this->cache->getOrCreateFile($cacheFile, $conditions, $generate);
+        $file = $this->cache->getOrCreateFile($cacheFile, $conditions, $generate, $actual);
 
-        return $this->getFilename($file);
+        if ($actual) {
+            return $file;
+        } else {
+            return $this->getFilename($file);
+        }
     }
 
     /**
@@ -631,22 +635,22 @@ class Image
     /**
      * Returning basic html code for this image
      */
-    public function html($title = '', $type = 'jpg')
+    public function html($title = '', $type = 'jpg', $quality = 80)
     {
-        return '<img title="' . $title . '" src="' . $this->cacheFile($type) . '" />';
+        return '<img title="' . $title . '" src="' . $this->cacheFile($type, $quality) . '" />';
     }
 
     /**
      * Returns the Base64 inlinable representation
      */
-    public function inline($type = 'jpg')
+    public function inline($type = 'jpg', $quality = 80)
     {
         $mime = $type;
         if ($mime == 'jpg') {
             $mime = 'jpeg';
         }
 
-        return 'data:image/'.$mime.';base64,'.base64_encode(file_get_contents($this->cacheFile($type)));
+        return 'data:image/'.$mime.';base64,'.base64_encode(file_get_contents($this->cacheFile($type, $quality, true)));
     }
 
     /**
