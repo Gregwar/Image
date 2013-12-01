@@ -79,6 +79,10 @@ The methods available are:
 
 * `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
 
+* `html($title = '', $type = 'jpg')`: return the `<img ... />` tag with the cache image
+
+* `inline($type = 'jpg')`: returns the HTML inlinable base64 string (see `demo/inline.php`)
+
 You can also create image from scratch using:
 
 ```php
