@@ -67,6 +67,8 @@ The methods available are:
 
 * `rectangle($x1, $y1, $x2, $y2, $color, $filled=false)`: draws a rectangle
 
+* `rotate($angle, $background = 0xffffff)` : rotate the image to given angle
+
 * `roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled=false)`: draws a rounded rectangle ($radius can be anything from 0)
 
 * `line($x1, $y1, $x2, $y2, $color)`: draws a line
