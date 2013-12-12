@@ -67,6 +67,8 @@ The methods available are:
 
 * `rectangle($x1, $y1, $x2, $y2, $color, $filled=false)`: draws a rectangle
 
+* `rotate($angle, $background = 0xffffff)` : rotate the image to given angle
+
 * `roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled=false)`: draws a rounded rectangle ($radius can be anything from 0)
 
 * `line($x1, $y1, $x2, $y2, $color)`: draws a line
@@ -78,6 +80,10 @@ The methods available are:
 * `zoomCrop($width, $height, $background)`: resize and crop the image to fit to given dimensions
 
 * `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
+
+* `html($title = '', $type = 'jpg')`: return the `<img ... />` tag with the cache image
+
+* `inline($type = 'jpg')`: returns the HTML inlinable base64 string (see `demo/inline.php`)
 
 You can also create image from scratch using:
 

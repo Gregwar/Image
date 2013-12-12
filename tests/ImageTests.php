@@ -351,6 +351,24 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Testing inlining
+     */
+    public function testInline()
+    {
+        $output = $this->open('monalisa.jpg')
+            ->resize(20, 20)
+            ->inline();
+
+        $this->assertEquals(0, strpos($output, 'data:image/jpeg;base64,'));
+
+        $data = base64_decode(substr($output, 23));
+        $image = imagecreatefromstring($data);
+
+        $this->assertEquals(20, imagesx($image));
+        $this->assertEquals(20, imagesy($image));
+    }
+
+    /**
      * Asaserting that two colors are equals
      * (JPG compression is not preserving colors for instance, so we
      * need a non-strict way to compare it)
