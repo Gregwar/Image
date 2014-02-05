@@ -509,4 +509,28 @@ class GD extends Common
 
 		return $this;
 	}
+	
+	
+ 	public function fixOrientation()
+ 	{
+        if (!extension_loaded('exif')) {
+            throw new \RuntimeException('You need to EXIF PHP Extension to use this function');
+        }
+        $exif = exif_read_data($this->source->getInfos());
+        if (!empty($exif['Orientation'])) {
+            switch ($exif['Orientation']) {
+                case 3:
+                    $this->resource = imagerotate($this->resource, 180, 0);
+                    break;
+                case 6:
+                    $this->resource = imagerotate($this->resource, -90, 0);
+                    break;
+                case 8:
+                    $this->resource = imagerotate($this->resource, 90, 0);
+                    break;
+            }
+        }
+        return $this;
+    }
+
 }
