@@ -25,7 +25,7 @@ class ImageColor
         'orange'    =>  0xffA500,
         'red'       =>  0xff0000,
         'maroon'    =>  0x800000,
-        'transparent' => 0x7f000000
+        'transparent' => 0x7fffffff
     );
 
     public static function gdAllocate($image, $color)

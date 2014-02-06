@@ -7,7 +7,7 @@ abstract class Common extends Adapter
     /**
      * @inheritdoc
      */
-    public function zoomCrop($width, $height, $background = 0xffffff)
+    public function zoomCrop($width, $height, $background = 'transparent')
     {
         // Calculate the different ratios
         $originalRatio = $this->width() / $this->height();
@@ -45,7 +45,7 @@ abstract class Common extends Adapter
      * @param int $h the height
      * @param int $bg the background
      */
-    public function forceResize($width = null, $height = null, $background = 0xffffff)
+    public function forceResize($width = null, $height = null, $background = 'transparent')
     {
         return $this->resize($width, $height, $background, true);
     }
@@ -53,7 +53,7 @@ abstract class Common extends Adapter
     /**
      * @inheritdoc
      */
-    public function scaleResize($width = null, $height = null, $background=0xffffff, $crop = false)
+    public function scaleResize($width = null, $height = null, $background='transparent', $crop = false)
     {
         return $this->resize($width, $height, $background, false, true, $crop);
     }
@@ -61,7 +61,7 @@ abstract class Common extends Adapter
     /**
      * @inheritdoc
      */
-    public function cropResize($width = null, $height = null, $background=0xffffff)
+    public function cropResize($width = null, $height = null, $background='transparent')
     {
         return $this->resize($width, $height, $background, false, false, true);
     }
@@ -141,7 +141,7 @@ abstract class Common extends Adapter
     /**
      * @inheritdoc
      */
-    public function resize($width = null, $height = null, $background = 0xffffff, $force = false, $rescale = false, $crop = false)
+    public function resize($width = null, $height = null, $background = 'transparent', $force = false, $rescale = false, $crop = false)
     {
         $current_width = $this->width();
         $current_height = $this->height();
@@ -203,7 +203,7 @@ abstract class Common extends Adapter
      *
      * @param int $bg the background
      */
-    protected function _trimColor($background=0xffffff)
+    protected function _trimColor($background='transparent')
     {
         $width = $this->width();
         $height = $this->height();
