@@ -32,19 +32,19 @@ class GD extends Common
         );
     }
 
-	public function __construct()
-	{
-		parent::__construct();
+    public function __construct()
+    {
+        parent::__construct();
 
-		if (!(extension_loaded('gd') && function_exists('gd_info'))) {
-			throw new \RuntimeException('You need to install GD PHP Extension to use this library');
-		}
-	}
+        if (!(extension_loaded('gd') && function_exists('gd_info'))) {
+            throw new \RuntimeException('You need to install GD PHP Extension to use this library');
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getName()
+    /**
+     * @inheritdoc
+     */
+    public function getName()
     {
         return 'GD';
     }
@@ -62,13 +62,13 @@ class GD extends Common
         imagedestroy($this->resource);
         $this->resource = $n;
 
-		return $this;
+        return $this;
     }
 
     /**
      * Do the image resize
-	 *
-	 * @return $this
+     *
+     * @return $this
      */
     protected function doResize($bg, $target_width, $target_height, $new_width, $new_height)
     {
@@ -92,9 +92,9 @@ class GD extends Common
 
         $this->resource = $n;
 
-		return $this;
+        return $this;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -107,7 +107,7 @@ class GD extends Common
         imagedestroy($this->resource);
         $this->resource = $destination;
 
-		return $this;
+        return $this;
     }
 
     /**
@@ -116,95 +116,95 @@ class GD extends Common
     public function negate()
     {
         imagefilter($this->resource, IMG_FILTER_NEGATE);
-		return $this;
+        return $this;
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
      */
     public function brightness($brightness)
     {
         imagefilter($this->resource, IMG_FILTER_BRIGHTNESS, $brightness);
-		return $this;
+        return $this;
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
      */
     public function contrast($contrast)
     {
         imagefilter($this->resource, IMG_FILTER_CONTRAST, $contrast);
-		return $this;
+        return $this;
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
      */
     public function grayscale()
     {
         imagefilter($this->resource, IMG_FILTER_GRAYSCALE);
-		return $this;
+        return $this;
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
      */
     public function emboss()
     {
         imagefilter($this->resource, IMG_FILTER_EMBOSS);
-		return $this;
+        return $this;
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
      */
     public function smooth($p)
     {
         imagefilter($this->resource, IMG_FILTER_SMOOTH, $p);
-		return $this;
+        return $this;
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
      */
     public function sharp()
     {
         imagefilter($this->resource, IMG_FILTER_MEAN_REMOVAL);
-		return $this;
+        return $this;
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
      */
     public function edge()
     {
         imagefilter($this->resource, IMG_FILTER_EDGEDETECT);
-		return $this;
-    }
-
-	/**
-	 * @inheritdoc
-	 */
-	public function colorize($red, $green, $blue)
-    {
-        imagefilter($this->resource, IMG_FILTER_COLORIZE, $red, $green, $blue);
-		return $this;
+        return $this;
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
+     */
+    public function colorize($red, $green, $blue)
+    {
+        imagefilter($this->resource, IMG_FILTER_COLORIZE, $red, $green, $blue);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function sepia()
     {
         imagefilter($this->resource, IMG_FILTER_GRAYSCALE);
         imagefilter($this->resource, IMG_FILTER_COLORIZE, 100, 50, 0);
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function merge(Image $other, $x = 0, $y = 0, $width = null, $height = null)
+    /**
+     * @inheritdoc
+     */
+    public function merge(Image $other, $x = 0, $y = 0, $width = null, $height = null)
     {
         $other = clone $other;
         $other->init();
@@ -222,36 +222,36 @@ class GD extends Common
 
         imagecopyresampled($this->resource, $other->getAdapter()->getResource(), $x, $y, 0, 0, $width, $height, $width, $height);
 
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rotate($angle, $background = 0xffffff)
+    /**
+     * @inheritdoc
+     */
+    public function rotate($angle, $background = 0xffffff)
     {
         $this->resource = imagerotate($this->resource, $angle, ImageColor::gdAllocate($this->resource, $background));
         imagealphablending($this->resource, true);
         imagesavealpha($this->resource, true);
 
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function fill($color = 0xffffff, $x = 0, $y = 0)
+    /**
+     * @inheritdoc
+     */
+    public function fill($color = 0xffffff, $x = 0, $y = 0)
     {
         imagealphablending($this->resource, false);
         imagefilledrectangle($this->resource, $x, $y, $this->width(), $this->height(), ImageColor::gdAllocate($this->resource, $color));
 
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $align = 'left')
+    /**
+     * @inheritdoc
+     */
+    public function write($font, $text, $x = 0, $y = 0, $size = 12, $angle = 0, $color = 0x000000, $align = 'left')
     {
         imagealphablending($this->resource, true);
 
@@ -269,13 +269,13 @@ class GD extends Common
 
         imagettftext($this->resource, $size, $angle, $x, $y, ImageColor::gdAllocate($this->resource, $color), $font, $text);
 
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rectangle($x1, $y1, $x2, $y2, $color, $filled = false)
+    /**
+     * @inheritdoc
+     */
+    public function rectangle($x1, $y1, $x2, $y2, $color, $filled = false)
     {
         if ($filled) {
             imagefilledrectangle($this->resource, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->resource, $color));
@@ -283,13 +283,13 @@ class GD extends Common
             imagerectangle($this->resource, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->resource, $color));
         }
 
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
+    /**
+     * @inheritdoc
+     */
+    public function roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled = false) {
         if ($color) {
             $color = ImageColor::gdAllocate($this->resource, $color);
         }
@@ -315,23 +315,23 @@ class GD extends Common
             imagearc($this->resource,$x2-$radius, $y2-$radius, $radius*2, $radius*2, 360 , 90, $color);
         }
 
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function line($x1, $y1, $x2, $y2, $color = 0x000000)
+    /**
+     * @inheritdoc
+     */
+    public function line($x1, $y1, $x2, $y2, $color = 0x000000)
     {
         imageline($this->resource, $x1, $y1, $x2, $y2, ImageColor::gdAllocate($this->resource, $color));
 
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
+    /**
+     * @inheritdoc
+     */
+    public function ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
     {
         if ($filled) {
             imagefilledellipse($this->resource, $cx, $cy, $width, $height, ImageColor::gdAllocate($this->resource, $color));
@@ -339,21 +339,21 @@ class GD extends Common
             imageellipse($this->resource, $cx, $cy, $width, $height, ImageColor::gdAllocate($this->resource, $color));
         }
 
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function circle($cx, $cy, $r, $color = 0x000000, $filled = false)
+    /**
+     * @inheritdoc
+     */
+    public function circle($cx, $cy, $r, $color = 0x000000, $filled = false)
     {
         return $this->ellipse($cx, $cy, $r, $r, ImageColor::gdAllocate($this->resource, $color), $filled);
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function polygon(array $points, $color, $filled = false)
+    /**
+     * @inheritdoc
+     */
+    public function polygon(array $points, $color, $filled = false)
     {
         if ($filled) {
             imagefilledpolygon($this->resource, $points, count($points)/2, ImageColor::gdAllocate($this->resource, $color));
@@ -361,7 +361,7 @@ class GD extends Common
             imagepolygon($this->resource, $points, count($points)/2, ImageColor::gdAllocate($this->resource, $color));
         }
 
-		return $this;
+        return $this;
     }
 
     /**
@@ -377,7 +377,7 @@ class GD extends Common
     }
 
     /**
-	 * @inheritdoc
+     * @inheritdoc
      */
     public function height()
     {
@@ -397,70 +397,46 @@ class GD extends Common
     {
         $this->resource = @imagecreatefromstring($data);
     }
-    
+
     /**
      * Converts the image to true color
      */
     protected function convertToTrueColor()
     {
         if (!imageistruecolor($this->resource)) {
-            $transparentIndex = imagecolortransparent($this->resource);
-
-            $w = $this->width();
-            $h = $this->height();
-
-            $img = imagecreatetruecolor($w, $h);
-            imagecopy($img, $this->resource, 0, 0, 0, 0, $w, $h);
-
-            if ($transparentIndex != -1) {
-                $width = $this->width();
-                $height = $this->height();
-
-                imagealphablending($img, false);
-                imagesavealpha($img, true);
-
-                for ($x=0; $x<$width; $x++) {
-                    for ($y=0; $y<$height; $y++) {
-                        if (imagecolorat($this->resource, $x, $y) == $transparentIndex) {
-                            imagesetpixel($img, $x, $y, 127 << 24);
-                        }
-                    }
-                }
-            }
-
-            $this->resource = $img;
+            imagepalettetotruecolor($this->resource);
         }
-        
+
         imagesavealpha($this->resource, true);
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function saveGif($file)
+    /**
+     * @inheritdoc
+     */
+    public function saveGif($file)
     {
         $transColor = imagecolorallocatealpha($this->resource, 0, 0, 0, 127);
         imagecolortransparent($this->resource, $transColor);
         imagegif($this->resource, $file);
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
+    /**
+     * @inheritdoc
+     */
     public function savePng($file)
     {
         imagepng($this->resource, $file);
-		return $this;
+        return $this;
     }
 
-	/**
-	 * @inheritdoc
-	 */
+    /**
+     * @inheritdoc
+     */
     public function saveJpeg($file, $quality)
     {
         imagejpeg($this->resource, $file, $quality);
-		return $this;
+        return $this;
     }
 
     /**
@@ -495,18 +471,18 @@ class GD extends Common
     {
         return (imagetypes() & self::$gdTypes[$type]);
     }
-    
+
     protected function getColor($x, $y)
     {
         return imagecolorat($this->resource, $x, $y);
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function enableProgressive(){
-		imageinterlace($this->resource, 1);
+    /**
+     * @inheritdoc
+     */
+    public function enableProgressive(){
+        imageinterlace($this->resource, 1);
 
-		return $this;
-	}
+        return $this;
+    }
 }
