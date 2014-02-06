@@ -404,7 +404,36 @@ class GD extends Common
     protected function convertToTrueColor()
     {
         if (!imageistruecolor($this->resource)) {
-            imagepalettetotruecolor($this->resource);
+            if (function_exists('imagepalettetotruecolor')) {
+                // Available in PHP 5.5
+                imagepalettetotruecolor($this->resource);
+            } else {
+                $transparentIndex = imagecolortransparent($this->resource);
+
+                $w = $this->width();
+                $h = $this->height();
+
+                $img = imagecreatetruecolor($w, $h);
+                imagecopy($img, $this->resource, 0, 0, 0, 0, $w, $h);
+
+                if ($transparentIndex != -1) {
+                    $width = $this->width();
+                    $height = $this->height();
+
+                    imagealphablending($img, false);
+                    imagesavealpha($img, true);
+
+                    for ($x=0; $x<$width; $x++) {
+                        for ($y=0; $y<$height; $y++) {
+                            if (imagecolorat($this->resource, $x, $y) == $transparentIndex) {
+                                imagesetpixel($img, $x, $y, 127 << 24);
+                            }
+                        }
+                    }
+                }
+
+                $this->resource = $img;
+            }
         }
 
         imagesavealpha($this->resource, true);
