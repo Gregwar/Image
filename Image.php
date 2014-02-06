@@ -3,6 +3,7 @@
 namespace Gregwar\Image;
 
 use Gregwar\Image\Adapter\AdapterInterface;
+use Gregwar\Image\Exceptions\GenerationError;
 
 /**
  * Images handling class
@@ -439,11 +440,19 @@ class Image
 
         // The generating function
         $generate = function($target) use ($image, $type, $quality) {
-            $image->save($target, $type, $quality);
+            $result = $image->save($target, $type, $quality);
+
+            if ($result != $target) {
+                throw new GenerationError($result);
+            }
         };
 
         // Asking the cache for the cacheFile
-        $file = $this->cache->getOrCreateFile($cacheFile, $conditions, $generate, $actual);
+        try {
+            $file = $this->cache->getOrCreateFile($cacheFile, $conditions, $generate, $actual);
+        } catch (GenerationError $e) {
+            $file = $e->getNewFile();
+        }
 
         if ($actual) {
             return $file;
