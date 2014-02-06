@@ -243,7 +243,7 @@ class GD extends Common
     public function fill($color = 0xffffff, $x = 0, $y = 0)
     {
         imagealphablending($this->resource, false);
-        imagefilledrectangle($this->resource, $x, $y, $this->width(), $this->height(), ImageColor::gdAllocate($this->resource, $color));
+        imagefill($this->resource, $x, $y, ImageColor::gdAllocate($this->resource, $color));
 
         return $this;
     }
@@ -415,7 +415,7 @@ class GD extends Common
      */
     public function saveGif($file)
     {
-        $transColor = imagecolorallocatealpha($this->resource, 0, 0, 0, 127);
+        $transColor = imagecolorallocatealpha($this->resource, 255, 255, 255, 127);
         imagecolortransparent($this->resource, $transColor);
         imagegif($this->resource, $file);
         return $this;
