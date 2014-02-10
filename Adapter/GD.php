@@ -80,8 +80,7 @@ class GD extends Common
             imagefill($n, 0, 0, ImageColor::gdAllocate($this->resource, $bg));
         } else {
             imagealphablending($n, false);
-
-            $color = imagecolorallocatealpha($n, 0, 0, 0, 127);
+            $color = ImageColor::gdAllocate($this->resource, 'transparent');
 
             imagefill($n, 0, 0, $color);
             imagesavealpha($n, true);
