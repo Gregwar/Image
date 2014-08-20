@@ -368,6 +368,9 @@ class GD extends Common
      */
     public function flip($flipVertical, $flipHorizontal) {
 
+        if (!$flipVertical && !$flipHorizontal)
+            return $this;
+
         if (function_exists('imageflip')) {
 
             if ($flipVertical && $flipHorizontal)
@@ -376,12 +379,8 @@ class GD extends Common
                 $flipMode = \IMG_FLIP_VERTICAL;
             else if (!$flipVertical && $flipHorizontal)
                 $flipMode = \IMG_FLIP_HORIZONTAL;
-            else 
-                $flipMode = null;
             
-            if ($flipMode != null) {
-                imageflip($this->resource, $flipMode);
-            }
+            imageflip($this->resource, $flipMode);
 
         } else {
 
@@ -411,7 +410,7 @@ class GD extends Common
                 imagedestroy($this->resource);
                 $this->resource = $imgdest;
             }
-            
+
         }
 
         return $this;
