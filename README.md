@@ -83,6 +83,8 @@ The methods available are:
 
 * `html($title = '', $type = 'jpg')`: return the `<img ... />` tag with the cache image
 
+* `flip($flipVertical, $flipHorizontal)`: flips the image in the given directions. Both params are boolean and at least one must be true.
+
 * `inline($type = 'jpg')`: returns the HTML inlinable base64 string (see `demo/inline.php`)
 
 You can also create image from scratch using:
