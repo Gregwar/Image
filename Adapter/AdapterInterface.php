@@ -375,4 +375,14 @@ interface AdapterInterface{
 	 * @return $this
 	 */
 	public function polygon(array $points, $color, $filled = false);
+
+	/**
+	 * Flips the image 
+	 * 
+	 * @param int $flipVertical
+	 * @param int $flipHorizontal
+	 * 
+	 * @return $this
+	 */
+	public function flip($flipVertical, $flipHorizontal);
 }

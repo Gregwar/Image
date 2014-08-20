@@ -364,6 +364,26 @@ class GD extends Common
     }
 
     /**
+     *  @inheritdoc
+     */
+    public function flip($flipVertical, $flipHorizontal) {
+
+        if ($flipVertical && $flipHorizontal)
+            $flipMode = \IMG_FLIP_BOTH;
+        else if ($flipVertical && !$flipHorizontal)
+            $flipMode = \IMG_FLIP_VERTICAL;
+        else if (!$flipVertical && $flipHorizontal)
+            $flipMode = \IMG_FLIP_HORIZONTAL;
+        else 
+            $flipMode = null;
+        
+        if ($flipMode != null)
+            imageflip($this->resource, $flipMode);
+
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     public function width()
