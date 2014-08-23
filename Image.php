@@ -41,6 +41,7 @@ use Gregwar\Image\Exceptions\GenerationError;
  * @method Image ellipse($cx, $cy, $width, $height, $color = 0x000000, $filled = false)
  * @method Image circle($cx, $cy, $r, $color = 0x000000, $filled = false)
  * @method Image polygon(array $points, $color, $filled = false)
+ * @method Image flip($flipVertical, $flipHorizontal)
  */
 class Image
 {

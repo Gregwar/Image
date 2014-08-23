@@ -368,22 +368,21 @@ class GD extends Common
      */
     public function flip($flipVertical, $flipHorizontal) {
 
-        if (!$flipVertical && !$flipHorizontal)
+        if (!$flipVertical && !$flipHorizontal) {
             return $this;
+        }
 
         if (function_exists('imageflip')) {
-
-            if ($flipVertical && $flipHorizontal)
+            if ($flipVertical && $flipHorizontal) {
                 $flipMode = \IMG_FLIP_BOTH;
-            else if ($flipVertical && !$flipHorizontal)
+            } else if ($flipVertical && !$flipHorizontal) {
                 $flipMode = \IMG_FLIP_VERTICAL;
-            else if (!$flipVertical && $flipHorizontal)
+            } else if (!$flipVertical && $flipHorizontal) {
                 $flipMode = \IMG_FLIP_HORIZONTAL;
+            }
             
             imageflip($this->resource, $flipMode);
-
         } else {
-
             $width = $this->width();
             $height = $this->height();
 
@@ -402,7 +401,7 @@ class GD extends Common
                 $src_width  = -$width;
             }
 
-            $imgdest = imagecreatetruecolor ( $width, $height );
+            $imgdest = imagecreatetruecolor ($width, $height);
             imagealphablending($imgdest, false);
             imagesavealpha($imgdest, true);
 
@@ -410,9 +409,8 @@ class GD extends Common
                 imagedestroy($this->resource);
                 $this->resource = $imgdest;
             }
-
         }
-
+        
         return $this;
     }
 
