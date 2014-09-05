@@ -364,6 +364,57 @@ class GD extends Common
     }
 
     /**
+     *  @inheritdoc
+     */
+    public function flip($flipVertical, $flipHorizontal) {
+
+        if (!$flipVertical && !$flipHorizontal) {
+            return $this;
+        }
+
+        if (function_exists('imageflip')) {
+            if ($flipVertical && $flipHorizontal) {
+                $flipMode = \IMG_FLIP_BOTH;
+            } else if ($flipVertical && !$flipHorizontal) {
+                $flipMode = \IMG_FLIP_VERTICAL;
+            } else if (!$flipVertical && $flipHorizontal) {
+                $flipMode = \IMG_FLIP_HORIZONTAL;
+            }
+            
+            imageflip($this->resource, $flipMode);
+        } else {
+            $width = $this->width();
+            $height = $this->height();
+
+            $src_x      = 0;
+            $src_y      = 0;
+            $src_width  = $width;
+            $src_height = $height;
+
+            if ($flipVertical) {
+                $src_y      = $height -1;
+                $src_height = -$height;
+            }
+
+            if ($flipHorizontal) {
+                $src_x      = $width -1;
+                $src_width  = -$width;
+            }
+
+            $imgdest = imagecreatetruecolor ($width, $height);
+            imagealphablending($imgdest, false);
+            imagesavealpha($imgdest, true);
+
+            if (imagecopyresampled($imgdest, $this->resource, 0, 0, $src_x, $src_y , $width, $height, $src_width, $src_height)) {
+                imagedestroy($this->resource);
+                $this->resource = $imgdest;
+            }
+        }
+        
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     public function width()

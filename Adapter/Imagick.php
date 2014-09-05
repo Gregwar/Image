@@ -337,6 +337,13 @@ class Imagick extends Common{
 	}
 
 	/**
+     *  @inheritdoc
+     */
+	public function flip($flipVertical, $flipHorizontal) {
+		// TODO: Implement flip method
+	}
+
+	/**
 	 * Opens the image
 	 */
 	protected function openGif($file){
