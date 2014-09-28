@@ -4,6 +4,7 @@ namespace Gregwar\Image;
 
 use Gregwar\Image\Adapter\AdapterInterface;
 use Gregwar\Image\Exceptions\GenerationError;
+use Behat\Transliterator\Transliterator;
 
 /**
  * Images handling class
@@ -138,9 +139,12 @@ class Image
      */
     public function setPrettyName($name, $prefix = true)
     {
-        $name = strtolower($name);
-        $name = str_replace(' ', '-', $name);
-        $this->prettyName = preg_replace('/([^a-z0-9\-]+)/m', '', $name);
+        if (empty($name)) {
+            return $this;
+        }
+
+        $name = Transliterator::urlize(Transliterator::transliterate($name));
+        $this->prettyName = $name;
         $this->prettyPrefix = $prefix;
 
         return $this;

@@ -3,6 +3,7 @@
 use Gregwar\Image\Image;
 
 use Gregwar\Image\ImageColor;
+use Behat\Transliterator\Transliterator;
 
 /**
  * Unit testing for Image
@@ -348,6 +349,28 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertContains('davinci', $prefix1);
         $this->assertContains('davinci', $prefix2);
         $this->assertNotEquals($prefix1, $prefix2);
+
+        $nonLatinName1 = 'ダヴィンチ';
+        $nonLatinOutput1 = $this->open('monalisa.jpg')
+            ->resize(100, 50)->negate()
+            ->setPrettyName($nonLatinName1, false)
+            ->guess();
+
+        $this->assertContains(
+            Transliterator::urlize(Transliterator::transliterate($nonLatinName1)),
+            $nonLatinOutput1
+        );
+
+        $nonLatinName2 = 'давинчи';
+        $nonLatinOutput2 = $this->open('monalisa.jpg')
+            ->resize(100, 55)->negate()
+            ->setPrettyName($nonLatinName2)
+            ->guess();
+
+        $this->assertContains(
+            Transliterator::urlize(Transliterator::transliterate($nonLatinName2)),
+            $nonLatinOutput2
+        );
     }
 
     /**
