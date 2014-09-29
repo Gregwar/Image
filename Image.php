@@ -4,7 +4,6 @@ namespace Gregwar\Image;
 
 use Gregwar\Image\Adapter\AdapterInterface;
 use Gregwar\Image\Exceptions\GenerationError;
-use Behat\Transliterator\Transliterator;
 
 /**
  * Images handling class

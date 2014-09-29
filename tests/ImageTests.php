@@ -3,7 +3,6 @@
 use Gregwar\Image\Image;
 
 use Gregwar\Image\ImageColor;
-use Behat\Transliterator\Transliterator;
 
 /**
  * Unit testing for Image
