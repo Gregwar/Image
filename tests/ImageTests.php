@@ -350,27 +350,31 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertContains('davinci', $prefix2);
         $this->assertNotEquals($prefix1, $prefix2);
 
-        $nonLatinName1 = 'ダヴィンチ';
-        $nonLatinOutput1 = $this->open('monalisa.jpg')
-            ->resize(100, 50)->negate()
-            ->setPrettyName($nonLatinName1, false)
-            ->guess();
+        $transliterator = '\Behat\Transliterator\Transliterator';
 
-        $this->assertContains(
-            Transliterator::urlize(Transliterator::transliterate($nonLatinName1)),
-            $nonLatinOutput1
-        );
+        if (class_exists($transliterator)) {
+            $nonLatinName1 = 'ダヴィンチ';
+            $nonLatinOutput1 = $this->open('monalisa.jpg')
+                ->resize(100, 50)->negate()
+                ->setPrettyName($nonLatinName1, false)
+                ->guess();
 
-        $nonLatinName2 = 'давинчи';
-        $nonLatinOutput2 = $this->open('monalisa.jpg')
-            ->resize(100, 55)->negate()
-            ->setPrettyName($nonLatinName2)
-            ->guess();
+            $this->assertContains(
+                $transliterator::urlize($transliterator::transliterate($nonLatinName1)),
+                $nonLatinOutput1
+            );
 
-        $this->assertContains(
-            Transliterator::urlize(Transliterator::transliterate($nonLatinName2)),
-            $nonLatinOutput2
-        );
+            $nonLatinName2 = 'давинчи';
+            $nonLatinOutput2 = $this->open('monalisa.jpg')
+                ->resize(100, 55)->negate()
+                ->setPrettyName($nonLatinName2)
+                ->guess();
+
+            $this->assertContains(
+                $transliterator::urlize($transliterator::transliterate($nonLatinName2)),
+                $nonLatinOutput2
+            );
+        }
     }
 
     /**

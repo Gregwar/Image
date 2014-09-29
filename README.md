@@ -132,6 +132,7 @@ Once the cache directory configured, you can call the following methods:
 * `setPrettyName($prettyName, $prefix = true)`: sets a "pretty" name suffix for the file, if you want it to be more SEO-friendly.
    for instance, if you call it "Fancy Image", the cache will look like something/something-fancy-image.jpg.
    If `$prefix` is passed to `false` (default `true`), the pretty name won't have any hash prefix.
+   If you want to use non-latin1 pretty names, **behat/transliterator** package must be installed.
 
 For instance:
 
