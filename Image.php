@@ -138,12 +138,33 @@ class Image
      */
     public function setPrettyName($name, $prefix = true)
     {
-        $name = strtolower($name);
-        $name = str_replace(' ', '-', $name);
-        $this->prettyName = preg_replace('/([^a-z0-9\-]+)/m', '', $name);
+        if (empty($name)) {
+            return $this;
+        }
+
+        $this->prettyName = $this->urlize($name);
         $this->prettyPrefix = $prefix;
 
         return $this;
+    }
+
+    /**
+     * Urlizes the prettyName
+     */
+    protected function urlize($name)
+    {
+        $transliterator = '\Behat\Transliterator\Transliterator';
+
+        if (class_exists($transliterator)) {
+            $name = $transliterator::transliterate($name);
+            $name = $transliterator::urlize($name);
+        } else {
+            $name = strtolower($name);
+            $name = str_replace(' ', '-', $name);
+            $name = preg_replace('/([^a-z0-9\-]+)/m', '', $name);
+        }
+
+        return $name;
     }
 
     /**

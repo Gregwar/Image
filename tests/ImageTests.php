@@ -348,6 +348,32 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertContains('davinci', $prefix1);
         $this->assertContains('davinci', $prefix2);
         $this->assertNotEquals($prefix1, $prefix2);
+
+        $transliterator = '\Behat\Transliterator\Transliterator';
+
+        if (class_exists($transliterator)) {
+            $nonLatinName1 = 'ダヴィンチ';
+            $nonLatinOutput1 = $this->open('monalisa.jpg')
+                ->resize(100, 50)->negate()
+                ->setPrettyName($nonLatinName1, false)
+                ->guess();
+
+            $this->assertContains(
+                $transliterator::urlize($transliterator::transliterate($nonLatinName1)),
+                $nonLatinOutput1
+            );
+
+            $nonLatinName2 = 'давинчи';
+            $nonLatinOutput2 = $this->open('monalisa.jpg')
+                ->resize(100, 55)->negate()
+                ->setPrettyName($nonLatinName2)
+                ->guess();
+
+            $this->assertContains(
+                $transliterator::urlize($transliterator::transliterate($nonLatinName2)),
+                $nonLatinOutput2
+            );
+        }
     }
 
     /**

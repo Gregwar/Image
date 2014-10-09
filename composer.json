@@ -16,6 +16,9 @@
         "php": ">=5.3.0",
         "ext-gd": "*"
     },
+    "suggest": {
+        "behat/transliterator": "Transliterator provides ability to set non-latin1 pretty names"
+    },
     "target-dir": "Gregwar/Image",
     "autoload": {
         "psr-0": {
