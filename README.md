@@ -55,7 +55,7 @@ The methods available are:
 
 * `sharp()`: applies a mean removal filter on the image
 
-* `sharpen($amount = 80, $radius = 0.5, $threshold = 3)`: sharpens the image with specific settings. Don't use on GIF and always as the last effect in a chain. See #63 for mor informations
+* `sharpen($amount = 80, $radius = 0.5, $threshold = 3)`: sharpens the image with specific settings. Always as the last effect in a chain (but before any save or output method). See #63 for more informations
 
 * `edge()`: applies an edge effect on the image
 
