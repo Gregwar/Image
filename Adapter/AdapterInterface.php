@@ -385,4 +385,15 @@ interface AdapterInterface{
 	 * @return $this
 	 */
 	public function flip($flipVertical, $flipHorizontal);
+
+	/**
+	 * Sharpens the image much more powerful then MEAN_REMOVAL 
+	 * 
+	 * @param int $amount
+	 * @param float $radius
+	 * @param int $threshold
+	 * 
+	 * @return $this
+	 */
+	public function sharpen($amount = 80, $radius = 0.5, $threshold = 3);
 }
