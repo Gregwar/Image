@@ -55,6 +55,8 @@ The methods available are:
 
 * `sharp()`: applies a mean removal filter on the image
 
+* `sharpen($amount = 80, $radius = 0.5, $threshold = 3)`: sharpens the image with specific settings. Don't use on GIF and always as the last effect in a chain. See #63 for mor informations
+
 * `edge()`: applies an edge effect on the image
 
 * `colorize($red, $green, $blue)`: colorize the image (from -255 to +255 for each color)
