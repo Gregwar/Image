@@ -639,12 +639,12 @@ class GD extends Common
             for ($x = 0; $x < $w - 1; $x++)    { // each row
                 for ($y = 0; $y < $h; $y++)    { // each pixel
 
-                    $rgbOrig = ImageColorAt($gdimage, $x, $y);
+                    $rgbOrig = @ImageColorAt($gdimage, $x, $y);
                     $rOrig = (($rgbOrig >> 16) & 0xFF);
                     $gOrig = (($rgbOrig >> 8) & 0xFF);
                     $bOrig = ($rgbOrig & 0xFF);
 
-                    $rgbBlur = ImageColorAt($imgBlur, $x, $y);
+                    $rgbBlur = @ImageColorAt($imgBlur, $x, $y);
 
                     $rBlur = (($rgbBlur >> 16) & 0xFF);
                     $gBlur = (($rgbBlur >> 8) & 0xFF);
