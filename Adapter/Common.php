@@ -7,7 +7,7 @@ abstract class Common extends Adapter
     /**
      * @inheritdoc
      */
-    public function zoomCrop($width, $height, $background = 'transparent')
+    public function zoomCrop($width, $height, $background = 'transparent', $xPosLetter = 'center', $yPosLetter = 'center')
     {
         // Calculate the different ratios
         $originalRatio = $this->width() / $this->height();
@@ -27,9 +27,33 @@ abstract class Common extends Adapter
         // Perform resize
         $this->resize($newWidth, $newHeight, $background, true);
 
-        // Calculate cropping area
-        $xPos = (int) ($newWidth - $width) / 2;
-        $yPos = (int) ($newHeight - $height) / 2;
+        // Define x position
+        switch($xPosLetter) {
+            case "L":
+            case "left":
+                $xPos = 0;
+                break;
+            case "R":
+            case "right":
+                $xPos = (int) $newWidth - $width;
+                break;
+            default:
+                $xPos = (int) ($newWidth - $width) / 2;
+        }
+
+        // Define y position
+        switch($yPosLetter) {
+            case "T":
+            case "top":
+                $yPos = 0;
+                break;
+            case "B":
+            case "bottom":
+                $yPos = (int) $newHeight - $height;
+                break;
+            default:
+                $yPos = (int) ($newHeight - $height) / 2;
+        }
 
         // Crop image to reach desired size
         $this->crop($xPos, $yPos, $width, $height);
