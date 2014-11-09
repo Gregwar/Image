@@ -157,7 +157,7 @@ interface AdapterInterface{
 	 *
 	 * @return $this
 	 */
-    public function zoomCrop($width, $height, $background = 0xffffff, $xPosLetter = 'center', $yPosLetter = 'center')
+    public function zoomCrop($width, $height, $background = 0xffffff, $xPosLetter = 'center', $yPosLetter = 'center');
 
 
 	/**
