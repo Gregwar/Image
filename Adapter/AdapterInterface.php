@@ -151,11 +151,13 @@ interface AdapterInterface{
 	 *
 	 * @param integer $width  Desired width
 	 * @param integer $height Desired height
-	 * @param int $background
+	 * @param int/string $background
+	 * @param string $xPosLetter pos of crop x
+	 * @param string $yPosLetter pos of crop y
 	 *
 	 * @return $this
 	 */
-	public function zoomCrop($width, $height, $background = 0xffffff);
+    public function zoomCrop($width, $height, $background = 0xffffff, $xPosLetter = 'center', $yPosLetter = 'center')
 
 
 	/**
