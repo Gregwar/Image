@@ -1,7 +1,7 @@
 Gregwar's Image class
 =====================
 
-![Build status](https://travis-ci.org/Gregwar/Image.svg?branch=master)
+[![Build status](https://travis-ci.org/Gregwar/Image.svg?branch=master)](https://travis-ci.org/Gregwar/Image)
 
 The `Gregwar\Image` class purpose is to provide a simple object-oriented images handling and caching API.
 
