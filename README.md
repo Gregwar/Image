@@ -81,7 +81,7 @@ The methods available are:
 
 * `circle($cx, $cy, $r, $color, $filled=false)`: draws a circle
 
-* `zoomCrop($width, $height, $background)`: resize and crop the image to fit to given dimensions
+* `zoomCrop($width, $height, $background, $xPosLetter, $yPosLetter)`: resize and crop the image to fit to given dimensions
 
 * `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
 
