@@ -25,17 +25,17 @@ Image::open('in.png')
 Here are the resize methods:
 
 * `resize($width, $height, $background)`: resizes the image, will preserve scale and never
-   enlarge it:
+   enlarge it (background is `red` here to understand what happens):
 
 ![resize()](doc/resize.jpg)
 
 * `scaleResize($width, $height, $background)`: resizes the image, will preserve scale, can enlarge
- it:
+ it (background is `red` here to understand what happens):
 
 ![scaleResize()](doc/scaleResize.jpg)
 
-* `forceResize($width, $height, $background)`: resizes the image, will force the image to
-   be exactly $width by $height
+* `forceResize($width, $height, $background)`: resizes the image forcing it to
+   be exactly `$width` by `$height`
 
 ![forceResize()](doc/forceResize.jpg)
 
