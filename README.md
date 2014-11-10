@@ -39,8 +39,8 @@ Here are the resize methods:
 
 ![forceResize()](doc/forceResize.jpg)
 
-* `cropResize($width, $height, $background)`: resizes the image preserving scale and croping
-  the whitespaces:
+* `cropResize($width, $height, $background)`: resizes the image preserving scale (just like `resize()`)
+  and croping the whitespaces:
 
 ![cropResize()](doc/cropResize.jpg)
 
