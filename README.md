@@ -1,15 +1,12 @@
-Gregwar's Image class
-=====================
+# Gregwar's Image class
 
 [![Build status](https://travis-ci.org/Gregwar/Image.svg?branch=master)](https://travis-ci.org/Gregwar/Image)
 
 The `Gregwar\Image` class purpose is to provide a simple object-oriented images handling and caching API.
 
-Usage
-=====
+# Usage
 
-Basic handling
---------------
+## Basic handling
 
 Using methods chaining, you can open, transform and save a file in a single line:
 
@@ -25,18 +22,38 @@ Image::open('in.png')
     ->save('out.jpg');
 ```
 
-The methods available are:
+Here are the resize methods:
 
 * `resize($width, $height, $background)`: resizes the image, will preserve scale and never
-   enlarge it
+   enlarge it:
 
-* `scaleResize($width, $height, $background)`: resizes the image, will preserve scale
+![resize()](doc/resize.jpg)
+
+* `scaleResize($width, $height, $background)`: resizes the image, will preserve scale, can enlarge
+ it:
+
+![scaleResize()](doc/scaleResize.jpg)
 
 * `forceResize($width, $height, $background)`: resizes the image, will force the image to
    be exactly $width by $height
 
+![forceResize()](doc/forceResize.jpg)
+
 * `cropResize($width, $height, $background)`: resizes the image preserving scale and croping
-  the whitespaces
+  the whitespaces:
+
+![cropResize()](doc/cropResize.jpg)
+
+* `zoomCrop($width, $height, $background, $xPos, $yPos)`: resize and crop the image to fit to given dimensions:
+
+![zoomCrop()](doc/zoomCrop.jpg)
+
+* You can change the position of the resized image using the `$xPos` (center, left or right) and `$yPos` (center,
+  top or bottom):
+
+![zoomCrop() with yPos=top](doc/zoomCropTop.jpg)
+
+The other methods available are:
 
 * `crop($x, $y, $w, $h)`: crops the image to a box located on coordinates $x,y and
    which size is $w by $h
@@ -79,8 +96,6 @@ The methods available are:
 
 * `circle($cx, $cy, $r, $color, $filled=false)`: draws a circle
 
-* `zoomCrop($width, $height, $background)`: resize and crop the image to fit to given dimensions
-
 * `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
 
 * `html($title = '', $type = 'jpg')`: return the `<img ... />` tag with the cache image
@@ -98,8 +113,7 @@ You can also create image from scratch using:
 
 Where 200 is the width and 100 the height
 
-Saving the image
-----------------
+## Saving the image
 
 You can save the image to an explicit file using `save($file, $type = 'jpg', $quality = 80)`:
 
@@ -111,8 +125,7 @@ You can save the image to an explicit file using `save($file, $type = 'jpg', $qu
 
 You can also get the contents of the image using `get($type = 'jpg', $quality = 80)`, which will return the binary contents of the image
 
-Using cache
------------
+## Using cache
 
 Each operation above is not actually applied on the opened image, but added in an operations
 array. This operation array, the name, type and modification time of file are hashed using
@@ -184,8 +197,7 @@ You can also create your own image on-the-fly using drawing functions:
     ->jpeg(); ?>" />
 ```
 
-Using fallback image
---------------------
+## Using fallback image
 
 If the image file doesn't exists, you can configurate a fallback image that will be used
 by the class (note that this require the cache directory to be available).
@@ -197,8 +209,7 @@ A default "error" image which is used is in `images/error.jpg`, you can change i
     $img->setFallback('/path/to/my/fallback.jpg');
 ```
 
-Garbage Collect
-===============
+## Garbage Collect
 
 To prevent the cache from growing forever, you can use the provided GarbageCollect class as below:
 
@@ -213,8 +224,7 @@ GarbageCollect::dropOldFiles(__DIR__.'/../cache', 30, true);
 
 ```
 
-Using with composer
-===================
+# Using with composer
 
 This repository is available with composer under the name `gregwar/image`, so simply add this to
 your requires :
@@ -229,13 +239,11 @@ your requires :
 
 And update your dependencies, you'll be able to use the composer autoloader to load the class
 
-License
-=======
+# License
 
 `Gregwar\Image` is under MIT License
 
-Development
-===========
+# Development
 
 `Gregwar\Image` is using PHP metaprogramming paradigms so it make it easy to enhance.
 
