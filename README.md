@@ -48,7 +48,7 @@ Here are the resize methods:
 
 ![zoomCrop()](doc/zoomCrop.jpg)
 
-* You can change the position of the resized image using the `$xPos` (center, left or right) and `$yPos` (center,
+* In `zoomCrop()`, You can change the position of the resized image using the `$xPos` (center, left or right) and `$yPos` (center,
   top or bottom):
 
 ![zoomCrop() with yPos=top](doc/zoomCropTop.jpg)
