@@ -29,12 +29,12 @@ abstract class Common extends Adapter
 
         // Define x position
         switch($xPosLetter) {
-            case "L":
-            case "left":
+            case 'L':
+            case 'left':
                 $xPos = 0;
                 break;
-            case "R":
-            case "right":
+            case 'R':
+            case 'right':
                 $xPos = (int) $newWidth - $width;
                 break;
             default:
@@ -43,12 +43,12 @@ abstract class Common extends Adapter
 
         // Define y position
         switch($yPosLetter) {
-            case "T":
-            case "top":
+            case 'T':
+            case 'top':
                 $yPos = 0;
                 break;
-            case "B":
-            case "bottom":
+            case 'B':
+            case 'bottom':
                 $yPos = (int) $newHeight - $height;
                 break;
             default:
