@@ -380,7 +380,7 @@ class GD extends Common
             } else if (!$flipVertical && $flipHorizontal) {
                 $flipMode = \IMG_FLIP_HORIZONTAL;
             }
-            
+
             imageflip($this->resource, $flipMode);
         } else {
             $width = $this->width();
@@ -410,7 +410,7 @@ class GD extends Common
                 $this->resource = $imgdest;
             }
         }
-        
+
         return $this;
     }
 

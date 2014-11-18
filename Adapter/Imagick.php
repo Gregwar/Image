@@ -23,6 +23,14 @@ class Imagick extends Common
         }
 	}
 
+    public function __destruct()
+    {
+        if ($this->resource !== null) {
+            $this->resource->clear();
+            $this->resource->destroy();
+        }
+    }
+
     /**
      * @inheritdoc
      */
@@ -100,59 +108,56 @@ class Imagick extends Common
     }
 
     /**
-     * Fills the image background to $bg if the image is transparent
-     *
-     * @param int $background background color
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function fillBackground($background = 0xffffff)
     {
-        // TODO: Implement fillBackground() method.
+        // TODO: Check if int works or if hexadecimal notation is needed.
+        $this->resource->setImageBackgroundColor($background);
+
+        return $this;
     }
 
     /**
-     * Negates the image
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function negate()
     {
-        // TODO: Implement negate() method.
+        // TODO: Check if $gray should be false or true according to GD method
+        $this->resource->negateImage(true);
+
+        return $this;
     }
 
     /**
-     * Changes the brightness of the image
-     *
-     * @param int $brightness the brightness
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function brightness($brightness)
     {
-        // TODO: Implement brightness() method.
+        // TODO: Test according to this note: http://php.net/manual/en/imagick.modulateimage.php#87330
+        $this->resource->modulateImage($brightness, 100, 100);
+
+        return $this;
     }
 
     /**
-     * Contrasts the image
-     *
-     * @param int $contrast the contrast [-100, 100]
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function contrast($contrast)
     {
         // TODO: Implement contrast() method.
+        // Note: Imagick want a boolean. How to convert it?
     }
 
     /**
-     * Apply a grayscale level effect on the image
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function grayscale()
     {
-        // TODO: Implement grayscale() method.
+        // TODO: Don't know if it is the good solution. Can we add colors after? Test it.
+        $this->resource->setImageColorspace(\Imagick::COLORSPACE_GRAY);
+
+        return $this;
     }
 
     /**
