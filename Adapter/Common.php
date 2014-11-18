@@ -7,7 +7,6 @@ abstract class Common extends Adapter
     /**
      * @inheritdoc
      */
-    public function zoomCrop($width, $height, $background = 'transparent', $xPosLetter = 'center', $yPosLetter = 'center')
     {
         // Calculate the different ratios
         $originalRatio = $this->width() / $this->height();
@@ -29,12 +28,21 @@ abstract class Common extends Adapter
 
         // Define x position
         switch($xPosLetter) {
+<<<<<<< HEAD
             case "L":
             case "left":
                 $xPos = 0;
                 break;
             case "R":
             case "right":
+=======
+            case 'L':
+            case 'left':
+                $xPos = 0;
+                break;
+            case 'R':
+            case 'right':
+>>>>>>> upstream/master
                 $xPos = (int) $newWidth - $width;
                 break;
             default:
@@ -43,12 +51,21 @@ abstract class Common extends Adapter
 
         // Define y position
         switch($yPosLetter) {
+<<<<<<< HEAD
             case "T":
             case "top":
                 $yPos = 0;
                 break;
             case "B":
             case "bottom":
+=======
+            case 'T':
+            case 'top':
+                $yPos = 0;
+                break;
+            case 'B':
+            case 'bottom':
+>>>>>>> upstream/master
                 $yPos = (int) $newHeight - $height;
                 break;
             default:
