@@ -161,84 +161,89 @@ class Imagick extends Common
     }
 
     /**
-     * Emboss the image
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function emboss()
     {
-        // TODO: Implement emboss() method.
+        // TODO: Manage parameters? http://php.net/manual/en/imagick.embossImage.php
+        $this->resource->embossImage(0, 1);
+
+        return $this;
     }
 
     /**
-     * Smooth the image
-     *
-     * @param int $p value between [-10,10]
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function smooth($p)
     {
-        // TODO: Implement smooth() method.
+        $this->resource->reduceNoiseImage($p);
+
+        return $this;
     }
 
     /**
-     * Sharps the image
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function sharp()
     {
-        // TODO: Implement sharp() method.
+        // TODO: Manage parameters? http://php.net/manual/en/imagick.sharpenimage.php
+        $this->resource->sharpenImage(0, 1);
+
+        return $this;
     }
 
     /**
-     * Edges the image
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function edge()
     {
-        // TODO: Implement edge() method.
+        // TODO: Manage parameters? http://php.net/manual/en/imagick.edgeimage.php
+        $this->resource->edgeImage(0);
+
+        return $this;
     }
 
     /**
-     * Colorize the image
-     *
-     * @param int $red value in range [-255, 255]
-     * @param int $green value in range [-255, 255]
-     * @param int $blue value in range [-255, 255]
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function colorize($red, $green, $blue)
     {
-        // TODO: Implement colorize() method.
+        $color = sprintf('rgb(%d, %d, %d)', $red, $green, $blue);
+        // TODO: Manage opacity? http://php.net/manual/en/imagick.colorizeimage.php
+        $this->resource->colorizeImage($color, 1.0);
+
+        return $this;
     }
 
     /**
-     * apply sepia to the image
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function sepia()
     {
-        // TODO: Implement sepia() method.
+        // TODO: Manage threshold parameter? http://php.net/manual/en/imagick.sepiatoneimage.php
+        $this->resource->sepiaToneImage(80);
+
+        return $this;
     }
 
     /**
-     * Merge with another image
-     *
-     * @param Image $other
-     * @param int $x
-     * @param int $y
-     * @param int $width
-     * @param int $height
-     *
-     * @return $this
+     * @inheritdoc
      */
     public function merge(Image $other, $x = 0, $y = 0, $width = null, $height = null)
     {
+        // TODO: implement it on Common class.
+        $other = clone $other;
+        $other->init();
+        $other->applyOperations();
+
+        if (null == $width) {
+            $width = $other->width();
+        }
+        if (null == $height) {
+            $height = $other->height();
+        }
+        // ENDTOTO
+
         // TODO: Implement merge() method.
     }
 
