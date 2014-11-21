@@ -117,7 +117,15 @@ class GD extends Common
         imagefilter($this->resource, IMG_FILTER_NEGATE);
         return $this;
     }
-
+    /**
+     * @inheritdoc
+     */
+    public function blur()
+    {
+        imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
+        return $this;
+    }
+    
     /**
      * @inheritdoc
      */
