@@ -118,6 +118,13 @@ class GD extends Common
         return $this;
     }
 
+    public function blur($p)
+    {
+        for ($i = 1; $i <= $p; $i++)
+            imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
+        return $this;
+    }
+    
     /**
      * @inheritdoc
      */
@@ -126,7 +133,7 @@ class GD extends Common
         imagefilter($this->resource, IMG_FILTER_BRIGHTNESS, $brightness);
         return $this;
     }
-
+    
     /**
      * @inheritdoc
      */
