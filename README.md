@@ -98,6 +98,8 @@ The other methods available are:
 
 * `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
 
+* `fixOrientation()`: return the image rotated and flipped using image exif information 
+
 * `html($title = '', $type = 'jpg')`: return the `<img ... />` tag with the cache image
 
 * `flip($flipVertical, $flipHorizontal)`: flips the image in the given directions. Both params are boolean and at least one must be true.
