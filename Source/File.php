@@ -28,22 +28,25 @@ class File extends Source
 
     public function guessType()
     {
+        $validTypes = array(
+            IMAGETYPE_GIF  => 'gif',
+            IMAGETYPE_PNG  => 'png',
+            IMAGETYPE_JPEG => 'jpeg'
+        );
+
         if (function_exists('exif_imagetype')) {
             $type = @exif_imagetype($this->file);
+        }
+        elseif (function_exists('getimagesize')) {
+            $info = @getimagesize($this->file);
+            $type = is_array($info) && isset($info[2]) ? $info[2] : false;
+        }
+        else {
+            $type = false;
+        }
 
-            if (false !== $type) {
-                if ($type == IMAGETYPE_JPEG) {
-                    return 'jpeg';
-                }
-
-                if ($type == IMAGETYPE_GIF) {
-                    return 'gif';
-                }
-
-                if ($type == IMAGETYPE_PNG) {
-                    return 'png';
-                }
-            }
+        if (false !== $type && isset($validTypes[$type])) {
+            return $validTypes[$type];
         }
 
         $parts = explode('.', $this->file);
