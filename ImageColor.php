@@ -18,7 +18,7 @@ class ImageColor
         'green'     =>  0x008000,
         'lime'      =>  0x00ff00,
         'white'     =>  0xffffff,
-        'fuschia'   =>  0xff00ff,
+        'fuchsia'   =>  0xff00ff,
         'purple'    =>  0x800080,
         'olive'     =>  0x808000,
         'yellow'    =>  0xffff00,
