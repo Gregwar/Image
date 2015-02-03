@@ -91,6 +91,58 @@ abstract class Common extends Adapter
     }
 
     /**
+     * Fix orientation using Exif informations
+     */
+    public function fixOrientation()
+    {
+        if (!extension_loaded('exif')) {
+            throw new \RuntimeException('You need to EXIF PHP Extension to use this function');
+        }
+
+        $exif = exif_read_data($this->source->getInfos());
+        
+        if(!array_key_exists('Orientation', $exif)) {
+            return $this;
+        }
+
+        switch($exif['Orientation']) {
+            case 1:
+                break;
+
+            case 2:
+                $this->flip(false, true);
+                break;
+
+            case 3: // 180 rotate left
+                $this->rotate(180);
+                break;
+
+            case 4: // vertical flip
+                $this->flip(true, false);
+                break;
+                   
+            case 5: // vertical flip + 90 rotate right
+                $this->flip(true, false);
+                $this->rotate(-90);
+                break;
+                   
+            case 6: // 90 rotate right
+                $this->rotate(-90);
+                break;
+                   
+            case 7: // horizontal flip + 90 rotate right
+                $this->flip(false, true);   
+                $this->rotate(-90);
+                break;
+                   
+            case 8: // 90 rotate left
+                $this->rotate(90);
+                break;
+        }
+        return $this;
+    }
+
+    /**
      * Opens the image
      */
     abstract protected function openGif($file);
