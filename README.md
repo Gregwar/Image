@@ -4,6 +4,19 @@
 
 The `Gregwar\Image` class purpose is to provide a simple object-oriented images handling and caching API.
 
+# Installation
+
+With composer :
+
+``` json
+{
+    ...
+    "require": {
+        "gregwar/image": "2.*"
+    }
+}
+```
+
 # Usage
 
 ## Basic handling
@@ -11,26 +24,23 @@ The `Gregwar\Image` class purpose is to provide a simple object-oriented images 
 Using methods chaining, you can open, transform and save a file in a single line:
 
 ```php
-<?php
-require_once('lib/Gregwar/Image.php');
-
-use Gregwar\Image\Image;
+<?php use Gregwar\Image\Image;
 
 Image::open('in.png')
-    ->resize(100, 100)
-    ->negate()
-    ->save('out.jpg');
+     ->resize(100, 100)
+     ->negate()
+     ->save('out.jpg');
 ```
 
 Here are the resize methods:
 
 * `resize($width, $height, $background)`: resizes the image, will preserve scale and never
-   enlarge it (background is `red` here to understand what happens):
+   enlarge it (background is `red` in order to understand what happens):
 
 ![resize()](doc/resize.jpg)
 
 * `scaleResize($width, $height, $background)`: resizes the image, will preserve scale, can enlarge
- it (background is `red` here to understand what happens):
+ it (background is `red` in order to understand what happens):
 
 ![scaleResize()](doc/scaleResize.jpg)
 
@@ -152,14 +162,11 @@ Once the cache directory configured, you can call the following methods:
 For instance:
 
 ```php
-<?php
-require_once('lib/Gregwar/Image.php');
-
-use Gregwar\Image\Image;
+<?php use Gregwar\Image\Image;
 
 echo Image::open('test.png')
-    ->sepia()
-    ->jpeg();
+          ->sepia()
+          ->jpeg();
 
 //Outputs: cache/images/1/8/6/9/c/86e4532dbd9c073075ef08e9751fc9bc0f4.jpg
 ```
@@ -171,10 +178,7 @@ You can use this directly in an HTML document:
 
 
 ```php
-<?php
-require_once('lib/Gregwar/Image.php');
-
-use Gregwar\Image\Image;
+<?php use Gregwar\Image\Image;
 
 // ...
 <img src="<?php echo Image::open('image.jpg')->resize(150, 150)->jpeg(); ?>" />
@@ -191,12 +195,15 @@ You can also create your own image on-the-fly using drawing functions:
 
 
 ```php
-<img src="<?php echo Image::create(300, 300)
-    ->fill(0xffaaaa)    // Filling with a light red
-    ->rectangle(0xff3333, 0, 100, 300, 200, true) // Drawing a red rectangle
-    // Writing "Hello $username !" on the picture using a custom TTF font file
-    ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
-    ->jpeg(); ?>" />
+<?php 
+    $img_src = Image::create(300, 300)
+                    ->fill(0xffaaaa)    // Filling with a light red
+                    ->rectangle(0xff3333, 0, 100, 300, 200, true) // Drawing a red rectangle
+                      // Writing "Hello $username !" on the picture using a custom TTF font file
+                    ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
+                    ->jpeg();
+?>
+<img src="<?= $img_src  ?>" />
 ```
 
 ## Using fallback image
@@ -216,41 +223,21 @@ A default "error" image which is used is in `images/error.jpg`, you can change i
 To prevent the cache from growing forever, you can use the provided GarbageCollect class as below:
 
 ```php
-<?php
-// This could be a cron called each day @3:00AM for instance
-use Gregwar\Image\GarbageCollect;
+<?php use Gregwar\Image\GarbageCollect;
 
+// This could be a cron called each day @3:00AM for instance
 // Removes all the files from ../cache that are more than 30 days
 // old. A verbose output will explain which files are deleted
 GarbageCollect::dropOldFiles(__DIR__.'/../cache', 30, true);
 
 ```
 
-# Using with composer
-
-This repository is available with composer under the name `gregwar/image`, so simply add this to
-your requires :
-
-```
-    "requires": {
-        ...
-        "gregwar/image": "dev-master"
-        ...
-    }
-```
-
-And update your dependencies, you'll be able to use the composer autoloader to load the class
-
-# License
-
-`Gregwar\Image` is under MIT License
-
 # Development
 
-`Gregwar\Image` is using PHP metaprogramming paradigms so it make it easy to enhance.
+`Gregwar\Image` is using PHP metaprogramming paradigms that makes it easy to enhance.
 
-Each function that handle the image is implemented in an *Adapter*, this is where
-all the specific actions take places.
+Each function that handles the image is implemented in an *Adapter*, this is where
+all the specific actions take place.
 
 The `Common` adapter is design to contain common abstract actions, while the
 specific adatpers (like `GD`) are designed to contain actions specific to the low
@@ -268,19 +255,21 @@ You can add your own methods by adding it in the corresponding adapter.
     }
 ```
 
-Which could be usable on the Image
+Which could be used on the Image
 
 ```php
 <?php
     $image->myFilter();
 ```
 
-You can also write your own adapter in your application, which could extend one of this repository,
-and uses it calling `setAdapter()`:
+You can also write your own adapter which could extend one of this repository and use it by calling `setAdapter()`:
 
 ```php
 <?php
     $image->setAdapter(new MyCustomAdapter);
 ```
 
+# License
+
+`Gregwar\Image` is under MIT License, please read the LICENSE file for further details.
 Do not hesitate to fork this repository and customize it !
