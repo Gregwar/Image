@@ -46,9 +46,14 @@ use Gregwar\Image\Exceptions\GenerationError;
 class Image
 {
     /**
-     * Direcory to use for file caching
+     * Directory to use for file caching
      */
     protected $cacheDir = 'cache/images';
+
+    /**
+     * Directory cache mode
+     */
+    protected $cacheMode = null;
 
     /**
      * Internal adapter
@@ -87,7 +92,7 @@ class Image
         'png'   => 'png',
         'gif'   => 'gif',
     );
-    
+
     /**
      * Fallback image
      */
@@ -111,6 +116,14 @@ class Image
         $this->cache->setCacheDirectory($cacheDir);
 
         return $this;
+    }
+
+    /**
+     * @param int $dirMode
+     */
+    public function setCacheDirMode($dirMode)
+    {
+        $this->cache->setDirectoryMode($dirMode);
     }
 
     /**
@@ -454,8 +467,8 @@ class Image
         // If the files does not exists, save it
         $image = $this;
 
-        // Target file should be younger than all the current image 
-        // dependencies        
+        // Target file should be younger than all the current image
+        // dependencies
         $conditions = array(
             'younger-than' => $this->getDependencies()
         );
