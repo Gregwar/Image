@@ -265,8 +265,8 @@ class Image
 	public function getAdapter()
     {
         if (null === $this->adapter) {
-            // Defaults to GD
-            $this->setAdapter('gd');
+            // Defaults to Imagick
+            $this->setAdapter('imagick');
         }
 
         return $this->adapter;
@@ -281,16 +281,18 @@ class Image
                 $adapter = strtolower($adapter);
 
                 switch ($adapter) {
-                case 'gd':
-                    $this->adapter = new Adapter\GD();
-                    break;
-                case 'imagemagick':
-                case 'imagick':
-                    $this->adapter = new Adapter\Imagick();
-                    break;
-                default:
-                    throw new \Exception('Unknown adapter: '.$adapter);
-                    break;
+                    case 'gd':
+                        $this->adapter = new Adapter\GD();
+                        break;
+                    case 'imagemagick':
+                        $this->adapter = new Adapter\Imagick();
+                        break;
+                    case 'imagick':
+                        $this->adapter = new Adapter\Imagick();
+                        break;
+                    default:
+                        throw new \Exception('Unknown adapter: '.$adapter);
+                        break;
                 }
             } else {
                 throw new \Exception('Unable to load the given adapter (not string or Adapter)');
