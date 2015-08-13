@@ -694,9 +694,17 @@ class Image
     /**
      * Returning basic html code for this image
      */
-    public function html($title = '', $type = 'jpg', $quality = 80)
+    public function html($title = '', $type = 'jpg', $attributes = array(), $quality = 80)
     {
-        return '<img title="' . $title . '" src="' . $this->cacheFile($type, $quality) . '" />';
+	$html = array();
+        if (!empty($attributes)) {
+            foreach ((array)$attributes as $key => $value) {
+                if (is_numeric($key)) $key = $value;
+                if (!is_null($value)) $key . '="' . $value . '"';
+                $html[] = $key . '="' . ($value) . '"';
+            }
+        }
+        return '<img title="' . $title . '" src="' . $this->cacheFile($type, $quality) . '" ' . implode(' ', $html) . '/>';
     }
 
     /**
