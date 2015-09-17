@@ -113,6 +113,20 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals('gif', $image->guessType());
     }
 
+    public function testDefaultCacheSystem()
+    {
+        $image = $this->open('monalisa.jpg');
+        $this->assertInstanceOf('Gregwar\Cache\Cache', $image->getCacheSystem());
+    }
+
+    public function testCustomCacheSystem()
+    {
+        $image = $this->open('monalisa.jpg');
+        $cache = $this->getMock('Gregwar\Cache\CacheInterface');
+        $image->setCacheSystem($cache);
+        $this->assertTrue($image->getCacheSystem() instanceof Gregwar\Cache\CacheInterface);
+    }
+
     /**
      * Testing that caching an image without operations will result
      * in the original image when force cache is disabled

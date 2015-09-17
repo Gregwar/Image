@@ -2,6 +2,7 @@
 
 namespace Gregwar\Image;
 
+use Gregwar\Cache\CacheInterface;
 use Gregwar\Image\Adapter\AdapterInterface;
 use Gregwar\Image\Exceptions\GenerationError;
 
@@ -104,16 +105,43 @@ class Image
     protected $useFallbackImage = true;
 
     /**
-     * Cache system
+     * Cache system.
+     *
+     * @var \Gregwar\Cache\CacheInterface
      */
     protected $cache;
+
+    /**
+     * Get the cache system.
+     *
+     * @return \Gregwar\Cache\CacheInterface
+     */
+    public function getCacheSystem()
+    {
+        if (is_null($this->cache)) {
+            $this->cache = new \Gregwar\Cache\Cache;
+            $this->cache->setCacheDirectory($this->cacheDir);
+        }
+
+        return $this->cache;
+    }
+
+    /**
+     * Set the cache system.
+     *
+     * @param \Gregwar\Cache\CacheInterface $cache
+     */
+    public function setCacheSystem(CacheInterface $cache)
+    {
+        $this->cache = $cache;
+    }
 
     /**
      * Change the caching directory
      */
     public function setCacheDir($cacheDir)
     {
-        $this->cache->setCacheDirectory($cacheDir);
+        $this->getCacheSystem()->setCacheDirectory($cacheDir);
 
         return $this;
     }
@@ -141,7 +169,7 @@ class Image
      */
     public function setActualCacheDir($actualCacheDir)
     {
-        $this->cache->setActualCacheDirectory($actualCacheDir);
+        $this->getCacheSystem()->setActualCacheDirectory($actualCacheDir);
 
         return $this;
     }
@@ -187,9 +215,6 @@ class Image
 
     public function __construct($originalFile = null, $width = null, $height = null)
     {
-        $this->cache = new \Gregwar\Cache\Cache;
-        $this->cache->setCacheDirectory($this->cacheDir);
-
         $this->setFallback(null);
 
         if ($originalFile) {
@@ -254,7 +279,7 @@ class Image
     {
         $fallback = $this->fallback;
 
-        return $this->cache->getOrCreateFile('fallback.jpg', array(), function($target) use ($fallback) {
+        return $this->getCacheSystem()->getOrCreateFile('fallback.jpg', array(), function($target) use ($fallback) {
             copy($fallback, $target);
         });
     }
@@ -484,7 +509,7 @@ class Image
 
         // Asking the cache for the cacheFile
         try {
-            $file = $this->cache->getOrCreateFile($cacheFile, $conditions, $generate, $actual);
+            $file = $this->getCacheSystem()->getOrCreateFile($cacheFile, $conditions, $generate, $actual);
         } catch (GenerationError $e) {
             $file = $e->getNewFile();
         }
