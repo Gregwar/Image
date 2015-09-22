@@ -1,27 +1,26 @@
 <?php
 
 use Gregwar\Image\Image;
-
 use Gregwar\Image\ImageColor;
 
 /**
- * Unit testing for Image
+ * Unit testing for Image.
  */
 class ImageTests extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Testing the basic width & height
+     * Testing the basic width & height.
      */
     public function testBasics()
     {
         $image = $this->open('monalisa.jpg');
 
-        $this->assertEquals($image->width(), 771);
-        $this->assertEquals($image->height(), 961);
+        $this->assertSame($image->width(), 771);
+        $this->assertSame($image->height(), 961);
     }
 
     /**
-     * Testing the resize
+     * Testing the resize.
      */
     public function testResize()
     {
@@ -36,12 +35,12 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($out));
 
         $i = imagecreatefromjpeg($out);
-        $this->assertEquals(300, imagesx($i));
-        $this->assertEquals(200, imagesy($i));
+        $this->assertSame(300, imagesx($i));
+        $this->assertSame(200, imagesy($i));
     }
 
     /**
-     * Testing the resize %
+     * Testing the resize %.
      */
     public function testResizePercent()
     {
@@ -52,16 +51,16 @@ class ImageTests extends \PHPUnit_Framework_TestCase
             ->resize('50%')
             ->save($out)
             ;
-        
+
         $this->assertTrue(file_exists($out));
 
         $i = imagecreatefromjpeg($out);
-        $this->assertEquals(386, imagesx($i));
-        $this->assertEquals(481, imagesy($i));
+        $this->assertSame(386, imagesx($i));
+        $this->assertSame(481, imagesy($i));
     }
 
     /**
-     * Testing to create an image, jpeg, gif and png
+     * Testing to create an image, jpeg, gif and png.
      */
     public function testCreateImage()
     {
@@ -73,11 +72,11 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
         $i = imagecreatefromjpeg($black);
         $this->assertTrue(file_exists($black));
-        $this->assertEquals(150, imagesx($i));
-        $this->assertEquals(200, imagesy($i));
+        $this->assertSame(150, imagesx($i));
+        $this->assertSame(200, imagesy($i));
 
         $j = imagecolorat($i, 40, 40);
-        $this->assertEquals(0, $j);
+        $this->assertSame(0, $j);
 
         $black = $this->output('black.png');
         Image::create(150, 200)
@@ -86,8 +85,8 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
         $i = imagecreatefrompng($black);
         $this->assertTrue(file_exists($black));
-        $this->assertEquals(150, imagesx($i));
-        $this->assertEquals(200, imagesy($i));
+        $this->assertSame(150, imagesx($i));
+        $this->assertSame(200, imagesy($i));
 
         $black = $this->output('black.gif');
         Image::create(150, 200)
@@ -96,21 +95,21 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
         $i = imagecreatefromgif($black);
         $this->assertTrue(file_exists($black));
-        $this->assertEquals(150, imagesx($i));
-        $this->assertEquals(200, imagesy($i));
+        $this->assertSame(150, imagesx($i));
+        $this->assertSame(200, imagesy($i));
     }
 
     /**
-     * Testing type guess
+     * Testing type guess.
      */
     public function testGuess()
     {
         $image = $this->open('monalisa.jpg');
-        $this->assertEquals('jpeg', $image->guessType());
+        $this->assertSame('jpeg', $image->guessType());
         $image = $this->open('monalisa.png');
-        $this->assertEquals('png', $image->guessType());
+        $this->assertSame('png', $image->guessType());
         $image = $this->open('monalisa.gif');
-        $this->assertEquals('gif', $image->guessType());
+        $this->assertSame('gif', $image->guessType());
     }
 
     public function testDefaultCacheSystem()
@@ -129,17 +128,17 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
     /**
      * Testing that caching an image without operations will result
-     * in the original image when force cache is disabled
+     * in the original image when force cache is disabled.
      */
     public function testNoCache()
     {
-        $monalisa = __DIR__ . '/files/monalisa.jpg';
+        $monalisa = __DIR__.'/files/monalisa.jpg';
         $image = $this->open('monalisa.jpg')->setForceCache(false);
-        $this->assertEquals($monalisa, $image->guess());
+        $this->assertSame($monalisa, $image->guess());
         $image = $this->open('monalisa.jpg');
-        $this->assertNotEquals($monalisa, $image->guess());
+        $this->assertNotSame($monalisa, $image->guess());
         $image = $this->open('monalisa.jpg')->setForceCache(true);
-        $this->assertNotEquals($monalisa, $image->guess());
+        $this->assertNotSame($monalisa, $image->guess());
     }
 
     public function testActualCache()
@@ -161,12 +160,12 @@ class ImageTests extends \PHPUnit_Framework_TestCase
             ->cacheData();
 
         $jpg = imagecreatefromstring($output);
-        $this->assertEquals(300, imagesx($jpg));
-        $this->assertEquals(200, imagesy($jpg));
+        $this->assertSame(300, imagesx($jpg));
+        $this->assertSame(200, imagesy($jpg));
     }
 
     /**
-     * Testing using cache
+     * Testing using cache.
      */
     public function testCache()
     {
@@ -176,38 +175,38 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(file_exists($output));
         $i = imagecreatefromjpeg($output);
-        $this->assertEquals(100, imagesx($i));
-        $this->assertEquals(50, imagesy($i));
+        $this->assertSame(100, imagesx($i));
+        $this->assertSame(50, imagesy($i));
 
         $output2 = $this->open('monalisa.jpg')
             ->resize(100, 50)->negate()
             ->guess();
 
-        $this->assertEquals($output, $output2);
-        
+        $this->assertSame($output, $output2);
+
         $output3 = $this->open('monalisa.jpg')
             ->resize(100, 50)->negate()
             ->png();
         $this->assertTrue(file_exists($output));
         $i = imagecreatefrompng($output3);
-        $this->assertEquals(100, imagesx($i));
-        $this->assertEquals(50, imagesy($i));
-        
+        $this->assertSame(100, imagesx($i));
+        $this->assertSame(50, imagesy($i));
+
         $output4 = $this->open('monalisa.jpg')
             ->resize(100, 50)->negate()
             ->gif();
         $this->assertTrue(file_exists($output));
         $i = imagecreatefromgif($output4);
-        $this->assertEquals(100, imagesx($i));
-        $this->assertEquals(50, imagesy($i));
+        $this->assertSame(100, imagesx($i));
+        $this->assertSame(50, imagesy($i));
     }
 
     /**
-     * Testing creating image from data
+     * Testing creating image from data.
      */
     public function testData()
     {
-        $data = file_get_contents(__DIR__ . '/files/monalisa.jpg');
+        $data = file_get_contents(__DIR__.'/files/monalisa.jpg');
 
         $output = $this->output('mona.jpg');
         $image = Image::fromData($data);
@@ -215,24 +214,24 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(file_exists($output));
         $i = imagecreatefromjpeg($output);
-        $this->assertEquals(771, imagesx($i));
-        $this->assertEquals(961, imagesy($i));
-        
+        $this->assertSame(771, imagesx($i));
+        $this->assertSame(961, imagesy($i));
     }
 
     /**
-     * Opening an image
+     * Opening an image.
      */
     protected function open($file)
     {
-        $image = Image::open(__DIR__ . '/files/' . $file);
+        $image = Image::open(__DIR__.'/files/'.$file);
         $image->setCacheDir(__DIR__.'/output/cache/');
         $image->setActualCacheDir(__DIR__.'/output/cache/');
+
         return $image;
     }
 
     /**
-     * Testing transparent image
+     * Testing transparent image.
      */
     public function testTransparent()
     {
@@ -243,11 +242,11 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(file_exists($gif));
         $img = imagecreatefromgif($gif);
-        $this->assertEquals(200, imagesx($img));
-        $this->assertEquals(100, imagesy($img));
+        $this->assertSame(200, imagesx($img));
+        $this->assertSame(100, imagesy($img));
         $index = imagecolorat($img, 2, 2);
         $color = imagecolorsforindex($img, $index);
-        $this->assertEquals(127, $color['alpha']);
+        $this->assertSame(127, $color['alpha']);
     }
 
     public function testNonExistingFile()
@@ -271,7 +270,7 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test that image::save returns the file name
+     * Test that image::save returns the file name.
      */
     public function testSaveReturn()
     {
@@ -280,11 +279,11 @@ class ImageTests extends \PHPUnit_Framework_TestCase
             ->fill('red')
             ->save($red);
 
-        $this->assertEquals($red, $result);
+        $this->assertSame($red, $result);
     }
 
     /**
-     * Testing merge
+     * Testing merge.
      */
     public function testMerge()
     {
@@ -307,32 +306,32 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test that dependencies are well generated
+     * Test that dependencies are well generated.
      */
     public function testDependencies()
     {
-        $this->assertEquals(array(), Image::create(100, 100)
+        $this->assertSame(array(), Image::create(100, 100)
             ->getDependencies());
-        $this->assertEquals(array(), Image::create(100, 100)
+        $this->assertSame(array(), Image::create(100, 100)
             ->merge(Image::create(100, 50))
             ->getDependencies());
 
-        $this->assertEquals(array('toto.jpg'), Image::open('toto.jpg')
+        $this->assertSame(array('toto.jpg'), Image::open('toto.jpg')
             ->merge(Image::create(100, 50))
             ->getDependencies());
-        
-        $this->assertEquals(array('toto.jpg', 'titi.jpg'), Image::open('toto.jpg')
+
+        $this->assertSame(array('toto.jpg', 'titi.jpg'), Image::open('toto.jpg')
             ->merge(Image::open('titi.jpg'))
             ->getDependencies());
-        
-        $this->assertEquals(array('toto.jpg', 'titi.jpg', 'tata.jpg'), Image::open('toto.jpg')
+
+        $this->assertSame(array('toto.jpg', 'titi.jpg', 'tata.jpg'), Image::open('toto.jpg')
             ->merge(Image::open('titi.jpg')
                     ->merge(Image::open('tata.jpg')))
             ->getDependencies());
     }
 
     /**
-     * Test that pretty name (for referencing) is well respected
+     * Test that pretty name (for referencing) is well respected.
      */
     public function testPrettyName()
     {
@@ -342,14 +341,14 @@ class ImageTests extends \PHPUnit_Framework_TestCase
             ->guess();
 
         $this->assertContains('davinci', $output);
-        
+
         $output2 = $this->open('monalisa.jpg')
             ->resize(100, 55)->negate()
             ->setPrettyName('davinci', false)
             ->guess();
 
-        $this->assertEquals($output, $output2);
-        
+        $this->assertSame($output, $output2);
+
         $prefix1 = $this->open('monalisa.jpg')
             ->resize(100, 50)->negate()
             ->setPrettyName('davinci')
@@ -361,7 +360,7 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
         $this->assertContains('davinci', $prefix1);
         $this->assertContains('davinci', $prefix2);
-        $this->assertNotEquals($prefix1, $prefix2);
+        $this->assertNotSame($prefix1, $prefix2);
 
         $transliterator = '\Behat\Transliterator\Transliterator';
 
@@ -391,7 +390,7 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Testing inlining
+     * Testing inlining.
      */
     public function testInline()
     {
@@ -399,19 +398,19 @@ class ImageTests extends \PHPUnit_Framework_TestCase
             ->resize(20, 20)
             ->inline();
 
-        $this->assertEquals(0, strpos($output, 'data:image/jpeg;base64,'));
+        $this->assertSame(0, strpos($output, 'data:image/jpeg;base64,'));
 
         $data = base64_decode(substr($output, 23));
         $image = imagecreatefromstring($data);
 
-        $this->assertEquals(20, imagesx($image));
-        $this->assertEquals(20, imagesy($image));
+        $this->assertSame(20, imagesx($image));
+        $this->assertSame(20, imagesy($image));
     }
 
     /**
      * Asaserting that two colors are equals
      * (JPG compression is not preserving colors for instance, so we
-     * need a non-strict way to compare it)
+     * need a non-strict way to compare it).
      */
     protected function assertColorEquals($c1, $c2, $delta = 8)
     {
@@ -427,23 +426,23 @@ class ImageTests extends \PHPUnit_Framework_TestCase
 
     protected function toRGB($color)
     {
-        $b = $color&0xff;
-        $g = ($color>>8)&0xff;
-        $r = ($color>>16)&0xff;
+        $b = $color & 0xff;
+        $g = ($color >> 8) & 0xff;
+        $r = ($color >> 16) & 0xff;
 
         return array($r, $g, $b);
     }
 
     /**
-     * Outputing an image to a file
+     * Outputing an image to a file.
      */
     protected function output($file)
     {
-        return __DIR__ . '/output/' . $file;
+        return __DIR__.'/output/'.$file;
     }
 
     /**
-     * Reinitialize the output dir
+     * Reinitialize the output dir.
      */
     public function setUp()
     {

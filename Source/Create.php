@@ -3,7 +3,7 @@
 namespace Gregwar\Image\Source;
 
 /**
- * Creates a new image from scratch
+ * Creates a new image from scratch.
  */
 class Create extends Source
 {

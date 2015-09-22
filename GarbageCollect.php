@@ -4,18 +4,18 @@ namespace Gregwar\Image;
 
 /**
  * Garbage collect a directory, this will crawl a directory, lookng
- * for files older than X days and destroy them
+ * for files older than X days and destroy them.
  *
  * @author Gregwar <g.passault@gmail.com>
  */
 class GarbageCollect
 {
     /**
-     * Drops old files of a directory
+     * Drops old files of a directory.
      *
      * @param string $directory the name of the target directory
-     * @param int $days the number of days to consider a file old
-     * @param bool $verbose enable verbose output
+     * @param int    $days      the number of days to consider a file old
+     * @param bool   $verbose   enable verbose output
      *
      * @return true if all the files/directories of a directory was wiped
      */
@@ -41,7 +41,7 @@ class GarbageCollect
 
             $fullName = $directory.'/'.$file;
 
-            $old = $now-filemtime($fullName);
+            $old = $now - filemtime($fullName);
 
             if (is_dir($fullName)) {
                 // Directories are recursively crawled
@@ -51,7 +51,7 @@ class GarbageCollect
                     $allDropped = false;
                 }
             } else {
-                if ($old > (24*60*60*$days)) {
+                if ($old > (24 * 60 * 60 * $days)) {
                     self::drop($fullName, $verbose);
                 } else {
                     $allDropped = false;
@@ -65,7 +65,7 @@ class GarbageCollect
     }
 
     /**
-     * Drops a file or an empty directory
+     * Drops a file or an empty directory.
      */
     public static function drop($file, $verbose = false)
     {
@@ -79,5 +79,4 @@ class GarbageCollect
             echo "> Dropping $file...\n";
         }
     }
-
 }
