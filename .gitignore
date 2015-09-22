@@ -3,3 +3,4 @@ demo/out.jpg
 **.swp
 vendor
 composer.lock
+/phpunit.xml

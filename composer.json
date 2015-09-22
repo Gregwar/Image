@@ -16,6 +16,9 @@
         "ext-gd": "*",
         "gregwar/cache": "~1.0"
     },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^2.7.4"
+    },
     "suggest": {
         "behat/transliterator": "Transliterator provides ability to set non-latin1 pretty names"
     },
