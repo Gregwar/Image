@@ -3,12 +3,12 @@
 namespace Gregwar\Image\Source;
 
 /**
- * An Image source
+ * An Image source.
  */
 class Source
 {
     /**
-     * Guess the type of the image
+     * Guess the type of the image.
      */
     public function guessType()
     {
@@ -25,10 +25,10 @@ class Source
 
     /**
      * Returns information about images, these informations should
-     * change only if the original image changed
+     * change only if the original image changed.
      */
     public function getInfos()
     {
-        return null;
+        return;
     }
 }

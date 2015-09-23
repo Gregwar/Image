@@ -4,3 +4,4 @@ demo/out.jpg
 vendor
 composer.lock
 /phpunit.xml
+/.php_cs.cache

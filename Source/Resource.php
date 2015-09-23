@@ -3,7 +3,7 @@
 namespace Gregwar\Image\Source;
 
 /**
- * Have the image directly in a specific resource
+ * Have the image directly in a specific resource.
  */
 class Resource extends Source
 {
