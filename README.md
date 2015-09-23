@@ -82,6 +82,8 @@ The other methods available are:
 
 * `sharp()`: applies a mean removal filter on the image
 
+* `sharpen($amount = 80, $radius = 0.5, $threshold = 3)`: sharpens the image with specific settings. Always as the last effect in a chain (but before any save or output method). See #63 for more informations
+
 * `edge()`: applies an edge effect on the image
 
 * `colorize($red, $green, $blue)`: colorize the image (from -255 to +255 for each color)
@@ -106,6 +108,11 @@ The other methods available are:
 
 * `circle($cx, $cy, $r, $color, $filled=false)`: draws a circle
 
+<<<<<<< HEAD
+* `zoomCrop($width, $height, $background, $xPosLetter, $yPosLetter)`: resize and crop the image to fit to given dimensions. provide top, left, center for xPosLetter and yPosLetter top, center, bottom. (Default is center/center)
+
+=======
+>>>>>>> upstream/master
 * `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
 
 * `fixOrientation()`: return the image rotated and flipped using image exif information 

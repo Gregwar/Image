@@ -151,11 +151,13 @@ interface AdapterInterface{
 	 *
 	 * @param integer $width  Desired width
 	 * @param integer $height Desired height
-	 * @param int $background
+	 * @param int/string $background
+	 * @param string $xPosLetter pos of crop x
+	 * @param string $yPosLetter pos of crop y
 	 *
 	 * @return $this
 	 */
-	public function zoomCrop($width, $height, $background = 0xffffff);
+    public function zoomCrop($width, $height, $background = 0xffffff, $xPosLetter = 'center', $yPosLetter = 'center');
 
 
 	/**
@@ -385,4 +387,15 @@ interface AdapterInterface{
 	 * @return $this
 	 */
 	public function flip($flipVertical, $flipHorizontal);
+
+	/**
+	 * Sharpens the image much more powerful then MEAN_REMOVAL 
+	 * 
+	 * @param int $amount
+	 * @param float $radius
+	 * @param int $threshold
+	 * 
+	 * @return $this
+	 */
+	public function sharpen($amount = 80, $radius = 0.5, $threshold = 3);
 }
