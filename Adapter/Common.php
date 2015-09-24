@@ -147,7 +147,9 @@ abstract class Common extends Adapter
      * Opens the image.
      */
     abstract protected function openGif($file);
+
     abstract protected function openJpeg($file);
+
     abstract protected function openPng($file);
 
     /**
