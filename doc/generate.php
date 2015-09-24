@@ -20,7 +20,7 @@ Image::open('mona.jpg')
     ->forceResize(250, 250)
     ->save('forceResize.jpg');
 
-// cropResize() preserves scale just like resize() but will 
+// cropResize() preserves scale just like resize() but will
 // trim the whitespace (if any) in the resulting image
 Image::open('mona.jpg')
     ->cropResize(250, 250)
