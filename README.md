@@ -240,7 +240,7 @@ Each function that handles the image is implemented in an *Adapter*, this is whe
 all the specific actions take place.
 
 The `Common` adapter is design to contain common abstract actions, while the
-specific adatpers (like `GD`) are designed to contain actions specific to the low
+specific adapters (like `GD`) are designed to contain actions specific to the low
 level layer.
 
 You can add your own methods by adding it in the corresponding adapter.
