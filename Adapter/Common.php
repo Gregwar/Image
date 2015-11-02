@@ -172,8 +172,8 @@ abstract class Common extends Adapter
 
     protected function loadFile($file, $type)
     {
-        if(!is_file($file)){
-            throw new \UnexpectedValueException($file.' is not a file)');
+        if (!is_file($file)) {
+            throw new \UnexpectedValueException($file . ' is not a file)');
         }
         
         if (!$this->supports($type)) {
