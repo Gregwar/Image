@@ -172,6 +172,10 @@ abstract class Common extends Adapter
 
     protected function loadFile($file, $type)
     {
+        if(!is_file($file)){
+            throw new \UnexpectedValueException($file.' is not a file)');
+        }
+        
         if (!$this->supports($type)) {
             throw new \RuntimeException('Type '.$type.' is not supported by GD');
         }
