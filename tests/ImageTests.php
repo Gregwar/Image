@@ -259,6 +259,16 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($error));
     }
 
+    public function testDirectoryAsFilepath()
+    {
+        $jpg = $this->output('a.jpg');
+        $img = $this->open('.')
+            ->negate();
+        $error = $img->save($jpg);
+
+        $this->assertTrue(file_exists($error));
+    }
+
     /**
      * * @expectedException              \UnexpectedValueException
      */
@@ -438,7 +448,7 @@ class ImageTests extends \PHPUnit_Framework_TestCase
      */
     protected function output($file)
     {
-        return __DIR__.'/output/'.$file;
+        return __DIR__.DIRECTORY_SEPARATOR.'output'.DIRECTORY_SEPARATOR.$file;
     }
 
     /**
@@ -447,7 +457,13 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $dir = $this->output('');
-        `rm -rf $dir`;
+
+        if (stristr(PHP_OS, 'WIN')) {
+            `rd /s /q $dir`;
+        } else {
+            `rm -rf $dir`;
+        }
+
         mkdir($dir);
         mkdir($this->output('cache'));
     }
