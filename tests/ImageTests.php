@@ -112,6 +112,19 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertSame('gif', $image->guessType());
     }
 
+    /**
+     * Testing type guess from image data
+     */
+    public function testGuessFromData()
+    {
+        $image = Image::fromData(file_get_contents(__DIR__.'/files/monalisa.gif'));
+        $this->assertSame('gif', $image->guessType());
+        $image = Image::fromData(file_get_contents(__DIR__.'/files/monalisa.png'));
+        $this->assertSame('png', $image->guessType());
+        $image = Image::fromData(file_get_contents(__DIR__.'/files/monalisa.jpg'));
+        $this->assertSame('jpeg', $image->guessType());
+    }
+
     public function testDefaultCacheSystem()
     {
         $image = $this->open('monalisa.jpg');
@@ -447,7 +460,12 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $dir = $this->output('');
-        `rm -rf $dir`;
+        
+        if (PHP_OS === 'WINNT') {
+            `rd /s /q "$dir"`;
+        } else {
+            `rm -rf $dir`;
+        }
         mkdir($dir);
         mkdir($this->output('cache'));
     }
