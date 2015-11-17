@@ -2,7 +2,7 @@
 
 $vendors = __DIR__.'/vendor/autoload.php';
 if (file_exists($vendors)) {
-    require $vendors;
+    return require $vendors;
 }
 
 /*
