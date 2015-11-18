@@ -229,7 +229,7 @@ class GD extends Common
         $prevHeight = $originalHeight;
 
         // scale way down and gradually scale back up, blurring all the way
-        for($i = 0; $i < $blurFactor; $i++) {
+        for ($i = 0; $i < $blurFactor; ++$i) {
             // determine dimensions of next image
             $nextWidth = $smallestWidth * pow(2, $i);
             $nextHeight = $smallestHeight * pow(2, $i);
