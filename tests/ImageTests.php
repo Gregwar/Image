@@ -204,7 +204,7 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     /**
      * Testing Gaussian blur filter.
      */
-    public function testGaussianBlur() 
+    public function testGaussianBlur()
     {
         $image = $this->open('monalisa.jpg')
             ->gaussianBlur();
