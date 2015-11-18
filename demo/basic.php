@@ -1,9 +1,9 @@
 <?php
-require_once('../autoload.php');
+
+require_once '../autoload.php';
 
 use Gregwar\Image\Image;
 
-Image::open('img/test.png')
-    ->resize(100, 100)
-    ->negate()
-    ->save('out.jpg', 'jpg');
+Image::open('in.gif')
+    ->resize(500, 500)
+    ->save('out.png', 'png');

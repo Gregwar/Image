@@ -1,40 +1,69 @@
-Gregwar's Image class
-=====================
+# Gregwar's Image class
+
+[![Build status](https://travis-ci.org/Gregwar/Image.svg?branch=master)](https://travis-ci.org/Gregwar/Image)
 
 The `Gregwar\Image` class purpose is to provide a simple object-oriented images handling and caching API.
 
-Usage
-=====
+# Installation
 
-Basic handling
---------------
+With composer :
+
+``` json
+{
+    ...
+    "require": {
+        "gregwar/image": "2.*"
+    }
+}
+```
+
+# Usage
+
+## Basic handling
 
 Using methods chaining, you can open, transform and save a file in a single line:
 
 ```php
-<?php
-require_once('lib/Gregwar/Image.php');
-
-use Gregwar\Image\Image;
+<?php use Gregwar\Image\Image;
 
 Image::open('in.png')
-    ->resize(100, 100)
-    ->negate()
-    ->save('out.jpg');
+     ->resize(100, 100)
+     ->negate()
+     ->save('out.jpg');
 ```
 
-The methods available are:
+Here are the resize methods:
 
 * `resize($width, $height, $background)`: resizes the image, will preserve scale and never
-   enlarge it
+   enlarge it (background is `red` in order to understand what happens):
 
-* `scaleResize($width, $height, $background)`: resizes the image, will preserve scale
+![resize()](doc/resize.jpg)
 
-* `forceResize($width, $height, $background)`: resizes the image, will orce the image to
-   be exactly $width by $height
+* `scaleResize($width, $height, $background)`: resizes the image, will preserve scale, can enlarge
+ it (background is `red` in order to understand what happens):
 
-* `cropResize($width, $height, $background)`: resizes the image preserving scale and croping
-  the whitespaces
+![scaleResize()](doc/scaleResize.jpg)
+
+* `forceResize($width, $height, $background)`: resizes the image forcing it to
+   be exactly `$width` by `$height`
+
+![forceResize()](doc/forceResize.jpg)
+
+* `cropResize($width, $height, $background)`: resizes the image preserving scale (just like `resize()`)
+  and croping the whitespaces:
+
+![cropResize()](doc/cropResize.jpg)
+
+* `zoomCrop($width, $height, $background, $xPos, $yPos)`: resize and crop the image to fit to given dimensions:
+
+![zoomCrop()](doc/zoomCrop.jpg)
+
+* In `zoomCrop()`, You can change the position of the resized image using the `$xPos` (center, left or right) and `$yPos` (center,
+  top or bottom):
+
+![zoomCrop() with yPos=top](doc/zoomCropTop.jpg)
+
+The other methods available are:
 
 * `crop($x, $y, $w, $h)`: crops the image to a box located on coordinates $x,y and
    which size is $w by $h
@@ -67,6 +96,8 @@ The methods available are:
 
 * `rectangle($x1, $y1, $x2, $y2, $color, $filled=false)`: draws a rectangle
 
+* `rotate($angle, $background = 0xffffff)` : rotate the image to given angle
+
 * `roundedRectangle($x1, $y1, $x2, $y2, $radius, $color, $filled=false)`: draws a rounded rectangle ($radius can be anything from 0)
 
 * `line($x1, $y1, $x2, $y2, $color)`: draws a line
@@ -75,9 +106,15 @@ The methods available are:
 
 * `circle($cx, $cy, $r, $color, $filled=false)`: draws a circle
 
-* `zoomCrop($width, $height, $background)`: resize and crop the image to fit to given dimensions
-
 * `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
+
+* `fixOrientation()`: return the image rotated and flipped using image exif information 
+
+* `html($title = '', $type = 'jpg')`: return the `<img ... />` tag with the cache image
+
+* `flip($flipVertical, $flipHorizontal)`: flips the image in the given directions. Both params are boolean and at least one must be true.
+
+* `inline($type = 'jpg')`: returns the HTML inlinable base64 string (see `demo/inline.php`)
 
 You can also create image from scratch using:
 
@@ -88,8 +125,7 @@ You can also create image from scratch using:
 
 Where 200 is the width and 100 the height
 
-Saving the image
-----------------
+## Saving the image
 
 You can save the image to an explicit file using `save($file, $type = 'jpg', $quality = 80)`:
 
@@ -101,8 +137,7 @@ You can save the image to an explicit file using `save($file, $type = 'jpg', $qu
 
 You can also get the contents of the image using `get($type = 'jpg', $quality = 80)`, which will return the binary contents of the image
 
-Using cache
------------
+## Using cache
 
 Each operation above is not actually applied on the opened image, but added in an operations
 array. This operation array, the name, type and modification time of file are hashed using
@@ -119,20 +154,19 @@ Once the cache directory configured, you can call the following methods:
 * `guess($quality = 80)`: guesses the type (use the same as input) and lookup or create a
   cache file on-the-fly
 
-* `setName($prettyName)`: sets a name prefix for the file, if you want it to be more SEO-friendly.
-   for instance, if you call it "Fancy Image", the cache will look like something/fancy-image-something.jpg.
+* `setPrettyName($prettyName, $prefix = true)`: sets a "pretty" name suffix for the file, if you want it to be more SEO-friendly.
+   for instance, if you call it "Fancy Image", the cache will look like something/something-fancy-image.jpg.
+   If `$prefix` is passed to `false` (default `true`), the pretty name won't have any hash prefix.
+   If you want to use non-latin1 pretty names, **behat/transliterator** package must be installed.
 
 For instance:
 
 ```php
-<?php
-require_once('lib/Gregwar/Image.php');
-
-use Gregwar\Image\Image;
+<?php use Gregwar\Image\Image;
 
 echo Image::open('test.png')
-    ->sepia()
-    ->jpeg();
+          ->sepia()
+          ->jpeg();
 
 //Outputs: cache/images/1/8/6/9/c/86e4532dbd9c073075ef08e9751fc9bc0f4.jpg
 ```
@@ -144,10 +178,7 @@ You can use this directly in an HTML document:
 
 
 ```php
-<?php
-require_once('lib/Gregwar/Image.php');
-
-use Gregwar\Image\Image;
+<?php use Gregwar\Image\Image;
 
 // ...
 <img src="<?php echo Image::open('image.jpg')->resize(150, 150)->jpeg(); ?>" />
@@ -164,76 +195,81 @@ You can also create your own image on-the-fly using drawing functions:
 
 
 ```php
-<img src="<?php echo Image::create(300, 300)
-    ->fill(0xffaaaa)    // Filling with a light red
-    ->rectangle(0xff3333, 0, 100, 300, 200, true) // Drawing a red rectangle
-    // Writing "Hello $username !" on the picture using a custom TTF font file
-    ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
-    ->jpeg(); ?>" />
+<?php 
+    $img_src = Image::create(300, 300)
+                    ->fill(0xffaaaa)    // Filling with a light red
+                    ->rectangle(0xff3333, 0, 100, 300, 200, true) // Drawing a red rectangle
+                      // Writing "Hello $username !" on the picture using a custom TTF font file
+                    ->write('./fonts/CaviarDreams.ttf', 'Hello '.$username.'!', 150, 150, 20, 0, 'white', 'center')
+                    ->jpeg();
+?>
+<img src="<?= $img_src  ?>" />
 ```
 
-Garbage Collect
-===============
+## Using fallback image
+
+If the image file doesn't exists, you can configurate a fallback image that will be used
+by the class (note that this require the cache directory to be available).
+
+A default "error" image which is used is in `images/error.jpg`, you can change it with:
+
+```php
+<?php
+    $img->setFallback('/path/to/my/fallback.jpg');
+```
+
+## Garbage Collect
 
 To prevent the cache from growing forever, you can use the provided GarbageCollect class as below:
 
 ```php
-<?php
-// This could be a cron called each day @3:00AM for instance
-use Gregwar\Image\GarbageCollect;
+<?php use Gregwar\Image\GarbageCollect;
 
+// This could be a cron called each day @3:00AM for instance
 // Removes all the files from ../cache that are more than 30 days
 // old. A verbose output will explain which files are deleted
 GarbageCollect::dropOldFiles(__DIR__.'/../cache', 30, true);
 
 ```
 
-Using with composer
-===================
+# Development
 
-This repository is available with composer under the name `gregwar/image`, so simply add this to
-your requires :
+`Gregwar\Image` is using PHP metaprogramming paradigms that makes it easy to enhance.
 
-```
-    "requires": {
-        ...
-        "gregwar/image": "dev-master"
-        ...
-    }
-```
+Each function that handles the image is implemented in an *Adapter*, this is where
+all the specific actions take place.
 
-And update your dependencies, you'll be able to use the composer autoloader to load the class
+The `Common` adapter is design to contain common abstract actions, while the
+specific adapters (like `GD`) are designed to contain actions specific to the low
+level layer.
 
-License
-=======
-
-`Gregwar\Image` is under MIT License
-
-Development
-===========
-
-`Gregwar\Image` is using PHP metaprogramming paradigms so it make it easy to enhance.
-
-Each function begining with a single underscore `_` can be added to the operations array and
-will be automatically called when compiling down the image.
-
-You could for instance add your own method:
+You can add your own methods by adding it in the corresponding adapter.
 
 ```php
 <?php
-    // ***
-    private function _myFilter()
+    // In the adapter
+    private function myFilter()
     {
-        $this->_negate();
-        $this->_sepia();
+        $this->negate();
+        $this->sepia();
     }
 ```
 
-Which could be usable on the Images
+Which could be used on the Image
 
 ```php
 <?php
     $image->myFilter();
 ```
 
+You can also write your own adapter which could extend one of this repository and use it by calling `setAdapter()`:
+
+```php
+<?php
+    $image->setAdapter(new MyCustomAdapter);
+```
+
+# License
+
+`Gregwar\Image` is under MIT License, please read the LICENSE file for further details.
 Do not hesitate to fork this repository and customize it !

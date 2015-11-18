@@ -3,7 +3,7 @@
 namespace Gregwar\Image\Source;
 
 /**
- * Having image in some string
+ * Having image in some string.
  */
 class Data extends Source
 {

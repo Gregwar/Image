@@ -1,0 +1,38 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - nightly
+  - hhvm
+
+env:
+  global:
+    - PATH="$HOME/.composer/vendor/bin:$PATH"
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 5.3
+      env: COMPOSER_FLAGS="--prefer-lowest"
+  allow_failures:
+    - php: nightly
+    - php: hhvm
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+before_script:
+  - composer selfupdate
+  - composer config -g github-oauth.github.com $GITHUB_OAUTH_TOKEN
+  - composer global require phpunit/phpunit --no-update
+  - composer global update --prefer-dist --no-interaction
+  - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
+
+script: make test
