@@ -561,7 +561,7 @@ class GD extends Common
      */
     protected function supports($type)
     {
-        return (imagetypes() & self::$gdTypes[$type]);
+        return imagetypes() & self::$gdTypes[$type];
     }
 
     protected function getColor($x, $y)
