@@ -2,11 +2,12 @@
 
 use Gregwar\Image\Image;
 use Gregwar\Image\ImageColor;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Unit testing for Image.
  */
-class ImageTests extends \PHPUnit_Framework_TestCase
+class ImageTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Testing the basic width & height.
@@ -113,7 +114,7 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Testing type guess from image data
+     * Testing type guess from image data.
      */
     public function testGuessFromData()
     {
@@ -460,12 +461,10 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $dir = $this->output('');
-        
-        if (PHP_OS === 'WINNT') {
-            `rd /s /q "$dir"`;
-        } else {
-            `rm -rf $dir`;
-        }
+        $filesystem = new Filesystem;
+
+        $filesystem->remove($dir);
+
         mkdir($dir);
         mkdir($this->output('cache'));
     }
