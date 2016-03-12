@@ -377,10 +377,10 @@ interface AdapterInterface
 
     /**
      * Flips the image.
-     * 
+     *
      * @param int $flipVertical
      * @param int $flipHorizontal
-     * 
+     *
      * @return $this
      */
     public function flip($flipVertical, $flipHorizontal);

@@ -461,7 +461,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $dir = $this->output('');
-        $filesystem = new Filesystem;
+        $filesystem = new Filesystem();
 
         $filesystem->remove($dir);
 
