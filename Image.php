@@ -618,6 +618,18 @@ class Image
     }
 
     /**
+     * Determine if image is unchanged / no operations to be performed.
+     *
+     * @param int $quality
+     *
+     * @return bool
+     */
+    protected function isUnchanged($quality)
+    {
+        return empty($this->operations) && $quality == 100;
+    }
+
+    /**
      * Save the file to a given output.
      */
     public function save($file, $type = 'guess', $quality = 80)
@@ -647,6 +659,14 @@ class Image
 
         try {
             $this->init();
+
+            // If the source is a file and it's unchanged just copy it.
+            if ($this->source instanceof \Gregwar\Image\Source\File && $this->isUnchanged($quality)) {
+                copy($this->source->getFile(), $file);
+
+                return $file;
+            }
+
             $this->applyOperations();
 
             $success = false;

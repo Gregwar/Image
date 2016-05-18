@@ -141,6 +141,13 @@ class ImageTests extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($monalisa, $image->guess());
     }
 
+    public function testImageIsUnchangedWithNoOperations()
+    {
+        $imageFile = __DIR__.'/files/monalisa.jpg';
+        $image = $this->open('monalisa.jpg');
+        $this->assertSame(md5_file($imageFile), md5_file($image->guess(100)));
+    }
+
     public function testActualCache()
     {
         $output = $this->open('monalisa.jpg')
