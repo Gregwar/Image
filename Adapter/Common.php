@@ -95,6 +95,10 @@ abstract class Common extends Adapter
      */
     public function fixOrientation()
     {
+        if (!in_array(exif_imagetype($this->source->getInfos()), array(IMAGETYPE_JPEG, IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM))) {
+            return $this;
+        }
+
         if (!extension_loaded('exif')) {
             throw new \RuntimeException('You need to EXIF PHP Extension to use this function');
         }
