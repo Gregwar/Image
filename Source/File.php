@@ -28,26 +28,21 @@ class File extends Source
 
     public function guessType()
     {
+        $type = false;
+
         if (function_exists('exif_imagetype')) {
             $type = @exif_imagetype($this->file);
-
-            if (false !== $type) {
-                if ($type == IMAGETYPE_JPEG) {
-                    return 'jpeg';
-                }
-
-                if ($type == IMAGETYPE_GIF) {
-                    return 'gif';
-                }
-
-                if ($type == IMAGETYPE_PNG) {
-                    return 'png';
-                }
-            }
+        } elseif (function_exists('getimagesize')) {
+            $type = @getimagesize($this->file);
+            $type = $type ? $type[2] : false;
         }
 
-        $parts = explode('.', $this->file);
-        $ext = strtolower($parts[count($parts) - 1]);
+        if ($type === false) {
+            $parts = explode('.', $this->file);
+            $ext = strtolower($parts[count($parts) - 1]);
+        } else {
+            $ext = image_type_to_extension($type, false);
+        }
 
         if (isset(Image::$types[$ext])) {
             return Image::$types[$ext];
