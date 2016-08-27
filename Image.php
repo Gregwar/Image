@@ -373,7 +373,24 @@ class Image
      */
     protected function addOperation($method, $args)
     {
+        foreach ($this->operations as $i => $operation) {
+            if ($operation[0] == $method) {
+                $this->operations[$i] = array($method, $args);
+
+                return;
+            }
+        }
         $this->operations[] = array($method, $args);
+    }
+
+    /**
+     * Get the operations.
+     *
+     * @return array
+     */
+    public function getOperations()
+    {
+        return $this->operations;
     }
 
     /**
