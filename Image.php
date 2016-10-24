@@ -671,10 +671,10 @@ class Image
                 return false;
             }
 
-            return (null === $file ? ob_get_clean() : $file);
+            return null === $file ? ob_get_clean() : $file;
         } catch (\Exception $e) {
             if ($this->useFallbackImage) {
-                return (null === $file ? file_get_contents($this->fallback) : $this->getCacheFallback());
+                return null === $file ? file_get_contents($this->fallback) : $this->getCacheFallback();
             } else {
                 throw $e;
             }
