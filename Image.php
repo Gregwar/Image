@@ -517,6 +517,10 @@ class Image
             $file = $e->getNewFile();
         }
 
+        // Nulling the resource
+        $this->getAdapter()->setSource(new Source\File($file));
+        $this->getAdapter()->deinit();
+
         if ($actual) {
             return $file;
         } else {

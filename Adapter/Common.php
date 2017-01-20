@@ -220,6 +220,14 @@ abstract class Common extends Adapter
 
         return $this;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function deinit()
+    {
+        $this->resource = null;
+    }
 
     /**
      * {@inheritdoc}

@@ -59,6 +59,11 @@ interface AdapterInterface
     public function init();
 
     /**
+     * Unload the resource
+     */
+    public function deinit();
+
+    /**
      * Save the image as a gif.
      *
      * @return $this

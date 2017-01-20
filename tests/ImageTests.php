@@ -408,6 +408,23 @@ class ImageTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Testing that width() can be called after cache
+     */
+    public function testWidthPostCache()
+    {
+        $this->open('monalisa.jpg')
+            ->resize(100, 50)->negate()
+            ->png();
+        
+        $dummy2 = $this->open('monalisa.jpg')
+            ->resize(100, 50)->negate();
+        $png = $dummy2->png();
+
+        $i = imagecreatefrompng($png);
+        $this->assertEquals(imagesx($i), $dummy2->width());
+    }
+
+    /**
      * Asaserting that two colors are equals
      * (JPG compression is not preserving colors for instance, so we
      * need a non-strict way to compare it).
