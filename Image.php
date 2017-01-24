@@ -23,7 +23,7 @@ use Gregwar\Image\Exceptions\GenerationError;
  * @method Image crop($x, $y, $width, $height)
  * @method Image enableProgressive()
  * @method Image force($width = null, $height = null, $background = 0xffffff)
- * @method Image zoomCrop($width, $height, $background = 0xffffff)
+ * @method Image zoomCrop($width, $height, $background = 0xffffff, $xPos, $yPos)
  * @method Image fillBackground($background = 0xffffff)
  * @method Image negate()
  * @method Image brightness($brightness)
