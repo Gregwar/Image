@@ -109,6 +109,51 @@ class GD extends Common
         return $this;
     }
 
+
+    public function cropEllipse($x, $y, $width, $height)
+    {
+        // http://stackoverflow.com/questions/2223437/crop-image-into-circle-and-add-border
+
+        header("Content-type: image/png");
+        $antialias_factor = 3.25;
+
+        // issue:
+        // fakebg can not be converted into transparent?
+        $this->forceResize($this->width() * $antialias_factor, $this->height() * $antialias_factor, "ff00ff");
+
+        $center_x = ($x + $width / 2) * $antialias_factor;
+        $center_z = ($y + $height / 2) * $antialias_factor;
+
+        $mask = imagecreatetruecolor($this->width(), $this->height());
+
+        $bg = imagecolorallocate($mask, 255, 0, 255);
+        imagefill($mask, 0, 0, $bg);
+
+        $e = imagecolorallocate($mask, 0, 0, 0);
+        imagefilledellipse($mask, $center_x, $center_z, $width * $antialias_factor, $height * $antialias_factor, $e);
+
+        imagecolortransparent($mask, $e);
+
+        imagecopymerge($this->resource, $mask, 0, 0, 0, 0, $this->width(), $this->height(), 100);
+        $bg_t = imagecolorallocate($this->resource, 255, 0, 255);
+        imagecolortransparent($this->resource, $bg_t);
+
+        $realWidth = $this->width() / $antialias_factor;
+        $realHeight = $this->height() / $antialias_factor;
+        $srcWidth = $this->width();
+        $srcHeight = $this->height();
+
+
+        $target = imagecreatetruecolor($realWidth, $realHeight);
+
+        // scale down
+        imagecopyresampled($target, $this->resource, 0, 0, 0, 0, $realWidth, $realHeight, $srcWidth, $srcHeight);
+        $this->forceResize($this->width() / $antialias_factor, $this->height() / $antialias_factor, "transparent");
+
+        return $this;
+    }    
+    
+    
     /**
      * {@inheritdoc}
      */
