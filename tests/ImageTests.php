@@ -3,10 +3,20 @@
 use Gregwar\Image\Image;
 use Gregwar\Image\ImageColor;
 
+if (class_exists('\PHPUnit\Framework\TestCase')) {
+    class Base extends \PHPUnit\Framework\TestCase
+    {
+    }
+} else {
+    class Base extends \PHPUnit_Framework_TestCase
+    {
+    }
+}
+
 /**
  * Unit testing for Image.
  */
-class ImageTests extends \PHPUnit_Framework_TestCase
+class ImageTests extends Base
 {
     /**
      * Testing the basic width & height.
