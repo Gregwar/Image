@@ -73,11 +73,6 @@ class Image
     protected $prettyPrefix;
 
     /**
-     * Transformations hash.
-     */
-    protected $hash = null;
-
-    /**
      * The image source.
      */
     protected $source = null;
@@ -376,7 +371,24 @@ class Image
      */
     protected function addOperation($method, $args)
     {
+        foreach ($this->operations as $i => $operation) {
+            if ($operation[0] == $method) {
+                $this->operations[$i] = array($method, $args);
+
+                return;
+            }
+        }
         $this->operations[] = array($method, $args);
+    }
+
+    /**
+     * Get the operations.
+     *
+     * @return array
+     */
+    public function getOperations()
+    {
+        return $this->operations;
     }
 
     /**
@@ -439,7 +451,7 @@ class Image
             $quality,
         );
 
-        $this->hash = sha1(serialize($datas));
+        return sha1(serialize($datas));
     }
 
     /**
@@ -447,11 +459,7 @@ class Image
      */
     public function getHash($type = 'guess', $quality = 80)
     {
-        if (null === $this->hash) {
-            $this->generateHash($type, $quality);
-        }
-
-        return $this->hash;
+        return $this->generateHash($type, $quality);
     }
 
     /**
@@ -473,13 +481,13 @@ class Image
         }
 
         // Computes the hash
-        $this->hash = $this->getHash($type, $quality);
+        $hash = $this->getHash($type, $quality);
 
         // Generates the cache file
         $cacheFile = '';
 
         if (!$this->prettyName || $this->prettyPrefix) {
-            $cacheFile .= $this->hash;
+            $cacheFile .= $hash;
         }
 
         if ($this->prettyPrefix) {

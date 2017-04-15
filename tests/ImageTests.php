@@ -69,6 +69,18 @@ class ImageTests extends Base
         $this->assertSame(481, imagesy($i));
     }
 
+    public function testDoesNotDuplicateOperations()
+    {
+        $image = $this->open('monalisa.jpg');
+
+        $image->resize(100, 100);
+        $image->resize(200, 200);
+
+        $this->assertSame(array(
+             array('resize', array(200, 200)),
+        ), $image->getOperations());
+    }
+
     /**
      * Testing to create an image, jpeg, gif and png.
      */
