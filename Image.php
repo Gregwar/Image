@@ -430,10 +430,10 @@ class Image
      */
     public function generateHash($type = 'guess', $quality = 80)
     {
-        $inputInfos = $this->source->getInfos();
+        $inputRelativePath = substr($this->source->getInfos(), strlen(getcwd()) + 1);
 
         $datas = array(
-            $inputInfos,
+            $inputRelativePath,
             $this->serializeOperations(),
             $type,
             $quality,
