@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../vendor/autoload.php';
+
 use Gregwar\Image\Image;
 use Gregwar\Image\ImageColor;
 
@@ -131,7 +133,7 @@ class ImageTests extends Base
     public function testCustomCacheSystem()
     {
         $image = $this->open('monalisa.jpg');
-        $cache = $this->getMock('Gregwar\Cache\CacheInterface');
+        $cache = $this->createMock('Gregwar\Cache\CacheInterface');
         $image->setCacheSystem($cache);
         $this->assertTrue($image->getCacheSystem() instanceof Gregwar\Cache\CacheInterface);
     }

@@ -2,6 +2,10 @@
 
 namespace Gregwar\Image\Adapter;
 
+/**
+ * Class Common
+ * @package Gregwar\Image\Adapter
+ */
 abstract class Common extends Adapter
 {
     /**

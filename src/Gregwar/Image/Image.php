@@ -259,7 +259,7 @@ class Image
     public function setFallback($fallback = null)
     {
         if ($fallback === null) {
-            $this->fallback = __DIR__.'/images/error.jpg';
+            $this->fallback = __DIR__ . '/images/error.jpg';
         } else {
             $this->fallback = $fallback;
         }
