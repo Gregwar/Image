@@ -29,10 +29,10 @@ cache:
     - $HOME/.composer/cache/files
 
 before_script:
-  - composer selfupdate
-  - composer config -g github-oauth.github.com $GITHUB_OAUTH_TOKEN
-  - composer global require phpunit/phpunit --no-update
-  - composer global update --prefer-dist --no-interaction
-  - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
+#  - composer selfupdate
+#  - composer config -g github-oauth.github.com $GITHUB_OAUTH_TOKEN
+#  - composer global require phpunit/phpunit --no-update
+#  - composer global update --prefer-dist --no-interaction
+  - COMPOSER_ROOT_VERSION=dev-master composer --prefer-source --dev install
 
-script: make test
+script: vendor/bin/phpunit
