@@ -4,8 +4,16 @@ namespace Gregwar\Image\Adapter;
 
 use Gregwar\Image\Image;
 
+/**
+ * Class Imagick
+ * @package Gregwar\Image\Adapter
+ */
 class Imagick extends Common
 {
+    /**
+     * Imagick constructor.
+     * @throws \Exception
+     */
     public function __construct()
     {
         throw new \Exception('Imagick is not supported right now');
@@ -24,7 +32,7 @@ class Imagick extends Common
     /**
      * Image width.
      *
-     * @return int
+     * @return void
      */
     public function width()
     {

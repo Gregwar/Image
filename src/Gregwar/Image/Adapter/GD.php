@@ -5,14 +5,24 @@ namespace Gregwar\Image\Adapter;
 use Gregwar\Image\Image;
 use Gregwar\Image\ImageColor;
 
+/**
+ * Class GD
+ * @package Gregwar\Image\Adapter
+ */
 class GD extends Common
 {
+    /**
+     * @var array
+     */
     public static $gdTypes = array(
         'jpeg'  => \IMG_JPG,
         'gif'   => \IMG_GIF,
         'png'   => \IMG_PNG,
     );
 
+    /**
+     * @param $resource
+     */
     protected function loadResource($resource)
     {
         parent::loadResource($resource);
@@ -32,6 +42,9 @@ class GD extends Common
         );
     }
 
+    /**
+     * GD constructor.
+     */
     public function __construct()
     {
         parent::__construct();
