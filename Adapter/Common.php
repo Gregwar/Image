@@ -365,4 +365,12 @@ abstract class Common extends Adapter
     {
         throw new \Exception('The Adapter '.$this->getName().' does not support Progressive Image loading');
     }
+
+    /**
+     * This does nothing, but can be used to tag a ressource for instance (having a final image hash
+     * for the cache different depending on the tag)
+     */
+    public function tag($tag)
+    {
+    }
 }
