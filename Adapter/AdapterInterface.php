@@ -83,6 +83,13 @@ interface AdapterInterface
      * @return $this
      */
     public function saveJpeg($file, $quality);
+    
+     /**
+	 * Save the image as a webp
+	 *
+	 * @return $this
+	 */
+	public function saveWebp($file, $quality);
 
     /**
      * Works as resize() excepts that the layout will be cropped.

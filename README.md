@@ -152,6 +152,8 @@ Once the cache directory configured, you can call the following methods:
 
 * `png()`: lookup or create a png cache file on-the-fly
 
+* `webp()`: lookup or create a webp cache file on-the-fly
+
 * `guess($quality = 80)`: guesses the type (use the same as input) and lookup or create a
   cache file on-the-fly
 

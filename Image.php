@@ -95,6 +95,7 @@ class Image
         'jpeg'  => 'jpeg',
         'png'   => 'png',
         'gif'   => 'gif',
+        'webp'  => 'webp'
     );
 
     /**
@@ -570,6 +571,14 @@ class Image
     {
         return $this->cacheFile('png');
     }
+    
+     /**
+     * Generates and output a webp cached file.
+     */
+    public function webp()
+    {
+        return $this->cacheFile('webp');
+    }
 
     /**
      * Generates and output an image using the same type as input.
@@ -674,6 +683,10 @@ class Image
                 $success = $this->getAdapter()->savePng($file);
             }
 
+            if ($type == 'webp') {
+                $success = $this->getAdapter()->saveWebp($file, $quality);
+            }
+            
             if (!$success) {
                 return false;
             }

@@ -581,6 +581,16 @@ class GD extends Common
         return $this;
     }
 
+     /**
+     * @inheritdoc
+     */
+    public function saveWebp($file, $quality)
+    {
+        imagewebp($this->resource, $file, $quality);
+        
+        return $this;
+    }
+    
     /**
      * Try to open the file using jpeg.
      */
@@ -603,6 +613,14 @@ class GD extends Common
     protected function openPng($file)
     {
         $this->resource = @imagecreatefrompng($file);
+    }
+
+    /**
+     * Try to open the file using WebP.
+     */
+    protected function openWebp($file)
+    {
+        $this->resource = @imagecreatefromwebp($file);
     }
 
     /**
