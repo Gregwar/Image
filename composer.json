@@ -12,14 +12,13 @@
         }
     ],
     "require": {
-        "php": "^5.3 || ^7.0",
+        "php": "^5.4 || ^7.0",
         "ext-gd": "*",
         "gregwar/cache": "^1.0.6"
     },
     "require-dev": {
         "sllh/php-cs-fixer-styleci-bridge": "~1.0",
-        "symfony/phpunit-bridge": "^2.7.4 || ^3.0",
-        "phpunit/phpunit": "^7.1"
+        "symfony/phpunit-bridge": "^2.7.4 || ^3.0"
     },
     "suggest": {
         "behat/transliterator": "Transliterator provides ability to set non-latin1 pretty names"

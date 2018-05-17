@@ -36,6 +36,8 @@ matrix:
 
 before_script:
   - composer selfupdate
+  - composer global require phpunit/phpunit --no-update
+  - composer global update --prefer-dist --no-interaction
   - composer update --prefer-dist --no-interaction
   
 
