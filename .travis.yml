@@ -36,6 +36,7 @@ matrix:
 
 before_script:
   - composer selfupdate
+  - composer update --prefer-dist --no-interaction
   
 
 script: make test
