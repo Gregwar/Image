@@ -35,7 +35,7 @@ matrix:
 
 
 before_script:
-  - php -i
+  - php -r "phpinfo();"
   - composer selfupdate
   - composer global require phpunit/phpunit --no-update
   - composer global update --prefer-dist --no-interaction
