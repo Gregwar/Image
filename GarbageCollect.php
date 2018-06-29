@@ -34,7 +34,7 @@ class GarbageCollect
             return false;
         }
 
-        while ($file = readdir($dir)) {
+        while (false !== ($file = readdir($dir))) {
             if ($file == '.' || $file == '..') {
                 continue;
             }
