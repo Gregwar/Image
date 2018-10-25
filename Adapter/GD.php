@@ -586,7 +586,11 @@ class GD extends Common
      */
     protected function openJpeg($file)
     {
-        $this->resource = @imagecreatefromjpeg($file);
+        if (file_exists($file) && filesize($file)) {
+            $this->resource = @imagecreatefromjpeg($file);
+        } else {
+            $this->resource = false;
+        }
     }
 
     /**
@@ -594,7 +598,11 @@ class GD extends Common
      */
     protected function openGif($file)
     {
-        $this->resource = @imagecreatefromgif($file);
+        if (file_exists($file) && filesize($file)) {
+            $this->resource = @imagecreatefromgif($file);
+        } else {
+            $this->resource = false;
+        }
     }
 
     /**
@@ -602,7 +610,11 @@ class GD extends Common
      */
     protected function openPng($file)
     {
-        $this->resource = @imagecreatefrompng($file);
+        if (file_exists($file) && filesize($file)) {
+            $this->resource = @imagecreatefrompng($file);
+        } else {
+            $this->resource = false;
+        }
     }
 
     /**
