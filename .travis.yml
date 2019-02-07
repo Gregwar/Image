@@ -19,6 +19,7 @@ matrix:
   allow_failures:
     - php: nightly
     - php: hhvm
+    - php: 7.2
 
 sudo: false
 
@@ -27,6 +28,7 @@ cache:
     - $HOME/.composer/cache/files
 
 before_script:
+  - pecl install imagick
   - composer selfupdate
   - composer config -g github-oauth.github.com $GITHUB_OAUTH_TOKEN
   - composer global require phpunit/phpunit --no-update
