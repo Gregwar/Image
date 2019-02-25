@@ -654,7 +654,7 @@ class Image
         if ($type == 'guess') {
             $type = $this->guessType();
         }
-        
+
         if (!isset(self::$types[$type])) {
             throw new \InvalidArgumentException('Given type ('.$type.') is not valid');
         }
