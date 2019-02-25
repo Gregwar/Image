@@ -570,6 +570,16 @@ class GD extends Common
 
         return $this;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function saveWebp($file, $quality)
+    {
+        imagewebp($this->resource, $file, $quality);
+
+        return $this;
+    }
 
     /**
      * {@inheritdoc}
