@@ -54,7 +54,7 @@ class Converter
     if($resolution === 0) {
       return false;
     }
-    return $pixels * $resolution;
+    return $pixels / $resolution;
   }
 
 }
