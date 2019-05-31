@@ -117,6 +117,8 @@ The other methods available are:
 
 * `inline($type = 'jpg')`: returns the HTML inlinable base64 string (see `demo/inline.php`)
 
+* `getResolution($type = 'both')`: returns the resolution of picture in DPI. Only available for >= PHP 7. Other $type options: `X` for horizontal resolution, `Y` for vertical resolution, `both` for the both.
+
 You can also create image from scratch using:
 
 ```php
@@ -137,6 +139,20 @@ You can save the image to an explicit file using `save($file, $type = 'jpg', $qu
 ```
 
 You can also get the contents of the image using `get($type = 'jpg', $quality = 80)`, which will return the binary contents of the image
+
+## Converter
+
+Converter allow you to convert centimeters to pixels, inch to pixels... using defined resolution in DPI.
+
+The following static method are available:
+
+* `cmToPixels($cm, $resolution = 96)`: convert centimeters to pixels.
+
+* `inchToPixels($cm, $resolution = 96)`: convert inch to pixels.
+
+* `pixelsToCm($cm, $resolution = 96)`: convert pixels to centimeters.
+
+* `pixelsToInch($cm, $resolution = 96)`: convert pixels to inch.
 
 ## Using cache
 
