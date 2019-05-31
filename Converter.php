@@ -12,9 +12,9 @@ class Converter
 {
 
   /**
-   * Convert Cm to Pixels using resolution in ppp
+   * Convert Cm to Pixels using resolution in DPI
    * @param float $cm
-   * @param int $resolution in PPP / DPI
+   * @param int $resolution in DPI (PPP)
    * @return float
    */
   static function cmToPixels($cm, $resolution = 150) {
@@ -22,9 +22,9 @@ class Converter
   }
 
   /**
-   * Convert Inch to Pixels using resolution in ppp
+   * Convert Inch to Pixels using resolution in DPI
    * @param float $inch
-   * @param int $resolution in PPP / DPI
+   * @param int $resolution in DPI (PPP)
    * @return float
    */
   static function inchToPixel($inch, $resolution = 150) {
@@ -32,22 +32,28 @@ class Converter
   }
 
   /**
-   * Convert Pixels to Cm using resolution in ppp
-   * @param $pixels
-   * @param int $resolution in PPP / DPI
-   * @return float|int
+   * Convert Pixels to Cm using resolution in DPI
+   * @param int $pixels
+   * @param int $resolution in DPI (PPP)
+   * @return float|int|boolean
    */
   static function pixelsToCm($pixels, $resolution = 150) {
+    if($resolution === 0) {
+      return false;
+    }
     return $pixels * 2.54 / $resolution;
   }
 
   /**
-   * Convert Pixels to Inch using resolution in ppp
-   * @param float $inch
-   * @param int $resolution in PPP / DPI
-   * @return float
+   * Convert Pixels to Inch using resolution in DPI
+   * @param int $pixels
+   * @param int $resolution in DPI (PPP)
+   * @return float|boolean
    */
   static function pixelsToInch($pixels, $resolution = 150) {
+    if($resolution === 0) {
+      return false;
+    }
     return $pixels * $resolution;
   }
 
