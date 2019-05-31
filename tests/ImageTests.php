@@ -445,7 +445,17 @@ class ImageTests extends \PHPUnit\Framework\TestCase
 
     $image->init();
 
+    // Normal call
     $this->assertEquals(array(96, 96), $image->getResolution());
+
+    // Normal explicit call
+    $this->assertEquals(array(96, 96), $image->getResolution('both'));
+
+    // Call to get X resolution
+    $this->assertEquals(96, $image->getResolution('X'));
+
+    // Call to get Y resolution
+    $this->assertEquals(96, $image->getResolution('Y'));
 
   }
 
