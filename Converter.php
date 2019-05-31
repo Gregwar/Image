@@ -27,7 +27,7 @@ class Converter
    * @param int $resolution in DPI (PPP)
    * @return float
    */
-  static function inchToPixel($inch, $resolution = 96) {
+  static function inchToPixels($inch, $resolution = 96) {
     return $resolution * $inch;
   }
 
