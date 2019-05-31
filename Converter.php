@@ -17,7 +17,7 @@ class Converter
    * @param int $resolution in DPI (PPP)
    * @return float
    */
-  static function cmToPixels($cm, $resolution = 150) {
+  static function cmToPixels($cm, $resolution = 96) {
     return $resolution * $cm / 2.54;
   }
 
@@ -27,7 +27,7 @@ class Converter
    * @param int $resolution in DPI (PPP)
    * @return float
    */
-  static function inchToPixel($inch, $resolution = 150) {
+  static function inchToPixel($inch, $resolution = 96) {
     return $resolution * $inch;
   }
 
@@ -37,7 +37,7 @@ class Converter
    * @param int $resolution in DPI (PPP)
    * @return float|int|boolean
    */
-  static function pixelsToCm($pixels, $resolution = 150) {
+  static function pixelsToCm($pixels, $resolution = 96) {
     if($resolution === 0) {
       return false;
     }
@@ -50,7 +50,7 @@ class Converter
    * @param int $resolution in DPI (PPP)
    * @return float|boolean
    */
-  static function pixelsToInch($pixels, $resolution = 150) {
+  static function pixelsToInch($pixels, $resolution = 96) {
     if($resolution === 0) {
       return false;
     }
