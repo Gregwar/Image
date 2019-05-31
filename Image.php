@@ -756,6 +756,22 @@ class Image
         return 'data:image/'.$mime.';base64,'.base64_encode(file_get_contents($this->cacheFile($type, $quality, true)));
     }
 
+  /**
+   * Return the resolution of resource
+   * @param string $type
+   * @return array|bool|mixed
+   */
+    public function getResolution($type = 'both')
+    {
+      if(function_exists('imageresolution')) {
+        $res = imageresolution ($this->getAdapter()->getResource());
+        if(is_array($res)) {
+          return ($type === 'both') ? $res : (($type === 'Y') ? $res[1] : $res[0]);
+        }
+      }
+      return false;
+    }
+
     /**
      * Creates an instance, usefull for one-line chaining.
      */

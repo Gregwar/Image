@@ -15,6 +15,9 @@
         <testsuite name="Image testing">
             <file>./tests/ImageTests.php</file>
         </testsuite>
+        <testsuite name="Converter testing">
+            <file>./tests/ConverterTests.php</file>
+        </testsuite>
     </testsuites>
 
 </phpunit>
