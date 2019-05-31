@@ -28,5 +28,8 @@
         "psr-0": {
             "Gregwar\\Image": ""
         }
+    },
+    "scripts": {
+        "test": "simple-phpunit --bootstrap vendor/autoload.php tests/ImageTests"
     }
 }
