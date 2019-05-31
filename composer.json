@@ -30,6 +30,6 @@
         }
     },
     "scripts": {
-        "test": "simple-phpunit --bootstrap vendor/autoload.php tests/ImageTests"
+        "test": "simple-phpunit --bootstrap vendor/autoload.php"
     }
 }
