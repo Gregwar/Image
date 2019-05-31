@@ -38,7 +38,7 @@ class Converter
    * @return float|int|boolean
    */
   static function pixelsToCm($pixels, $resolution = 96) {
-    if($resolution === 0) {
+    if($resolution == 0) {
       return false;
     }
     return $pixels * 2.54 / $resolution;
@@ -51,7 +51,7 @@ class Converter
    * @return float|boolean
    */
   static function pixelsToInch($pixels, $resolution = 96) {
-    if($resolution === 0) {
+    if($resolution == 0) {
       return false;
     }
     return $pixels / $resolution;
