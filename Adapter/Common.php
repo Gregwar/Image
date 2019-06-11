@@ -91,11 +91,15 @@ abstract class Common extends Adapter
     }
 
     /**
-     * Fix orientation using Exif informations.
+     * Read exif rotation from file and apply it.
      */
     public function fixOrientation()
     {
-        if (!in_array(exif_imagetype($this->source->getInfos()), array(IMAGETYPE_JPEG, IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM))) {
+        if (!in_array(exif_imagetype($this->source->getInfos()), array(
+            IMAGETYPE_JPEG,
+            IMAGETYPE_TIFF_II,
+            IMAGETYPE_TIFF_MM,
+        ))) {
             return $this;
         }
 
@@ -109,7 +113,15 @@ abstract class Common extends Adapter
             return $this;
         }
 
-        switch ($exif['Orientation']) {
+        return $this->applyExifOrientation($exif['Orientation']);
+    }
+
+    /**
+     * Apply orientation using Exif orientation value.
+     */
+    public function applyExifOrientation($exif_orienation)
+    {
+        switch ($exif_orienation) {
             case 1:
                 break;
 
