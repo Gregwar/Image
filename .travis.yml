@@ -28,7 +28,6 @@ cache:
 
 before_script:
   - composer selfupdate
-  - composer config -g github-oauth.github.com $GITHUB_OAUTH_TOKEN
   - composer global require phpunit/phpunit --no-update
   - composer global update --prefer-dist --no-interaction
   - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
