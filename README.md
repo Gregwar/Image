@@ -111,6 +111,8 @@ The other methods available are:
 
 * `fixOrientation()`: return the image rotated and flipped using image exif information 
 
+* `applyExifOrientation(int $exif_rotation_value)`: return the image rotated and flipped using an exif rotation value 
+
 * `html($title = '', $type = 'jpg')`: return the `<img ... />` tag with the cache image
 
 * `flip($flipVertical, $flipHorizontal)`: flips the image in the given directions. Both params are boolean and at least one must be true.
