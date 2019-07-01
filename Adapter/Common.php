@@ -107,7 +107,11 @@ abstract class Common extends Adapter
             throw new \RuntimeException('You need to EXIF PHP Extension to use this function');
         }
 
-        $exif = @exif_read_data($this->source->getInfos());
+        try {
+            $exif = @exif_read_data($this->source->getInfos());
+        } catch (\Exception $e) {
+            $exif = false;
+        }
 
         if ($exif === false || !array_key_exists('Orientation', $exif)) {
             return $this;
