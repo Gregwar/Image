@@ -11,6 +11,7 @@ class GD extends Common
         'jpeg'  => \IMG_JPG,
         'gif'   => \IMG_GIF,
         'png'   => \IMG_PNG,
+        'webp'  => \IMG_WEBP
     );
 
     protected function loadResource($resource)
