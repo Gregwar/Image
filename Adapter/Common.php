@@ -168,6 +168,8 @@ abstract class Common extends Adapter
 
     abstract protected function openPng($file);
 
+    abstract protected function openWebp($file);
+
     /**
      * Creates an image.
      */
@@ -202,6 +204,10 @@ abstract class Common extends Adapter
 
         if ($type == 'png') {
             $this->openPng($file);
+        }
+
+        if ($type == 'webp') {
+            $this->openWebp($file);
         }
 
         if (false === $this->resource) {

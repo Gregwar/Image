@@ -628,6 +628,18 @@ class GD extends Common
     }
 
     /**
+     * Try to open the file using WEBP.
+     */
+    protected function openWebp($file)
+    {
+        if (file_exists($file) && filesize($file)) {
+            $this->resource = @imagecreatefromwebp($file);
+        } else {
+            $this->resource = false;
+        }
+    }
+
+    /**
      * Does this adapter supports type ?
      */
     protected function supports($type)
