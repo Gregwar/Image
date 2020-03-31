@@ -43,6 +43,10 @@ class File extends Source
                 if ($type == IMAGETYPE_PNG) {
                     return 'png';
                 }
+
+                if ($type == IMAGETYPE_WEBP) {
+                    return 'webp';
+                }
             }
         }
 
