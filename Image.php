@@ -573,11 +573,11 @@ class Image
     }
 
     /**
-     * Generates and output a png cached file.
+     * Generates and output a webp cached file.
      */
-    public function webp()
+    public function webp($quality = 80)
     {
-        return $this->cacheFile('webp');
+        return $this->cacheFile('webp', $quality);
     }
 
     /**
