@@ -9,8 +9,11 @@ abstract class Common extends Adapter
      */
     public function zoomCrop($width, $height, $background = 'transparent', $xPosLetter = 'center', $yPosLetter = 'center')
     {
+        $originalWidth = $this->width();
+        $originalHeight = $this->height();
+
         // Calculate the different ratios
-        $originalRatio = $this->width() / $this->height();
+        $originalRatio = $originalWidth / $originalHeight;
         $newRatio = $width / $height;
 
         // Compare ratios
@@ -37,8 +40,18 @@ abstract class Common extends Adapter
             case 'right':
                 $xPos = (int) $newWidth - $width;
                 break;
-            default:
+            case 'center':
                 $xPos = (int) ($newWidth - $width) / 2;
+                break;
+            default:
+                $factorW = $newWidth / $originalWidth;
+                $xPos = $xPosLetter * $factorW;
+
+                // If the desired cropping position goes beyond the width then
+                // set the crop to be within the correct bounds.
+                if ($xPos + $width > $newWidth) {
+                    $xPos = (int) $newWidth - $width;
+                }
         }
 
         // Define y position
@@ -51,8 +64,18 @@ abstract class Common extends Adapter
             case 'bottom':
                 $yPos = (int) $newHeight - $height;
                 break;
-            default:
+            case 'center':
                 $yPos = (int) ($newHeight - $height) / 2;
+                break;
+            default:
+                $factorH = $newHeight / $originalHeight;
+                $yPos = $yPosLetter * $factorH;
+
+                // If the desired cropping position goes beyond the height then
+                // set the crop to be within the correct bounds.
+                if ($yPos + $height > $newHeight) {
+                    $yPos = (int) $newHeight - $height;
+                }
         }
 
         // Crop image to reach desired size
