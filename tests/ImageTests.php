@@ -150,7 +150,7 @@ class ImageTests extends \PHPUnit\Framework\TestCase
             ->resize(100, 50)->negate()
             ->guess();
 
-        $this->assertContains('/magic/path/to/cache', $output);
+        $this->assertStringContainsString('/magic/path/to/cache', $output);
         $file = str_replace('/magic/path/to', __DIR__.'/output/', $output);
         $this->assertTrue(file_exists($file));
     }
@@ -355,7 +355,7 @@ class ImageTests extends \PHPUnit\Framework\TestCase
             ->setPrettyName('davinci', false)
             ->guess();
 
-        $this->assertContains('davinci', $output);
+        $this->assertStringContainsString('davinci', $output);
 
         $output2 = $this->open('monalisa.jpg')
             ->resize(100, 55)->negate()
@@ -373,8 +373,8 @@ class ImageTests extends \PHPUnit\Framework\TestCase
             ->setPrettyName('davinci')
             ->guess();
 
-        $this->assertContains('davinci', $prefix1);
-        $this->assertContains('davinci', $prefix2);
+        $this->assertStringContainsString('davinci', $prefix1);
+        $this->assertStringContainsString('davinci', $prefix2);
         $this->assertNotSame($prefix1, $prefix2);
 
         $transliterator = '\Behat\Transliterator\Transliterator';
