@@ -1,5 +1,7 @@
 <?php
 
+use Gregwar\Cache\Cache;
+use Gregwar\Cache\CacheInterface;
 use Gregwar\Image\Image;
 use Gregwar\Image\ImageColor;
 
@@ -121,9 +123,9 @@ class ImageTests extends \PHPUnit\Framework\TestCase
     public function testCustomCacheSystem()
     {
         $image = $this->open('monalisa.jpg');
-        $cache = $this->createMock('Gregwar\Cache\CacheInterface');
+        $cache = new Cache();
         $image->setCacheSystem($cache);
-        $this->assertTrue($image->getCacheSystem() instanceof Gregwar\Cache\CacheInterface);
+        $this->assertEquals($image->getCacheSystem(), $cache);
     }
 
     /**
@@ -148,7 +150,7 @@ class ImageTests extends \PHPUnit\Framework\TestCase
             ->resize(100, 50)->negate()
             ->guess();
 
-        $this->assertStringContainsString('/magic/path/to/cache', $output);
+        $this->assertContains('/magic/path/to/cache', $output);
         $file = str_replace('/magic/path/to', __DIR__.'/output/', $output);
         $this->assertTrue(file_exists($file));
     }
@@ -353,7 +355,7 @@ class ImageTests extends \PHPUnit\Framework\TestCase
             ->setPrettyName('davinci', false)
             ->guess();
 
-        $this->assertStringContainsString('davinci', $output);
+        $this->assertContains('davinci', $output);
 
         $output2 = $this->open('monalisa.jpg')
             ->resize(100, 55)->negate()
@@ -371,8 +373,8 @@ class ImageTests extends \PHPUnit\Framework\TestCase
             ->setPrettyName('davinci')
             ->guess();
 
-        $this->assertStringContainsString('davinci', $prefix1);
-        $this->assertStringContainsString('davinci', $prefix2);
+        $this->assertContains('davinci', $prefix1);
+        $this->assertContains('davinci', $prefix2);
         $this->assertNotSame($prefix1, $prefix2);
 
         $transliterator = '\Behat\Transliterator\Transliterator';
