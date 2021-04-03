@@ -209,6 +209,19 @@ class Imagick extends Common
     }
 
     /**
+     * apply vignetting to the image.
+     *
+     * @param int $sharpness value in range [0, 10], smaller is sharper
+     * @param int $level value in range [0, 1], smaller is brighter
+     *
+     * @return $this
+     */
+    public function vignette($sharpness=0.5, $level=0.5)
+    {
+        // TODO: Implement vignette() method.
+    }
+
+    /**
      * Merge with another image.
      *
      * @param Image $other
