@@ -103,7 +103,10 @@ class GD extends Common
         $destination = imagecreatetruecolor($width, $height);
         imagealphablending($destination, false);
         imagesavealpha($destination, true);
-        imagecopy($destination, $this->resource, 0, 0, $x, $y, $this->width(), $this->height());
+        // keep transparency
+        // http://stackoverflow.com/questions/279236/how-do-i-resize-pngs-with-transparency-in-php
+//        imagecopy($destination, $this->resource, 0, 0, $x, $y, $this->width(), $this->height());
+        imagecopyresampled($destination, $this->resource, 0, 0, $x, $y, $this->width(), $this->height(), $this->width(), $this->height());
         imagedestroy($this->resource);
         $this->resource = $destination;
 
