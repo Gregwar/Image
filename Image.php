@@ -755,7 +755,25 @@ class Image
 
         return 'data:image/'.$mime.';base64,'.base64_encode(file_get_contents($this->cacheFile($type, $quality, true)));
     }
+    
+    /**
+     * Increase or Decrease the size of image to given percent
+     */
+    public function percentReszie($percent)
+    {
 
+        $pWidth = ($this->width() * abs((int)$percent)) / 100;
+        $pHeight = ($this->height() * abs((int)$percent)) / 100;
+        if ($percent < 0) {
+            $nWidth = $this->width() - $pWidth;
+            $nHeight = $this->height() - $pHeight;
+        } else {
+            $nWidth = $this->width() + $pWidth;
+            $nHeight = $this->height() + $pHeight;
+        }
+        return $this->scaleResize($nWidth, $nHeight);
+    }
+    
     /**
      * Creates an instance, usefull for one-line chaining.
      */
