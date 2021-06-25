@@ -41,6 +41,12 @@ class GD extends Common
             throw new \RuntimeException('You need to install GD PHP Extension to use this library');
         }
     }
+    
+    public function __destruct()
+    {
+        if (null !== $this->resource)
+            imagedestroy($this->resource);
+    }
 
     /**
      * {@inheritdoc}
