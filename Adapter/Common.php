@@ -261,7 +261,7 @@ abstract class Common extends Adapter
 
         return $this;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -392,7 +392,7 @@ abstract class Common extends Adapter
      * Resizes the image to an image having size of $target_width, $target_height, using
      * $new_width and $new_height and padding with $bg color.
      */
-    abstract protected function doResize($bg, $target_width, $target_height, $new_width, $new_height);
+    abstract protected function doResize($bg, int $target_width, int $target_height, int $new_width, int $new_height);
 
     /**
      * Gets the color of the $x, $y pixel.

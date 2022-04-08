@@ -71,12 +71,10 @@ class GD extends Common
      *
      * @return $this
      */
-    protected function doResize($bg, $target_width, $target_height, $new_width, $new_height)
+    protected function doResize($bg, int $target_width, int $target_height, int $new_width, int $new_height)
     {
         $width = $this->width();
         $height = $this->height();
-        $target_width = (int) $target_width;
-        $target_height = (int) $target_height;
         $n = imagecreatetruecolor($target_width, $target_height);
 
         if ($bg != 'transparent') {
@@ -92,8 +90,8 @@ class GD extends Common
         imagecopyresampled(
             $n,
             $this->resource,
-            ($target_width - $new_width) / 2,
-            ($target_height - $new_height) / 2,
+            (int) (($target_width - $new_width) / 2),
+            (int) (($target_height - $new_height) / 2),
             0,
             0,
             $new_width,
