@@ -75,6 +75,8 @@ class GD extends Common
     {
         $width = $this->width();
         $height = $this->height();
+        $target_width = (int) $target_width;
+        $target_height = (int) $target_height;
         $n = imagecreatetruecolor($target_width, $target_height);
 
         if ($bg != 'transparent') {
@@ -87,7 +89,19 @@ class GD extends Common
             imagesavealpha($n, true);
         }
 
-        imagecopyresampled($n, $this->resource, ($target_width - $new_width) / 2, ($target_height - $new_height) / 2, 0, 0, $new_width, $new_height, $width, $height);
+        imagecopyresampled(
+            $n,
+            $this->resource,
+            ($target_width - $new_width) / 2,
+            ($target_height - $new_height) / 2,
+            0,
+            0,
+            $new_width,
+            $new_height,
+            $width,
+            $height
+        );
+
         imagedestroy($this->resource);
 
         $this->resource = $n;
@@ -571,7 +585,7 @@ class GD extends Common
 
         return $this;
     }
-    
+
     /**
      * {@inheritdoc}
      */
