@@ -328,7 +328,7 @@ abstract class Common extends Adapter
             $height = $new_height;
         }
 
-        $this->doResize($background, $width, $height, $new_width, $new_height);
+        $this->doResize($background, (int) $width, (int) $height, (int) $new_width, (int) $new_height);
     }
 
     /**
