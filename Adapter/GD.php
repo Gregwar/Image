@@ -115,7 +115,7 @@ class GD extends Common
         $destination = imagecreatetruecolor($width, $height);
         imagealphablending($destination, false);
         imagesavealpha($destination, true);
-        imagecopy($destination, $this->resource, 0, 0, $x, $y, $this->width(), $this->height());
+        imagecopy($destination, $this->resource, 0, 0, (int) $x, (int) $y, $this->width(), $this->height());
         imagedestroy($this->resource);
         $this->resource = $destination;
 
