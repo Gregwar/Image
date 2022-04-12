@@ -417,7 +417,7 @@ class Imagick extends Common
      * Resizes the image to an image having size of $target_width, $target_height, using
      * $new_width and $new_height and padding with $bg color.
      */
-    protected function doResize($bg, $target_width, $target_height, $new_width, $new_height)
+    protected function doResize($bg, int $target_width, int $target_height, int $new_width, int $new_height)
     {
         // TODO: Implement doResize() method.
     }
