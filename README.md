@@ -211,8 +211,8 @@ You can also create your own image on-the-fly using drawing functions:
 
 ## Using fallback image
 
-If the image file doesn't exists, you can configurate a fallback image that will be used
-by the class (note that this require the cache directory to be available).
+If the image file doesn't exist, you can configure a fallback image that will be used
+by the class (note that this requires the cache directory to be available).
 
 A default "error" image which is used is in `images/error.jpg`, you can change it with:
 
