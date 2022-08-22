@@ -26,10 +26,9 @@
     "suggest": {
         "behat/transliterator": "Transliterator provides ability to set non-latin1 pretty names"
     },
-    "target-dir": "Gregwar/Image",
     "autoload": {
-        "psr-0": {
-            "Gregwar\\Image": ""
+        "psr-4": {
+            "Gregwar\\Image\\": ""
         }
     },
     "scripts": {
