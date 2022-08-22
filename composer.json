@@ -1,24 +1,27 @@
 {
     "name": "gregwar/image",
     "description": "Image handling",
-    "keywords": ["image", "gd"],
+    "keywords": [
+        "image",
+        "gd"
+    ],
     "homepage": "https://github.com/Gregwar/Image",
     "license": "MIT",
     "authors": [
         {
             "name": "Grégoire Passault",
             "email": "g.passault@gmail.com",
-            "homepage": "http://www.gregwar.com/"
+            "homepage": "https://gregwar.com/"
         }
     ],
     "require": {
-        "php": "^5.6 || ^7.0 || ^8.0",
-        "ext-gd": "*",
-        "gregwar/cache": "^1.0.6"
+        "php": "^7.3|^8.0",
+        "gregwar/cache": "^1.0.12",
+        "ext-gd": "*"
     },
     "require-dev": {
         "sllh/php-cs-fixer-styleci-bridge": "~1.0",
-        "symfony/phpunit-bridge": "^2.7.4 || ^3.0"
+        "phpunit/phpunit": "^9"
     },
     "suggest": {
         "behat/transliterator": "Transliterator provides ability to set non-latin1 pretty names"
@@ -28,5 +31,8 @@
         "psr-0": {
             "Gregwar\\Image": ""
         }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit --version && ./vendor/bin/phpunit -c phpunit.xml.dist"
     }
 }
