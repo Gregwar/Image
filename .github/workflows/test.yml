@@ -7,12 +7,12 @@ jobs:
   build:
     strategy:
       matrix:
-        operating-system: [ubuntu-20.04]
+        operating-system: [ubuntu-22.04]
         php-versions: ['7.3', '7.4', '8.0', '8.1']
       fail-fast: false
     runs-on: ${{ matrix.operating-system }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2

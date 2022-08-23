@@ -1,6 +1,6 @@
 # Gregwar's Image class
 
-[![Build status](https://travis-ci.org/Gregwar/Image.svg?branch=master)](https://travis-ci.org/Gregwar/Image)
+[![Build status](https://github.com/Gregwar/Image/actions/workflows/test.yml/badge.svg)](https://github.com/Gregwar/Image/actions/workflows/test.yml)
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YUXRLWHQSWS6L)
 
 The `Gregwar\Image` class purpose is to provide a simple object-oriented images handling and caching API.
@@ -211,8 +211,8 @@ You can also create your own image on-the-fly using drawing functions:
 
 ## Using fallback image
 
-If the image file doesn't exists, you can configurate a fallback image that will be used
-by the class (note that this require the cache directory to be available).
+If the image file doesn't exist, you can configure a fallback image that will be used
+by the class (note that this requires the cache directory to be available).
 
 A default "error" image which is used is in `images/error.jpg`, you can change it with:
 
