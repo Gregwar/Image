@@ -226,6 +226,37 @@ class GD extends Common
     /**
      * {@inheritdoc}
      */
+    public function vignette($sharpness=0.5, $level=0.5)
+    {
+
+        $width = imagesx($this->resource);
+        $height = imagesy($this->resource);
+        
+        for($x = 0; $x < imagesx($this->resource); ++$x){
+            for($y = 0; $y < imagesy($this->resource); ++$y){   
+                $index = imagecolorat($this->resource, $x, $y);
+                $rgb = imagecolorsforindex($this->resource, $index);
+
+                $l = sin(M_PI / $width * $x) * sin(M_PI / $height * $y);
+                $l = pow($l, $sharpness);
+                $l = 1 - $level * (1 - $l);
+                
+                $rgb['red'] *= $l;
+                $rgb['green'] *= $l;
+                $rgb['blue'] *= $l;
+
+                $color = imagecolorallocate($this->resource, $rgb['red'], $rgb['green'], $rgb['blue']);
+
+                imagesetpixel($this->resource, $x, $y, $color);   
+            }
+        }
+        
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function gaussianBlur($blurFactor = 1)
     {
         $blurFactor = round($blurFactor); // blurFactor has to be an integer
