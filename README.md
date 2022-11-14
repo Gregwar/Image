@@ -152,7 +152,7 @@ Once the cache directory configured, you can call the following methods:
 
 * `webp($quality = 80)`: lookup or create a WebP cache file on-the-fly
 
-* `avif($quality = 30)`: lookup or create a AVIF cache file on-the-fly (**PHP 8.1 or greater required**)
+* `avif($quality = 80)`: lookup or create a AVIF cache file on-the-fly (**PHP 8.1 or greater required**)
 
 * `gif()`: lookup or create a GIF cache file on-the-fly
 

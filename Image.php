@@ -586,7 +586,7 @@ class Image
     /**
      * Generates and output a webp cached file.
      */
-    public function avif($quality = 30)
+    public function avif($quality = 80)
     {
         return $this->cacheFile('avif', $quality);
     }
