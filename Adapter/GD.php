@@ -5,8 +5,14 @@ namespace Gregwar\Image\Adapter;
 use Gregwar\Image\Image;
 use Gregwar\Image\ImageColor;
 
+// Add IMG_AVIF constant for PHP versions below 8.1
+defined('IMG_AVIF') or define('IMG_AVIF', 256);
+
 class GD extends Common
 {
+    /**
+     * GD image types supported by this adapter.
+     */
     public static $gdTypes = array(
         'jpeg'  => \IMG_JPG,
         'gif'   => \IMG_GIF,
@@ -677,6 +683,7 @@ class GD extends Common
 
     /**
      * Does this adapter supports type ?
+     * Returns true if checked type is supported by the PHP/GD build and this adapter.
      */
     protected function supports($type)
     {
