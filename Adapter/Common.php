@@ -193,6 +193,8 @@ abstract class Common extends Adapter
 
     abstract protected function openWebp($file);
 
+    abstract protected function openAvif($file);
+
     /**
      * Creates an image.
      */
@@ -231,6 +233,10 @@ abstract class Common extends Adapter
 
         if ($type == 'webp') {
             $this->openWebp($file);
+        }
+
+        if ($type == 'avif') {
+            $this->openAvif($file);
         }
 
         if (false === $this->resource) {

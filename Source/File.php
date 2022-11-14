@@ -47,6 +47,10 @@ class File extends Source
                 if ($type == IMAGETYPE_WEBP) {
                     return 'webp';
                 }
+
+                if ($type == IMAGETYPE_AVIF) {
+                    return 'avif';
+                }
             }
         }
 

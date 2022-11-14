@@ -11,7 +11,8 @@ class GD extends Common
         'jpeg'  => \IMG_JPG,
         'gif'   => \IMG_GIF,
         'png'   => \IMG_PNG,
-        'webp'  => \IMG_WEBP
+        'webp'  => \IMG_WEBP,
+        'avif'  => \IMG_AVIF
     );
 
     protected function loadResource($resource)
@@ -597,6 +598,16 @@ class GD extends Common
     /**
      * {@inheritdoc}
      */
+    public function saveAvif($file, $quality)
+    {
+        imageavif($this->resource, $file, $quality);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function saveJpeg($file, $quality)
     {
         imagejpeg($this->resource, $file, $quality);
@@ -647,6 +658,18 @@ class GD extends Common
     {
         if (file_exists($file) && filesize($file)) {
             $this->resource = @imagecreatefromwebp($file);
+        } else {
+            $this->resource = false;
+        }
+    }
+
+    /**
+     * Try to open the file using AVIF.
+     */
+    protected function openAvif($file)
+    {
+        if (file_exists($file) && filesize($file)) {
+            $this->resource = @imagecreatefromavif($file);
         } else {
             $this->resource = false;
         }
