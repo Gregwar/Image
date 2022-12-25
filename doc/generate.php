@@ -10,7 +10,7 @@ Image::open('mona.jpg')
     ->save('resize.jpg');
 
 // scaleResize() will also preserve the scale, but won't
-// enlage the image
+// enlarge the image
 Image::open('mona.jpg')
     ->scaleResize(250, 250, 'red')
     ->save('scaleResize.jpg');

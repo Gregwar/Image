@@ -269,7 +269,7 @@ class Image
     }
 
     /**
-     * Gets the fallack image path.
+     * Gets the fallback image path.
      */
     public function getFallback()
     {
@@ -332,8 +332,8 @@ class Image
     /**
      * Get the file path.
      *
-     * @return mixed a string with the filen name, null if the image
-     *               does not depends on a file
+     * @return mixed a string with the file name, null if the image
+     *               does not depend on a file
      */
     public function getFilePath()
     {
@@ -456,7 +456,7 @@ class Image
     }
 
     /**
-     * Gets the cache file name and generate it if it does not exists.
+     * Gets the cache file name and generate it if it does not exist.
      * Note that if it exists, all the image computation process will
      * not be done.
      *
@@ -493,7 +493,7 @@ class Image
 
         $cacheFile .= '.'.$type;
 
-        // If the files does not exists, save it
+        // If the file does not exist, save it
         $image = $this;
 
         // Target file should be younger than all the current image
@@ -757,7 +757,7 @@ class Image
     }
 
     /**
-     * Creates an instance, usefull for one-line chaining.
+     * Creates an instance, usefully for one-line chaining.
      */
     public static function open($file = '')
     {
