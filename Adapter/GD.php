@@ -122,6 +122,98 @@ class GD extends Common
         return $this;
     }
 
+
+    public function cropCircle($x, $y, $diameter, $border_width = 0, $border_color = 'ffffff')
+    {
+        // http://stackoverflow.com/questions/999251/crop-or-mask-an-image-into-a-circle?rq=1
+        // factor to antialiase, tradeoff between quality and memory consumption
+        $antialias_factor = 1;
+
+        if ($diameter < 800) {
+            $antialias_factor = 2;
+        }
+
+        if ($diameter < 500) {
+            $antialias_factor = 2.5;
+        }
+        if ($diameter < 200) {
+            $antialias_factor = 3.5;
+        }
+
+
+        // scale up to and afterwards down to reduce antialising effect
+        $this->forceResize($this->width() * $antialias_factor, $this->height() * $antialias_factor);
+
+        $x = $x * $antialias_factor;
+        $y = $y * $antialias_factor;
+        $diameter = $diameter * $antialias_factor;
+
+        $b_width = (int)$border_width * $antialias_factor;
+
+        $this->crop($x, $y, $diameter, $diameter);
+
+        $w = $this->width();
+        $h = $this->height();
+
+        $src = $this->resource;
+        $newpic = imagecreatetruecolor($w, $h);
+        imagealphablending($newpic, false);
+        $transparent = imagecolorallocatealpha($newpic, 0, 0, 0, 127);
+
+        $r = $w / 2;
+
+        try {
+            $colorRGBA = ImageColor::parse($border_color);
+            // taken from gdAllocate()
+            // could be a separate helper function
+            $col_b = ($colorRGBA) & 0xff;
+            $colorRGBA >>= 8;
+            $col_g = ($colorRGBA) & 0xff;
+            $colorRGBA >>= 8;
+            $col_r = ($colorRGBA) & 0xff;
+            $colorRGBA >>= 8;
+            $col_a = ($colorRGBA) & 0xff;
+        } catch (\InvalidArgumentException $e) {
+            $b_width = 0;
+            $col_a = 127;
+            $col_r = $col_g = $col_b = 0;
+        }
+        $b_color = imagecolorallocatealpha($newpic, $col_r, $col_g, $col_b, $col_a);
+
+        // stitch out the circle
+        for ($x = 0; $x < $w; $x++) {
+            for ($y = 0; $y < $h; $y++) {
+                $c = imagecolorat($src, $x, $y);
+                $_x = $x - $w / 2;
+                $_y = $y - $h / 2;
+
+                $x2 = ($_x * $_x);
+                $y2 = ($_y * $_y);
+                $r2 = ($r * $r);
+                $rb2 = (($r - $b_width) * ($r - $b_width));
+
+                if (($x2 + $y2) < $r2) {
+                    imagesetpixel($newpic, $x, $y, $c);
+                    // draw border
+                    if (((int)$b_width > 0) && (($x2 + $y2) >= $rb2)) {
+                        imagesetpixel($newpic, $x, $y, $b_color);
+                    }
+                } else {
+                    imagesetpixel($newpic, $x, $y, $transparent);
+                }
+            }
+        }
+        imagesavealpha($newpic, true);
+        $this->resource = $newpic;
+
+        // scale down
+        $this->forceResize($this->width() / $antialias_factor, $this->height() / $antialias_factor);
+        return $this;
+    }
+    
+    
+    
+    
     /**
      * {@inheritdoc}
      */
