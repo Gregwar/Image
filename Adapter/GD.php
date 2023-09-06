@@ -338,7 +338,7 @@ class GD extends Common
             }
         }
 
-        imagettftext($this->resource, $size, $angle, $x, $y, ImageColor::gdAllocate($this->resource, $color), $font, $text);
+        imagettftext($this->resource, $size, $angle, (int) $x, $y, ImageColor::gdAllocate($this->resource, $color), $font, $text);
 
         return $this;
     }
