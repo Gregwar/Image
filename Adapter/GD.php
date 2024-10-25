@@ -6,13 +6,20 @@ use Gregwar\Image\Image;
 use Gregwar\Image\ImageColor;
 use Gregwar\Image\Utils\FileUtils;
 
+// Add IMG_AVIF constant for PHP versions below 8.1
+defined('IMG_AVIF') or define('IMG_AVIF', 256);
+
 class GD extends Common
 {
+    /**
+     * GD image types supported by this adapter.
+     */
     public static $gdTypes = array(
         'jpeg'  => \IMG_JPG,
         'gif'   => \IMG_GIF,
         'png'   => \IMG_PNG,
-        'webp'  => \IMG_WEBP
+        'webp'  => \IMG_WEBP,
+        'avif'  => \IMG_AVIF
     );
 
     protected function loadResource($resource)
@@ -598,6 +605,16 @@ class GD extends Common
     /**
      * {@inheritdoc}
      */
+    public function saveAvif($file, $quality)
+    {
+        imageavif($this->resource, $file, $quality);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function saveJpeg($file, $quality)
     {
         imagejpeg($this->resource, $file, $quality);
@@ -654,7 +671,20 @@ class GD extends Common
     }
 
     /**
+     * Try to open the file using AVIF.
+     */
+    protected function openAvif($file)
+    {
+        if (file_exists($file) && filesize($file)) {
+            $this->resource = @imagecreatefromavif($file);
+        } else {
+            $this->resource = false;
+        }
+    }
+
+    /**
      * Does this adapter supports type ?
+     * Returns true if checked type is supported by the PHP/GD build and this adapter.
      */
     protected function supports($type)
     {

@@ -148,11 +148,15 @@ array. This operation array, the name, type and modification time of file are ha
 
 Once the cache directory configured, you can call the following methods:
 
-* `jpeg($quality = 80)`: lookup or create a jpeg cache file on-the-fly
+* `jpeg($quality = 80)`: lookup or create a JPEG cache file on-the-fly
 
-* `gif()`: lookup or create a gif cache file on-the-fly
+* `webp($quality = 80)`: lookup or create a WebP cache file on-the-fly
 
-* `png()`: lookup or create a png cache file on-the-fly
+* `avif($quality = 80)`: lookup or create a AVIF cache file on-the-fly (**PHP 8.1 or greater required**)
+
+* `gif()`: lookup or create a GIF cache file on-the-fly
+
+* `png()`: lookup or create a PNG cache file on-the-fly
 
 * `guess($quality = 80)`: guesses the type (use the same as input) and lookup or create a
   cache file on-the-fly
