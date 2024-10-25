@@ -24,7 +24,7 @@ class Source
     }
 
     /**
-     * Returns information about images, these informations should
+     * Returns information about images, these information should
      * change only if the original image changed.
      */
     public function getInfos()

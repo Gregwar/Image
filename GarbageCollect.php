@@ -3,7 +3,7 @@
 namespace Gregwar\Image;
 
 /**
- * Garbage collect a directory, this will crawl a directory, lookng
+ * Garbage collect a directory, this will crawl a directory, looking
  * for files older than X days and destroy them.
  *
  * @author Gregwar <g.passault@gmail.com>

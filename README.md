@@ -51,7 +51,7 @@ Here are the resize methods:
 ![forceResize()](doc/forceResize.jpg)
 
 * `cropResize($width, $height, $background)`: resizes the image preserving scale (just like `resize()`)
-  and croping the whitespaces:
+  and cropping the whitespaces:
 
 ![cropResize()](doc/cropResize.jpg)
 
@@ -107,7 +107,7 @@ The other methods available are:
 
 * `circle($cx, $cy, $r, $color, $filled=false)`: draws a circle
 
-* `fillBackground($bg=0xffffff)`: fills the background of a transparent image to the 'bg' color
+* `fillBackground($bg=0xffffff)`: fills the background with a transparent image to the 'bg' color
 
 * `fixOrientation()`: return the image rotated and flipped using image exif information 
 
