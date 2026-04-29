@@ -61,7 +61,9 @@ class GD extends Common
         $n = imagecreatetruecolor($w, $h);
         imagefill($n, 0, 0, ImageColor::gdAllocate($this->resource, $background));
         imagecopyresampled($n, $this->resource, 0, 0, 0, 0, $w, $h, $w, $h);
-        imagedestroy($this->resource);
+        if (PHP_VERSION_ID < 80000) {
+            imagedestroy($this->resource);
+        }
         $this->resource = $n;
 
         return $this;
@@ -101,7 +103,9 @@ class GD extends Common
             $height
         );
 
-        imagedestroy($this->resource);
+        if (PHP_VERSION_ID < 80000) {
+            imagedestroy($this->resource);
+        }
 
         $this->resource = $n;
 
@@ -117,7 +121,9 @@ class GD extends Common
         imagealphablending($destination, false);
         imagesavealpha($destination, true);
         imagecopy($destination, $this->resource, 0, 0, (int) $x, (int) $y, $this->width(), $this->height());
-        imagedestroy($this->resource);
+        if (PHP_VERSION_ID < 80000) {
+            imagedestroy($this->resource);
+        }
         $this->resource = $destination;
 
         return $this;
@@ -268,7 +274,9 @@ class GD extends Common
         imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
 
         // clean up
-        imagedestroy($prevImage);
+        if (PHP_VERSION_ID < 80000) {
+            imagedestroy($prevImage);
+        }
 
         return $this;
     }
@@ -480,7 +488,9 @@ class GD extends Common
             imagesavealpha($imgdest, true);
 
             if (imagecopyresampled($imgdest, $this->resource, 0, 0, $src_x, $src_y, $width, $height, $src_width, $src_height)) {
-                imagedestroy($this->resource);
+                if (PHP_VERSION_ID < 80000) {
+                    imagedestroy($this->resource);
+                }
                 $this->resource = $imgdest;
             }
         }
